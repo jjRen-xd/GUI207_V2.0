@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<globalModelInfo datasetTypeNum="4">
+    <FEA_OPTI typeID="1">
+        <FEA_OPTI_001.pt nameID="1">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>0</framework>
+            <name>FEA_OPTI_001.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </FEA_OPTI_001.pt>
+        <FEA_OPTI_002.pt nameID="2">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>0</framework>
+            <name>FEA_OPTI_002.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </FEA_OPTI_002.pt>
+    </FEA_OPTI>
+    <FEA_RELE typeID="2">
+        <FEA_RELE_001.pt nameID="3">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>32</batch>
+            <framework>0</framework>
+            <name>FEA_RELE_001.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </FEA_RELE_001.pt>
+        <FEA_RELE_002.pt nameID="4">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>0</framework>
+            <name>FEA_RELE_002.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </FEA_RELE_002.pt>
+    </FEA_RELE>
+    <INCRE typeID="3">
+        <INCRE_001.pt nameID="5">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>libTorch</framework>
+            <name>INCRE_001.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </INCRE_001.pt>
+        <INCRE_002.pt nameID="6">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>0</framework>
+            <name>INCRE_002.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </INCRE_002.pt>
+    </INCRE>
+    <TRA_DL typeID="4">
+        <HRN2_gpu_0.pt nameID="7">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>xml载入测试</algorithm>
+            <framework>0</framework>
+            <name>HRN2_gpu_0.pt</name>
+            <note>测试下备注</note>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </HRN2_gpu_0.pt>
+        <HRRPModel_cpu.pt nameID="8">
+            <PATH>/home/GUI207_V2.0/db/models/HRRPModel_cpu.pt</PATH>
+            <accuracy>未定义</accuracy>
+            <algorithm>未定义</algorithm>
+            <batch>64</batch>
+            <framework>未定义</framework>
+            <name>未定义</name>
+            <note>未定义</note>
+            <other>未定义</other>
+            <trainDataset>未定义</trainDataset>
+            <trainEpoch>未定义</trainEpoch>
+            <trainLR>未定义</trainLR>
+        </HRRPModel_cpu.pt>
+        <TRA_DL_001.pt nameID="9">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>0</framework>
+            <name>TRA_DL_001.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </TRA_DL_001.pt>
+        <TRA_DL_002.pt nameID="10">
+            <PATH>未定义</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>自定义算法</algorithm>
+            <batch>64</batch>
+            <framework>0</framework>
+            <name>TRA_DL_002.pt</name>
+            <note>测试下备注</note>
+            <other>其他参数</other>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </TRA_DL_002.pt>
+    </TRA_DL>
+</globalModelInfo>

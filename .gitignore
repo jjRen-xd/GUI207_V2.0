@@ -1,0 +1,15 @@
+/.vscode/
+/.history/
+/db/datasets/*
+/build/*
+/GUI_V1.0.pro.user
+/.qt_for_python/*
+
+!/db/datasets/dataset_here
+!/db/models/model_here
+!/build/build_here
+
+!/lib\algorithm\code_here
+!/lib\guiLogic\code_here
+!/api\api_here
+conf/libtorch.pri
