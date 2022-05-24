@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 	QRibbon::install(this);
 
     // 全局数据记录设置
-    this->globalDatasetInfo = new DatasetInfo("../conf/datasetInfoCache.xml");
-    this->globalModelInfo = new ModelInfo("../conf/modelInfoCache.xml");
+    this->globalDatasetInfo = new DatasetInfo("./conf/datasetInfoCache.xml");
+    this->globalModelInfo = new ModelInfo("./conf/modelInfoCache.xml");
 	
 	// 悬浮窗设置
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);

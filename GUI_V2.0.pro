@@ -71,3 +71,4 @@ RESOURCES += \
 
 include("./conf/libtorch.pri")
 
+RC_ICONS = "./sources/LOGO.ico"

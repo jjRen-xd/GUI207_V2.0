@@ -150,7 +150,7 @@ void SenseSetPage::drawClassImage(){
 
     for(int i = 0; i<subDirNames.size(); i++){
         imgInfoGroup[i]->setText(QString::fromStdString(subDirNames[i]));
-        QString imgPath = QString::fromStdString(rootPath +"/"+ subDirNames[i] +"/"+ subDirNames[i] +".png");
+        QString imgPath = QString::fromStdString(rootPath +"/"+ subDirNames[i] +".png");
         imgGroup[i]->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
     }
 }

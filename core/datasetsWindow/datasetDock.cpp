@@ -144,7 +144,6 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                 QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
                 choicedFile = QString::fromStdString(choicedFile).split(".").first().toStdString();
                 // 绘图
-                cout<<txtFilePath.toStdString()<<endl;
                 Chart *previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
                 previewChart->drawHRRPimage(chartGroup[i]);
                 chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+choicedFile));

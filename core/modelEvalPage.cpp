@@ -74,7 +74,7 @@ void ModelEvalPage::randSample(){
             // 可视化所选样本
             ui->label_mE_choicedSample->setText(QString::fromStdString(choicedFile).split(".").first());
 
-            QString imgPath = QString::fromStdString(classPath +"/"+ selectedClass +".png");
+            QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
             ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
 
             Chart *previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
@@ -102,7 +102,7 @@ void ModelEvalPage::testOneSample(){
         // 可视化结果
         ui->label_predClass->setText(predClass);
         ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +"/"+ predClass +".png";
+        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
         ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
 
         // 绘制隶属度柱状图

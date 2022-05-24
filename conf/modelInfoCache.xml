@@ -97,17 +97,7 @@
             <trainLR>0.001</trainLR>
         </HRN2_gpu_0.pt>
         <HRRPModel_cpu.pt nameID="8">
-            <PATH>/home/GUI207_V2.0/db/models/HRRPModel_cpu.pt</PATH>
-            <accuracy>未定义</accuracy>
-            <algorithm>未定义</algorithm>
-            <batch>64</batch>
-            <framework>未定义</framework>
-            <name>未定义</name>
-            <note>未定义</note>
-            <other>未定义</other>
-            <trainDataset>未定义</trainDataset>
-            <trainEpoch>未定义</trainEpoch>
-            <trainLR>未定义</trainLR>
+            <PATH>D:/WIN_10_DEDKTOP/onWorking/207GUI/GUI_Release/GUI207_V2.0/db/models/HRRPModel_cpu.pt</PATH>
         </HRRPModel_cpu.pt>
         <TRA_DL_001.pt nameID="9">
             <PATH>未定义</PATH>
