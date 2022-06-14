@@ -68,9 +68,11 @@ void ModelDock::reloadTreeView(){
 void ModelDock::treeItemClicked(const QModelIndex &index){
     // 获取点击预览模型的类型和名称
     QStandardItem *currItem = static_cast<QStandardItemModel*>(modelTreeView->model())->itemFromIndex(index);     //返回给定index的条目
-    if(currItem->hasChildren()){    // 点击父节点直接返回
+    auto parentItem = currItem->parent();
+    if(!parentItem){    // 点击父节点直接返回
         return;
     }
+
     string clickedName = currItem->data(0).toString().toStdString();             //获取该条目的值
     string clickedType = modelInfo->typeName2Var[currItem->parent()->data(0).toString().toStdString()];
     this->previewName = clickedName;

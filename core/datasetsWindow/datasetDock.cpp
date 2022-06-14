@@ -43,6 +43,12 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
 
     // 初始化TreeView
     reloadTreeView();
+
+    for(auto &currTreeView: datasetTreeViewGroup){
+        //链接节点点击事件
+        //重复绑定信号和槽函数导致bug弹窗已修复
+        connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
+    }
 }
 
 DatasetDock::~DatasetDock(){
@@ -110,7 +116,7 @@ void DatasetDock::reloadTreeView(){
         }
         currTreeView.second->setModel(treeModel);
         //链接节点点击事件
-        connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
+        // connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
     }
 }
 

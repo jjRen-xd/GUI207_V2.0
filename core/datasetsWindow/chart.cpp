@@ -6,7 +6,7 @@
 #include <QMessageBox>
 
 Chart::Chart(QWidget* parent, QString _chartname, QString _filename){
-    setParent(parent);
+    // setParent(parent);
     chartname = _chartname;
     filename = _filename;
     series = new QSplineSeries(this);
@@ -120,7 +120,7 @@ void Chart::buildChart(QList<QPointF> pointlist)
         points.append(QPointF(pointlist.at(i).x(), pointlist.at(i).y()));
     }
 
-//    qchart->setAnimationOptions(QChart::SeriesAnimations);//设置曲线动画模式
+    qchart->setAnimationOptions(QChart::SeriesAnimations);//设置曲线动画模式
     qchart->legend()->hide(); //隐藏图例
     qchart->addSeries(series);//输入数据
     qchart->setAxisX(axisX, series);
@@ -144,8 +144,8 @@ void Chart::showChart(QLabel *imagelabel){
     }
     QVBoxLayout *subqvLayout = new QVBoxLayout();
 
-    zoom_btn->setFixedSize(20,50);
-    download_btn->setFixedSize(20,50);
+    zoom_btn->setFixedSize(20,35);
+    download_btn->setFixedSize(20,35);
 
     subqvLayout->addWidget(zoom_btn);
     subqvLayout->addWidget(download_btn);
@@ -205,6 +205,7 @@ void Chart::Show_Save(){
     newchart->addAxis(newaxisY, Qt::AlignLeft);   //左：Qt::AlignLeft    右：Qt::AlignRight
     newchart->setContentsMargins(0, 0, 0, 0);  //设置外边界全部为0
     newchart->setMargins(QMargins(0, 0, 0, 0));
+    newchart->setAnimationOptions(QChart::SeriesAnimations);//设置曲线动画模式
 
     QSplineSeries *newseries = new QSplineSeries();
     newseries->setPen(QPen(Qt::blue,1,Qt::SolidLine));
