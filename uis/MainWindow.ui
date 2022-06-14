@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,7 +99,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>731</width>
+             <width>494</width>
              <height>1097</height>
             </rect>
            </property>
@@ -2282,8 +2282,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>272</width>
-               <height>415</height>
+               <width>326</width>
+               <height>551</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3199,7 +3199,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>390</width>
+               <width>402</width>
                <height>591</height>
               </rect>
              </property>
@@ -3339,7 +3339,42 @@
                         </widget>
                        </item>
                        <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_68">
+                         <item>
+                          <widget class="QLabel" name="label_6">
+                           <property name="text">
+                            <string>识别时间：</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_predTime">
+                           <property name="text">
+                            <string>xxx</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLabel" name="label_10">
+                           <property name="text">
+                            <string>s</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_69">
+                         <item>
+                          <widget class="QLabel" name="label_11">
+                           <property name="text">
+                            <string>隶属度：</string>
+                           </property>
+                          </widget>
+                         </item>
                          <item>
                           <widget class="QLabel" name="label_predClass">
                            <property name="text">

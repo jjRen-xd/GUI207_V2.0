@@ -93,7 +93,8 @@ void ModelEvalPage::testOneSample(){
     if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
         std::cout<<choicedSamplePATH<<endl;
         std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
-        int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+        double predTime;
+        int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees, predTime);
         QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
 
         terminal->print("识别结果： " + predClass);
@@ -102,6 +103,7 @@ void ModelEvalPage::testOneSample(){
         // 可视化结果
         ui->label_predClass->setText(predClass);
         ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+        ui->label_predTime->setText(QString("%1").arg(predTime));
         QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
         ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
 

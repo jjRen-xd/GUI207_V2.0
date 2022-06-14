@@ -36,9 +36,6 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
         </SNR_-18>
-        <SNR_18 nameID="4">
-            <PATH>D:/WIN_10_DEDKTOP/onWorking/207GUI/GUI_Release/GUI207_V2.0/db/datasets/SNR_18</PATH>
-        </SNR_18>
     </HRRP>
     <IMAGE typeID="2">
         <Image_001 nameID="5">
