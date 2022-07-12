@@ -30,7 +30,7 @@ torch::Tensor getTensorFromTXT(std::string data_path){
     float x[512], y[512];
     for (int i = 0; i < 512; i++){
 //        x[i] = temp[i];
-        y[i] = temp[i + 1];
+        y[i] = temp[2*i + 1];
     }
 //    torch::Tensor t1 = torch::from_blob(x, {512}, torch::kFloat);
     torch::Tensor t2 = torch::from_blob(y, {512}, torch::kFloat);
@@ -117,7 +117,7 @@ void load_data_from_folder(
 ){
     SearchFolder *dirTools = new SearchFolder();
 
-    // 寻找子文件夹
+    // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
     std::vector<std::string> subDirs;
     dirTools->getDirs(subDirs, datasetPath);
     for(auto &subDir: subDirs){
@@ -179,7 +179,6 @@ void LibtorchTest::testAllSample(std::string dataset_path,std::string model_path
     auto test_dataset = dataSetClc(dataset_path, ".txt", class2label)
             .map(torch::data::transforms::Stack<>());
     const size_t test_dataset_size = test_dataset.size().value();
-    std::cout<<test_dataset_size<<std::endl;
 
     // batch : data_loader数据量为1
     auto test_loader = torch::data::make_data_loader(std::move(test_dataset), 1);

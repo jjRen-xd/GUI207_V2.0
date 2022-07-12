@@ -27,6 +27,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
+
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
     // 测试按钮

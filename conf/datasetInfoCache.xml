@@ -1,47 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="4">
     <HRRP typeID="1">
-        <HRRP_001 nameID="1">
-            <PATH>未定义</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
-            <datasetName>我的测试数据集</datasetName>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>测试下备注</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>512</samplingNum>
-            <targetNumEachCla>未定义001</targetNumEachCla>
-        </HRRP_001>
-        <HRRP_002 nameID="2">
-            <PATH>无</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>无</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>512</samplingNum>
-            <targetNumEachCla>1000</targetNumEachCla>
-        </HRRP_002>
-        <SNR_-18 nameID="3">
-            <PATH>D:/WIN_10_DEDKTOP/onWorking/207GUI/GUI_Release/GUI207_V2.0/db/datasets/SNR_-18</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
-            <datasetName>未定义</datasetName>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>未定义</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>512</samplingNum>
-            <targetNumEachCla>未定义001</targetNumEachCla>
-        </SNR_-18>
-        <SNR_18 nameID="4">
-            <PATH>D:/WIN_10_DEDKTOP/onWorking/207GUI/GUI_Release/GUI207_V2.0/db/datasets/SNR_18</PATH>
-        </SNR_18>
+        <HRRP nameID="1">
+            <PATH>E:/207Project/Data/HRRP</PATH>
+        </HRRP>
+        <SNR_6 nameID="2">
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/SNR_6</PATH>
+        </SNR_6>
     </HRRP>
     <IMAGE typeID="2">
-        <Image_001 nameID="5">
+        <Image_001 nameID="3">
             <PATH>未定义</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
@@ -52,7 +20,7 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>1000</targetNumEachCla>
         </Image_001>
-        <Image_002 nameID="6">
+        <Image_002 nameID="4">
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
             <freq>10GHz</freq>
@@ -64,7 +32,7 @@
         </Image_002>
     </IMAGE>
     <RADIO typeID="3">
-        <Radia_002 nameID="7">
+        <Radia_002 nameID="5">
             <PATH>未定义</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
@@ -78,7 +46,7 @@
         </Radia_002>
     </RADIO>
     <RCS typeID="4">
-        <RCS_001 nameID="8">
+        <RCS_001 nameID="6">
             <PATH>111</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
@@ -90,7 +58,7 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>1000</targetNumEachCla>
         </RCS_001>
-        <RCS_002 nameID="9">
+        <RCS_002 nameID="7">
             <PATH>未定义</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
