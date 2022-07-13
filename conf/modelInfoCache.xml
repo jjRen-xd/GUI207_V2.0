@@ -100,5 +100,8 @@
             <trainEpoch>100轮</trainEpoch>
             <trainLR>0.001</trainLR>
         </TRA_DL_002.pt>
+        <onnxmodel.trt nameID="9">
+            <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>
+        </onnxmodel.trt>
     </TRA_DL>
 </globalModelInfo>

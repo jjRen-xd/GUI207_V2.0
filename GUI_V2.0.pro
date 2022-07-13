@@ -25,6 +25,8 @@ HEADERS += \
     core/modelsWindow/modelDock.h \
     core/sensePage.h \
     lib/algorithm/libtorchTest.h \
+    lib/algorithm/logging.h \
+    lib/algorithm/onnxinfer.h \#######
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
@@ -32,6 +34,7 @@ HEADERS += \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
+    lib/algorithm/onnxinfer.cpp \######
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \

@@ -15,7 +15,7 @@
 #include "./lib/guiLogic/tools/searchFolder.h"
 
 #include "lib/algorithm/libtorchTest.h"
-
+#include "lib/algorithm/onnxinfer.h"
 
 class ModelEvalPage:public QObject{
     Q_OBJECT
@@ -50,9 +50,8 @@ private:
 
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
-
     LibtorchTest *libtorchTest;
-
+    OnnxInfer *onnxInfer;
 };
 
 #endif // MODELEVALPAGE_H

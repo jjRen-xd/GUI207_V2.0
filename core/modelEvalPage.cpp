@@ -27,7 +27,8 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
-
+    //
+    //onnxInfer = new OnnxInfer(class2label);
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
     // 测试按钮
@@ -94,7 +95,8 @@ void ModelEvalPage::testOneSample(){
     if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
         std::cout<<choicedSamplePATH<<endl;
         std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
-        int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+        //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+        int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
 
         terminal->print("识别结果： " + predClass);
