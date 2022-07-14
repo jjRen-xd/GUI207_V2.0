@@ -6,6 +6,7 @@
 #include <QBarSet>
 #include <QBarCategoryAxis>
 
+#include<cuda_runtime.h>
 
 using namespace std;
 
@@ -27,8 +28,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
-    //
-    //onnxInfer = new OnnxInfer(class2label);
+    onnxInfer = new OnnxInfer(class2label);
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
     // 测试按钮
@@ -192,7 +192,8 @@ void ModelEvalPage::testAllSample(){
     if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
         float acc = 0.0;
         std::vector<std::vector<int>> confusion_matrix(5, std::vector<int>(5, 0));
-        libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
+        //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
+        onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
 
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));

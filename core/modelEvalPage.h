@@ -50,6 +50,7 @@ private:
 
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
+
     LibtorchTest *libtorchTest;
     OnnxInfer *onnxInfer;
 };

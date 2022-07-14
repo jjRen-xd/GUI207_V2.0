@@ -8,6 +8,14 @@
 #include "cuda_runtime_api.h"
 #include "logging.h"
 #include <fstream>
+#include <cstddef>
+#include <cstdio>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdio.h>
+#include "libtorchTest.h"
+#include "./lib/guiLogic/tools/searchFolder.h"
 class OnnxInfer : public QObject
 {
     Q_OBJECT
@@ -16,7 +24,7 @@ public:
 
 public slots:
     int testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree);
-    //void testAllSample(std::string hrrpdataset_path,std::string hrrpmodel_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+    void testAllSample(std::string hrrpdataset_path,std::string hrrpmodel_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
 private:
     //bool read_TRT_File(const std::string& engineFile, nvinfer1::IHostMemory*& trtModelStream, nvinfer1::ICudaEngine*& engine);
     nvinfer1::IBuilder* builder{ nullptr };

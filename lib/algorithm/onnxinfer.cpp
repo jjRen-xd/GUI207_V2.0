@@ -1,13 +1,12 @@
 #include <torch/torch.h>
 #include "onnxinfer.h"
-#include <climits>
 
 using namespace nvinfer1;
 static Logger gLogger;
+
 OnnxInfer::OnnxInfer(std::map<std::string, int> class2label):class2label(class2label){
 
 }
-
 
 bool read_TRT_File(const std::string& engineFile, IHostMemory*& trtModelStream, ICudaEngine*& engine)
 {
@@ -18,7 +17,7 @@ bool read_TRT_File(const std::string& engineFile, IHostMemory*& trtModelStream, 
     file.open(engineFile, std::ios::binary | std::ios::in);
     file.seekg(0, std::ios::end);
     int length = file.tellg();
-    std::cout << "length:" << length << std::endl;
+    //std::cout << "length:" << length << std::endl;
     file.seekg(0, std::ios::beg);
     std::unique_ptr<char[]> data(new char[length]);
     file.read(data.get(), length);
@@ -30,10 +29,11 @@ bool read_TRT_File(const std::string& engineFile, IHostMemory*& trtModelStream, 
     engine = trtRuntime->deserializeCudaEngine(data.get(), length, nullptr);
     std::cout << "deserialize done" << std::endl;
     assert(engine != nullptr);
-    std::cout << "The engine in TensorRT.cpp is not nullptr" << std::endl;
+    std::cout << "Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
     trtModelStream = engine->serialize();
     return true;
 }
+
 void getFloatFromTXT(std::string data_path,float* y) {
     int r, n = 0; double d; FILE* f;
     float temp[1024];
@@ -61,45 +61,119 @@ void getFloatFromTXT(std::string data_path,float* y) {
     }
     features.clear();//删除容器
 }
+
+//torch::Tensor getTensorFromTXT(std::string data_path){
+//    int r, n = 0;
+//    double d;
+//    FILE *f;
+//    float temp[1024];
+//    f = fopen(data_path.c_str(), "r");
+////    for (int i = 0; i < 2; i++)
+////        fscanf(f, "%*[^\n]%*c"); // 跳两行
+//    for (int i = 0; i < 1024; i++){
+//        r = fscanf(f, "%lf", &d);
+//    if (1 == r)
+//        temp[n++] = d;
+//    else if (0 == r)
+//        fscanf(f, "%*c");
+//    else
+//        break;
+//    }
+//    fclose(f);
+//    float x[512], y[512];
+//    for (int i = 0; i < 512; i++){
+////        x[i] = temp[i];
+//        y[i] = temp[2*i + 1];
+//    }
+////    torch::Tensor t1 = torch::from_blob(x, {512}, torch::kFloat);
+//    torch::Tensor t2 = torch::from_blob(y, {512}, torch::kFloat);
+////    t1 = (t1 - t1.min()) / (t1.max() - t1.min());
+//    t2 = (t2 - t2.min()) / (t2.max() - t2.min());
+//    torch::Tensor t = torch::cat({t2}, 0).view({1, 512});
+
+//    return t.clone();
+//}
+
+///*待优化*/
+//void load_data_from_folder(
+//    std::string datasetPath,
+//    std::string type,
+//    std::vector<std::string> &dataPaths,
+//    std::vector<int> &labels,
+//    std::map<std::string, int> &class2label
+//){
+//    SearchFolder *dirTools = new SearchFolder();
+
+//    // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
+//    std::vector<std::string> subDirs;
+//    dirTools->getDirs(subDirs, datasetPath);
+//    for(auto &subDir: subDirs){
+//        // 寻找每个子文件夹下的样本文件
+//        std::vector<std::string> fileNames;
+//        std::string subDirPath = datasetPath+"/"+subDir;
+//        dirTools->getFiles(fileNames, type, subDirPath);
+//        for(auto &fileName: fileNames){
+//            dataPaths.push_back(subDirPath+"/"+fileName);
+//            labels.push_back(class2label[subDir]);
+//        }
+//    }
+//    return;
+//}
+
+class dataSetClc: public torch::data::Dataset<dataSetClc>{
+public:
+    int class_index = 0;
+    dataSetClc(std::string data_dir, std::string type, std::map<std::string, int> class2label):
+        class2label(class2label){
+        load_data_from_folder(data_dir, type, dataPaths, labels, class2label);
+    }
+
+    // Override get() function to return tensor at location index
+    torch::data::Example<> get(size_t index) override{
+        std::string data_path = dataPaths.at(index);
+        torch::Tensor data_tensor = getTensorFromTXT(data_path);
+        int label = labels.at(index);
+        torch::Tensor label_tensor = torch::full({1}, label, torch::kInt64);
+        return {data_tensor.clone(), label_tensor.clone()};
+    }
+
+    // Override size() function, return the length of data
+    torch::optional<size_t> size() const override{
+        return dataPaths.size();
+    };
+
+private:
+    std::vector<std::string> dataPaths;
+    std::vector<int> labels;
+    std::map<std::string, int> class2label;
+};
+
 void doInference(IExecutionContext& context, float* input, float* output, int batchSize)
 {
-    //const ICudaEngine& engine = context.getEngine();
-    // Pointers to input and output device buffers to pass to engine.
-    // Engine requires exactly IEngine::getNbBindings() number of buffers.
-    //assert(engine.getNbBindings() == 2);
     void* buffers[2] = { NULL,NULL };
-    // In order to bind the buffers, we need to know the names of the input and output tensors.
-    // Note that indices are guaranteed to be less than IEngine::getNbBindings()
-    //const int inputIndex = engine.getBindingIndex(INPUT_BLOB_NAME);
-    //const int outputIndex = engine.getBindingIndex(OUTPUT_BLOB_NAME);
-
-    // Create GPU buffers on device
     cudaMalloc(&buffers[0], batchSize * 1 * 512 * sizeof(float));
     cudaMalloc(&buffers[1], batchSize * 5 * sizeof(float));
-
-
-    /*for (int i = 0; i < batchSize * INPUT_H * INPUT_W; i++) {
+    /*for (int i = 0; i < batchSize * 1 * 512; i++) {
         std::cout << input[i] << " ";
     }std::cout << std::endl<<"输出向量展示完毕"<<std::endl;*/
 
     // Create stream
     cudaStream_t stream;
     cudaStreamCreate(&stream);
-
     // DMA input batch data to device, infer on the batch asynchronously, and DMA output back to host
     cudaMemcpyAsync(buffers[0], input, batchSize * 1 * 512 * sizeof(float), cudaMemcpyHostToDevice, stream);
-    //开始推理
-    std::cout << "start to infer ..." << std::endl;
+    //start to infer
+    std::cout << "Start to infer ..." << std::endl;
     context.enqueue(batchSize, buffers, stream, nullptr);
     cudaMemcpyAsync(output, buffers[1], batchSize * 5 * sizeof(float), cudaMemcpyDeviceToHost, stream);
     cudaStreamSynchronize(stream);
-
     // Release stream and buffers
     cudaStreamDestroy(stream);
     cudaFree(buffers[0]);
     cudaFree(buffers[1]);
     std::cout << "Inference Done." << std::endl;
 }
+
 int OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree){
     if (read_TRT_File(modelPath,modelStream, engine)) std::cout << "tensorRT engine created successfully." << std::endl;
     else std::cout << "tensorRT engine created failed." << std::endl;
@@ -111,18 +185,59 @@ int OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std:
     doInference(*context, data, prob, 1);
 
     torch::Tensor output_tensor = torch::ones({1,5});
-    std::cout << "Output:  ";
+    std::cout << "output_tensor:  ";
     for (unsigned int i = 0; i < 5; i++){
         std::cout << prob[i] << ", ";
         output_tensor[0][i]=prob[i];
     }
     output_tensor = torch::softmax(output_tensor, 1).flatten();
     auto pred_tensor = output_tensor.argmax(0);
-    std::cout<<output_tensor<<std::endl;
-    std::cout<<pred_tensor<<std::endl;
     int pred=pred_tensor.item<int>();
-
+    std::cout <<std::endl<< "predicted label:"<<pred_tensor<<std::endl;
     std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
     degree = output;
     return pred;
+}
+
+void OnnxInfer::testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+    if (read_TRT_File(model_path,modelStream, engine)) std::cout << "tensorRT engine created successfully." << std::endl;
+    else std::cout << "tensorRT engine created failed." << std::endl;
+    context = engine->createExecutionContext();
+    assert(context != nullptr);
+
+    // LOAD DataSet
+    auto test_dataset = dataSetClc(dataset_path, ".txt", class2label)
+            .map(torch::data::transforms::Stack<>());
+    const size_t test_dataset_size = test_dataset.size().value();
+
+    // batch : data_loader数据量为1
+    auto test_loader = torch::data::make_data_loader(std::move(test_dataset), 1);
+
+    int correct=0,real=0,guess=0;
+    float data_f[512] = { 0 };
+    float prob_f[5] = { 0 };
+    torch::Tensor output_tensor = torch::ones({1,5});
+    for (const auto &batch : *test_loader){
+        auto data_tensor = batch.data;
+        auto targets_tensor = batch.target;
+        targets_tensor.resize_({1});
+        auto res = data_tensor.accessor<float,3>();            //拙劣待优化的tensor转float[]
+        for(int i=0;i<512;i++){
+            data_f[i]=res[0][0][i];
+        }
+        doInference(*context, data_f, prob_f, 1);
+        for (unsigned int i = 0; i < 5; i++){
+            std::cout << prob_f[i] << ", ";
+            output_tensor[0][i]=prob_f[i];
+        }
+        auto pred = output_tensor.argmax(1);
+        correct += pred.eq(targets_tensor).sum().template item<int64_t>();
+        real=targets_tensor[0].item<int>();
+        guess=output_tensor.view(-1).argmax().item<int>();
+        confusion_matrix[real][guess]++;
+    }
+
+    std::cout << "correct:"<<correct<<std::endl;
+    std::cout << "test_dataset_size:"<<test_dataset_size<<std::endl;
+    Acc=static_cast<float> (correct) / (test_dataset_size);
 }
