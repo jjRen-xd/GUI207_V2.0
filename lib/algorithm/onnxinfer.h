@@ -2,6 +2,7 @@
 #define ONNXINFER_H
 
 #include <QObject>
+
 #include <iostream>
 #include "NvInfer.h"
 #include "NvOnnxParser.h"
@@ -25,6 +26,8 @@ public:
 public slots:
     int testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree);
     void testAllSample(std::string hrrpdataset_path,std::string hrrpmodel_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+signals:
+    void finished(int pred);
 private:
     //bool read_TRT_File(const std::string& engineFile, nvinfer1::IHostMemory*& trtModelStream, nvinfer1::ICudaEngine*& engine);
     nvinfer1::IBuilder* builder{ nullptr };
@@ -37,6 +40,8 @@ private:
     //BashTerminal *terminal;
     // 不同平台下文件夹搜索工具
     std::map<std::string, int> class2label;
+protected:
+
 };
 
 #endif // ONNXINFER_H

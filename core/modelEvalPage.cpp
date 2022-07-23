@@ -28,7 +28,8 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
-    onnxInfer = new OnnxInfer(class2label);
+
+
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
     // 测试按钮
@@ -96,9 +97,23 @@ void ModelEvalPage::testOneSample(){
         std::cout<<choicedSamplePATH<<endl;
         std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+        //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+        //实例化线程类
+        qthread1 = new QThread(this);
+        onnxInfer = new OnnxInfer(class2label);
+        onnxInfer->moveToThread(qthread1);
 
+        connect(qthread1, &QThread::finished, qthread1, &QThread::deleteLater);
+        connect(this, &ModelEvalPage::stating, onnxInfer, &OnnxInfer::testOneSample);//发送带参数的信号给子线程
+        emit stating(choicedSamplePATH, choicedModelPATH, degrees);//发送信号
+        qthread1->start();//启动子线程
+        int predIdx;
+        connect(onnxInfer, &OnnxInfer::finished, [&predIdx](int pred){
+            predIdx=pred;
+        });
+
+        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+        qDebug() << "predIdx" << predIdx;
         terminal->print("识别结果： " + predClass);
         terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
 

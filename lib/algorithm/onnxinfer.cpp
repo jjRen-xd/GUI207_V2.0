@@ -1,6 +1,7 @@
 #include <torch/torch.h>
 #include "onnxinfer.h"
-
+#include <QThread>
+#include <QDebug>
 using namespace nvinfer1;
 static Logger gLogger;
 
@@ -62,63 +63,6 @@ void getFloatFromTXT(std::string data_path,float* y) {
     features.clear();//删除容器
 }
 
-//torch::Tensor getTensorFromTXT(std::string data_path){
-//    int r, n = 0;
-//    double d;
-//    FILE *f;
-//    float temp[1024];
-//    f = fopen(data_path.c_str(), "r");
-////    for (int i = 0; i < 2; i++)
-////        fscanf(f, "%*[^\n]%*c"); // 跳两行
-//    for (int i = 0; i < 1024; i++){
-//        r = fscanf(f, "%lf", &d);
-//    if (1 == r)
-//        temp[n++] = d;
-//    else if (0 == r)
-//        fscanf(f, "%*c");
-//    else
-//        break;
-//    }
-//    fclose(f);
-//    float x[512], y[512];
-//    for (int i = 0; i < 512; i++){
-////        x[i] = temp[i];
-//        y[i] = temp[2*i + 1];
-//    }
-////    torch::Tensor t1 = torch::from_blob(x, {512}, torch::kFloat);
-//    torch::Tensor t2 = torch::from_blob(y, {512}, torch::kFloat);
-////    t1 = (t1 - t1.min()) / (t1.max() - t1.min());
-//    t2 = (t2 - t2.min()) / (t2.max() - t2.min());
-//    torch::Tensor t = torch::cat({t2}, 0).view({1, 512});
-
-//    return t.clone();
-//}
-
-///*待优化*/
-//void load_data_from_folder(
-//    std::string datasetPath,
-//    std::string type,
-//    std::vector<std::string> &dataPaths,
-//    std::vector<int> &labels,
-//    std::map<std::string, int> &class2label
-//){
-//    SearchFolder *dirTools = new SearchFolder();
-
-//    // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
-//    std::vector<std::string> subDirs;
-//    dirTools->getDirs(subDirs, datasetPath);
-//    for(auto &subDir: subDirs){
-//        // 寻找每个子文件夹下的样本文件
-//        std::vector<std::string> fileNames;
-//        std::string subDirPath = datasetPath+"/"+subDir;
-//        dirTools->getFiles(fileNames, type, subDirPath);
-//        for(auto &fileName: fileNames){
-//            dataPaths.push_back(subDirPath+"/"+fileName);
-//            labels.push_back(class2label[subDir]);
-//        }
-//    }
-//    return;
-//}
 
 class dataSetClc: public torch::data::Dataset<dataSetClc>{
 public:
@@ -196,6 +140,8 @@ int OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std:
     std::cout <<std::endl<< "predicted label:"<<pred_tensor<<std::endl;
     std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
     degree = output;
+    emit finished(pred);
+    qDebug() << "subThread Done! pred=" << pred;
     return pred;
 }
 

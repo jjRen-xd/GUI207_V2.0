@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <QObject>
+#include <QThread>
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 
@@ -37,7 +38,8 @@ public slots:
     void randSample();
     void testOneSample();
     void testAllSample();
-
+signals:
+    void stating(std::string choicedsamplePATH,std::string choicedmodelPATH,std::vector<float> &degrees);
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;
@@ -53,6 +55,7 @@ private:
 
     LibtorchTest *libtorchTest;
     OnnxInfer *onnxInfer;
+    QThread *qthread1;
 };
 
 #endif // MODELEVALPAGE_H
