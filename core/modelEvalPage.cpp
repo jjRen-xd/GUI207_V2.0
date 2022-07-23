@@ -5,6 +5,7 @@
 #include <QBarSeries>
 #include <QBarSet>
 #include <QBarCategoryAxis>
+#include <thread>
 
 #include<cuda_runtime.h>
 
@@ -28,7 +29,6 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
-
 
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
@@ -95,25 +95,35 @@ void ModelEvalPage::randSample(){
 void ModelEvalPage::testOneSample(){
     if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
         std::cout<<choicedSamplePATH<<endl;
-        std::vector<float> degrees(datasetInfo->selectedClassNames.size());  //隶属度
+        std::vector<float> degrees;
+        //classnum==(datasetInfo->selectedClassNames.size())
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        //实例化线程类
-        qthread1 = new QThread(this);
         onnxInfer = new OnnxInfer(class2label);
-        onnxInfer->moveToThread(qthread1);
 
-        connect(qthread1, &QThread::finished, qthread1, &QThread::deleteLater);
-        connect(this, &ModelEvalPage::stating, onnxInfer, &OnnxInfer::testOneSample);//发送带参数的信号给子线程
-        emit stating(choicedSamplePATH, choicedModelPATH, degrees);//发送信号
-        qthread1->start();//启动子线程
-        int predIdx;
-        connect(onnxInfer, &OnnxInfer::finished, [&predIdx](int pred){
-            predIdx=pred;
-        });
+        std::promise<int> promisePredIdx;
+        std::future<int> futurePredIdx = promisePredIdx.get_future();
+        std::promise<std::vector<float>> promiseDegrees;  //隶属度
+        std::future<std::vector<float>> futureDegrees=promiseDegrees.get_future();
+        std::thread doinferThread(std::bind(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &promisePredIdx, &promiseDegrees));
+        doinferThread.detach();
 
+
+//        connect(qthread1, &QThread::finished, qthread1, &QThread::deleteLater);
+//        connect(this, &ModelEvalPage::stating, onnxInfer, &OnnxInfer::testOneSample);//发送带参数的信号给子线程
+//        emit stating(choicedSamplePATH, choicedModelPATH, degrees);//发送信号
+//        qthread1->start();//启动子线程
+//        int predIdx;
+//        connect(onnxInfer, &OnnxInfer::finished, [&predIdx](int pred){
+//            predIdx=pred;
+//        });
+        int predIdx=futurePredIdx.get();
+        degrees=futureDegrees.get();
         QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
         qDebug() << "predIdx" << predIdx;
+        qDebug() << "识别结果：" << predClass;
+        //for(int i=0;i<5;i++)
+        //qDebug() << futureDegrees.get().size();//future对象只能get一次
         terminal->print("识别结果： " + predClass);
         terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
 

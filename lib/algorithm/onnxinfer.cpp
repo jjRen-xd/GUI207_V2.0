@@ -1,6 +1,5 @@
 #include <torch/torch.h>
 #include "onnxinfer.h"
-#include <QThread>
 #include <QDebug>
 using namespace nvinfer1;
 static Logger gLogger;
@@ -118,7 +117,7 @@ void doInference(IExecutionContext& context, float* input, float* output, int ba
     std::cout << "Inference Done." << std::endl;
 }
 
-int OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree){
+void OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std::promise<int> *promisePredIdx, std::promise<std::vector<float>> *degree){
     if (read_TRT_File(modelPath,modelStream, engine)) std::cout << "tensorRT engine created successfully." << std::endl;
     else std::cout << "tensorRT engine created failed." << std::endl;
     context = engine->createExecutionContext();
@@ -137,12 +136,13 @@ int OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std:
     output_tensor = torch::softmax(output_tensor, 1).flatten();
     auto pred_tensor = output_tensor.argmax(0);
     int pred=pred_tensor.item<int>();
+    //int classnum=5;
     std::cout <<std::endl<< "predicted label:"<<pred_tensor<<std::endl;
     std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
-    degree = output;
-    emit finished(pred);
+    degree->set_value(output);
+    //emit finished(pred);
+    promisePredIdx->set_value(pred);
     qDebug() << "subThread Done! pred=" << pred;
-    return pred;
 }
 
 void OnnxInfer::testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix){

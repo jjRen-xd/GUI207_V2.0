@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <stdio.h>
+#include <QThread>
 #include "libtorchTest.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
 class OnnxInfer : public QObject
@@ -24,7 +25,7 @@ public:
     OnnxInfer(std::map<std::string, int> class2label);
 
 public slots:
-    int testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree);
+    void testOneSample(std::string targetPath, std::string modelPath, std::promise<int> *promisePredIdx, std::promise<std::vector<float>> *degree);
     void testAllSample(std::string hrrpdataset_path,std::string hrrpmodel_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
 signals:
     void finished(int pred);
