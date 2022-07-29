@@ -6,9 +6,10 @@
 #include <QBarSet>
 #include <QBarCategoryAxis>
 #include <thread>
-
+#include "./lib/guiLogic/tools/guithreadrun.h"
 #include<cuda_runtime.h>
 
+#include<Windows.h>  //for Sleep func
 using namespace std;
 
 ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo):
@@ -27,9 +28,13 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
         class2label[item.second] = item.first;
     }
 
+    predIdx_future=predIdx_promise.get_future();
+    degrees_future=degrees_promise.get_future();
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
+    onnxInfer = new OnnxInfer(class2label);
 
+    GuiThreadRun::inst();
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
     // 测试按钮
@@ -92,59 +97,6 @@ void ModelEvalPage::randSample(){
 }
 
 
-void ModelEvalPage::testOneSample(){
-    if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
-        std::cout<<choicedSamplePATH<<endl;
-        std::vector<float> degrees;
-        //classnum==(datasetInfo->selectedClassNames.size())
-        //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        onnxInfer = new OnnxInfer(class2label);
-
-        std::promise<int> promisePredIdx;
-        std::future<int> futurePredIdx = promisePredIdx.get_future();
-        std::promise<std::vector<float>> promiseDegrees;  //隶属度
-        std::future<std::vector<float>> futureDegrees=promiseDegrees.get_future();
-        std::thread doinferThread(std::bind(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &promisePredIdx, &promiseDegrees));
-        doinferThread.detach();
-
-
-//        connect(qthread1, &QThread::finished, qthread1, &QThread::deleteLater);
-//        connect(this, &ModelEvalPage::stating, onnxInfer, &OnnxInfer::testOneSample);//发送带参数的信号给子线程
-//        emit stating(choicedSamplePATH, choicedModelPATH, degrees);//发送信号
-//        qthread1->start();//启动子线程
-//        int predIdx;
-//        connect(onnxInfer, &OnnxInfer::finished, [&predIdx](int pred){
-//            predIdx=pred;
-//        });
-        int predIdx=futurePredIdx.get();
-        degrees=futureDegrees.get();
-        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
-        qDebug() << "predIdx" << predIdx;
-        qDebug() << "识别结果：" << predClass;
-        //for(int i=0;i<5;i++)
-        //qDebug() << futureDegrees.get().size();//future对象只能get一次
-        terminal->print("识别结果： " + predClass);
-        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
-
-        // 可视化结果
-        ui->label_predClass->setText(predClass);
-        ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
-        ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
-
-        // 绘制隶属度柱状图
-        disDegreeChart(predClass, degrees, label2class);
-
-        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
-    }
-    else{
-        QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！");
-    }
-}
-
-
-
 // 移除布局子控件
 void removeLayout(QLayout *layout){
     QLayoutItem *child;
@@ -167,16 +119,113 @@ void removeLayout(QLayout *layout){
     }
 }
 
+//void  testOneSample_ui(LPVOID param){
+void  ModelEvalPage::testOneSample_ui(){
+    //ModelEvalPage * pTaskMain = (ModelEvalPage *) param;
+    //通过pTaskMain指针引用
+//    qDebug() << "predIdx" << predIdx;
+//    qDebug() << "识别结果：" << predClass;q
+    qDebug() << "(ModelEvalPage::testOneSample_ui)子线程id：" << QThread::currentThreadId();
+    int predIdx=predIdx_future.get();
+    std::vector<float> degrees=degrees_future.get();
+    QString predClass = QString::fromStdString(label2class[predIdx]);
+    terminal->print("(ModelEvalPage::testOneSample_ui)识别结果(类序号)： " + predClass);
+    terminal->print(QString("(ModelEvalPage::testOneSample_ui)隶属度：%1").arg(degrees[predIdx]));
+
+    // 可视化结果
+    ui->label_predClass->setText(predClass);
+    ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+    QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
+    ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+
+    // 绘制隶属度柱状图
+    GuiThreadRun::excute(&ModelEvalPage::disDegreeChart, &*this, predClass, degrees, label2class);
+    //disDegreeChart(predClass, degrees, label2class);
+
+}
+
+void  testOneSample_ui2(ModelEvalPage *dv){
+    qDebug() << "(ModelEvalPage::testOneSample_ui2)子线程id：" << QThread::currentThreadId();
+    GuiThreadRun::excute(&ModelEvalPage::testOneSample_ui,&*dv);
+}
+
+void  ModelEvalPage::testOneSample(){
+/*
+    因为infer是在另一个类中实现的，所以infer后对UI的操作仍然放在这个EvalPage类中实现，不然还要传ui。
+    但是UI的操作还是不能在主线程中进行，因为那还得等infer出来才能操作UI。所以另开一个线程，把
+*/
+    if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
+        std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
+        std::vector<float> degrees; int predIdx;
+        qDebug() << "(ModelEvalPage::testOneSample)主线程id：" << QThread::currentThreadId();
+        //classnum==(datasetInfo->selectedClassNames.size())
+        //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+        //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+
+        //std::promise<int> promisePredIdx;
+        //std::cout << "(callfun)promisePred_addr : " << &promisePredIdx << std::endl;
+        //std::future<int> futurePredIdx = promisePredIdx.get_future();
+        //std::promise<std::vector<float>> promiseDegrees;  //隶属度
+        //std::future<std::vector<float>> futureDegrees=promiseDegrees.get_future();
+
+        onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
+//        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
+//        oneinferThread.detach();
+//        std::thread oneinferThread_ui2(testOneSample_ui2,this);
+//        oneinferThread_ui2.detach();
+
+        testOneSample_ui();
+//        std::thread oneinferThread_ui(&ModelEvalPage::testOneSample_ui,this);
+//        oneinferThread_ui.detach();
+
+//        connect(qthread1, &QThread::finished,qthread1, &QThread::deleteLater);
+//        connect(this, &ModelEvalPage::stating, onnxInfer, &OnnxInfer::testOneSample);//发送带参数的信号给子线程
+//        emit stating(choicedSamplePATH, choicedModelPATH, degrees);//发送信号
+//        qthread1->start();//启动子线程
+//        int predIdx;
+//        connect(onnxInfer, &OnnxInfer::finished, [&predIdx](int pred){
+//            predIdx=pred;
+//        });
+
+
+
+/////////////////把下面都当做对UI的操作
+//        predIdx=predIdx_future.get();
+//        degrees=degrees_future.get();
+//        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+//        terminal->print("识别结果： " + predClass);
+//        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
+
+//        // 可视化结果
+//        ui->label_predClass->setText(predClass);
+//        ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+//        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
+//        ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+
+//        // 绘制隶属度柱状图
+//        disDegreeChart(predClass, degrees, label2class);
+//        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
+
+    }
+    else{
+        QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！");
+    }
+}
+
+
+
+
 
 void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
     QChart *chart = new QChart;
 //    std::vector<int> list0 = { 101,505,200,301 };
-
+    qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
     std::map<QString, vector<float>> mapnum;
     mapnum.insert(pair<QString, vector<float>>(classGT, degrees));  //后续可拓展
-
+    //std::cout<<"(ModelEvalPage::disDegreeChart): H11111111111"<<std::endl;
     QBarSeries *series = new QBarSeries();
     map<QString, vector<float>>::iterator it = mapnum.begin();
+    //std::cout<<"(ModelEvalPage::disDegreeChart): H22222222222"<<std::endl;
     //将数据读入
     while (it != mapnum.end()){
         QString tit = it->first;
@@ -188,6 +237,7 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
         series->append(set);
         it++;
     }
+    //std::cout<<"(ModelEvalPage::disDegreeChart): H3333333333"<<std::endl;
     series->setVisible(true);
     series->setLabelsVisible(true);
     // 横坐标参数
@@ -199,7 +249,7 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     axisy->setTitleText("隶属度");
     chart->addSeries(series);
     chart->setTitle("识别目标对各类别隶属度分析图");
-
+    //std::cout<<"(ModelEvalPage::disDegreeChart): H444444444444"<<std::endl;
     chart->setAxisX(axis, series);
     chart->setAxisY(axisy, series);
     chart->legend()->setVisible(true);
@@ -208,12 +258,14 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     view->setRenderHint(QPainter::Antialiasing);
     removeLayout(ui->horizontalLayout_degreeChart);
     ui->horizontalLayout_degreeChart->addWidget(view);
+    QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
 
 
 
 // TODO 待优化
 void ModelEvalPage::testAllSample(){
+    /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
     if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
         float acc = 0.0;
         std::vector<std::vector<int>> confusion_matrix(5, std::vector<int>(5, 0));

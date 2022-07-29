@@ -1,6 +1,8 @@
 #include <torch/torch.h>
 #include "onnxinfer.h"
 #include <QDebug>
+
+#include <Windows.h> //for sleep
 using namespace nvinfer1;
 static Logger gLogger;
 
@@ -11,10 +13,12 @@ OnnxInfer::OnnxInfer(std::map<std::string, int> class2label):class2label(class2l
 bool read_TRT_File(const std::string& engineFile, IHostMemory*& trtModelStream, ICudaEngine*& engine)
 {
     std::fstream file;
-    std::cout << "loading filename from:" << engineFile << std::endl;
+    std::cout << "(OnnxInfer:read_TRT_File)loading filename from:" << engineFile << std::endl;
     nvinfer1::IRuntime* trtRuntime;
     //nvonnxparser::IPluginFactory* onnxPlugin = createPluginFactory(gLogger.getTRTLogger());
+    std::cout << "AAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
     file.open(engineFile, std::ios::binary | std::ios::in);
+    std::cout << "BBBBBBBBBBBBBBBBBBBBBBB" << std::endl;
     file.seekg(0, std::ios::end);
     int length = file.tellg();
     //std::cout << "length:" << length << std::endl;
@@ -22,14 +26,14 @@ bool read_TRT_File(const std::string& engineFile, IHostMemory*& trtModelStream, 
     std::unique_ptr<char[]> data(new char[length]);
     file.read(data.get(), length);
     file.close();
-    std::cout << "load engine done" << std::endl;
-    std::cout << "deserializing" << std::endl;
+    std::cout << "(OnnxInfer:read_TRT_File)load engine done" << std::endl;
+    std::cout << "(OnnxInfer:read_TRT_File)deserializing" << std::endl;
     trtRuntime = createInferRuntime(gLogger.getTRTLogger());
     //ICudaEngine* engine = trtRuntime->deserializeCudaEngine(data.get(), length, onnxPlugin);
     engine = trtRuntime->deserializeCudaEngine(data.get(), length, nullptr);
-    std::cout << "deserialize done" << std::endl;
+    std::cout << "(OnnxInfer:read_TRT_File)deserialize done" << std::endl;
     assert(engine != nullptr);
-    std::cout << "Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
+    std::cout << "(OnnxInfer:read_TRT_File)Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
     trtModelStream = engine->serialize();
     return true;
 }
@@ -91,7 +95,7 @@ private:
     std::map<std::string, int> class2label;
 };
 
-void doInference(IExecutionContext& context, float* input, float* output, int batchSize)
+void OnnxInfer::doInference(IExecutionContext&context, float* input, float* output, int batchSize)
 {
     void* buffers[2] = { NULL,NULL };
     cudaMalloc(&buffers[0], batchSize * 1 * 512 * sizeof(float));
@@ -115,37 +119,54 @@ void doInference(IExecutionContext& context, float* input, float* output, int ba
     cudaFree(buffers[0]);
     cudaFree(buffers[1]);
     std::cout << "Inference Done." << std::endl;
+
 }
 
-void OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std::promise<int> *promisePredIdx, std::promise<std::vector<float>> *degree){
-    if (read_TRT_File(modelPath,modelStream, engine)) std::cout << "tensorRT engine created successfully." << std::endl;
-    else std::cout << "tensorRT engine created failed." << std::endl;
+void OnnxInfer::testOneSample(std::string targetPath, std::string modelPath, std::promise<int> *predIdx_promise, std::promise<std::vector<float>> *degrees_promise){
+    //qDebug() << "(OnnxInfer::testOneSample)子线程id：" << QThread::currentThreadId();
+    if (read_TRT_File(modelPath,modelStream, engine)) std::cout << "(OnnxInfer::testOneSample)tensorRT engine created successfully." << std::endl;
+    else std::cout << "(OnnxInfer::testOneSample)tensorRT engine created failed." << std::endl;
     context = engine->createExecutionContext();
     assert(context != nullptr);
     float data[512] = { 0 };
     float prob[5] = { 0 };
     getFloatFromTXT(targetPath, data);
+
+//    std::thread doinferThread(&OnnxInfer::doInference,*this,*context, data, prob, 1);
+//    doinferThread.join();
     doInference(*context, data, prob, 1);
 
     torch::Tensor output_tensor = torch::ones({1,5});
-    std::cout << "output_tensor:  ";
+    std::cout << "(OnnxInfer::testOneSample)output_tensor:  ";
     for (unsigned int i = 0; i < 5; i++){
         std::cout << prob[i] << ", ";
         output_tensor[0][i]=prob[i];
     }
     output_tensor = torch::softmax(output_tensor, 1).flatten();
-    auto pred_tensor = output_tensor.argmax(0);
-    int pred=pred_tensor.item<int>();
+    int pred=output_tensor.argmax(0).item<int>();
     //int classnum=5;
-    std::cout <<std::endl<< "predicted label:"<<pred_tensor<<std::endl;
+    std::cout <<std::endl<< "(OnnxInfer::testOneSample)predicted label:"<<pred<<std::endl;
     std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
-    degree->set_value(output);
+
+    //std::cout << "(OnnxInfer::testOneSample)output[2]="<<output[0]<<std::endl;
+    //for(int i=0;i<output.size();i++) std::cout<<output[i]<<" ";
+    //std::cout << "(OnnxInfer::testOneSample)Here~"<<std::endl;
+    degrees_promise->set_value(output);
+
     //emit finished(pred);
-    promisePredIdx->set_value(pred);
-    qDebug() << "subThread Done! pred=" << pred;
+    predIdx_promise->set_value(pred);
+    //qDebug() << "subThread Done! pred=" << pred;
 }
 
-void OnnxInfer::testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+void OnnxInfer::testOneSample2(std::string targetPath, std::string modelPath, std::promise<int> *predIdx, std::promise<std::vector<float>> *degrees){
+    Sleep(2000);
+    std::cout << "(OnnxInfer::testOneSample2)Here~"<<std::endl;
+    predIdx->set_value(3);
+    std::vector<float> temp;
+    for(int i=0;i<5;i++) temp.push_back(6);
+    degrees->set_value(temp);
+}
+    void OnnxInfer::testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
     if (read_TRT_File(model_path,modelStream, engine)) std::cout << "tensorRT engine created successfully." << std::endl;
     else std::cout << "tensorRT engine created failed." << std::endl;
     context = engine->createExecutionContext();

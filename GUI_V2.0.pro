@@ -32,9 +32,11 @@ HEADERS += \
     lib/guiLogic/modelInfo.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
+    lib/guiLogic/tools/guithreadrun.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     lib/algorithm/onnxinfer.cpp \######
+    lib/guiLogic/tools/guithreadrun.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \

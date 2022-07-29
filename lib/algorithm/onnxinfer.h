@@ -25,7 +25,9 @@ public:
     OnnxInfer(std::map<std::string, int> class2label);
 
 public slots:
-    void testOneSample(std::string targetPath, std::string modelPath, std::promise<int> *promisePredIdx, std::promise<std::vector<float>> *degree);
+    void doInference(nvinfer1::IExecutionContext&context, float* input, float* output, int batchSize);
+    void testOneSample(std::string targetPath, std::string modelPath, std::promise<int> *predIdx, std::promise<std::vector<float>> *degrees);
+    void testOneSample2(std::string targetPath, std::string modelPath, std::promise<int>  *predIdx, std::promise<std::vector<float>> *degrees);
     void testAllSample(std::string hrrpdataset_path,std::string hrrpmodel_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
 signals:
     void finished(int pred);
