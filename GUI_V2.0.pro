@@ -28,6 +28,7 @@ HEADERS += \
     lib/algorithm/libtorchTest.h \
     lib/algorithm/logging.h \
     lib/algorithm/onnxinfer.h \#######
+    lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
@@ -38,6 +39,7 @@ HEADERS += \
 SOURCES += \
     core/modeltrainpage.cpp \
     lib/algorithm/onnxinfer.cpp \######
+    lib/algorithm/trtinfer.cpp \
     lib/guiLogic/tools/guithreadrun.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \

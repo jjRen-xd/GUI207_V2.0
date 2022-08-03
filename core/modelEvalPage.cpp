@@ -33,7 +33,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
     onnxInfer = new OnnxInfer(class2label);
-
+    trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);

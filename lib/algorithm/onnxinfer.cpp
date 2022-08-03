@@ -66,7 +66,6 @@ void getFloatFromTXT(std::string data_path,float* y) {
     features.clear();//删除容器
 }
 
-
 class dataSetClc: public torch::data::Dataset<dataSetClc>{
 public:
     int class_index = 0;
@@ -166,7 +165,8 @@ void OnnxInfer::testOneSample2(std::string targetPath, std::string modelPath, st
     for(int i=0;i<5;i++) temp.push_back(6);
     degrees->set_value(temp);
 }
-    void OnnxInfer::testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+
+void OnnxInfer::testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
     if (read_TRT_File(model_path,modelStream, engine)) std::cout << "tensorRT engine created successfully." << std::endl;
     else std::cout << "tensorRT engine created failed." << std::endl;
     context = engine->createExecutionContext();

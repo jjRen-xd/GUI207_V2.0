@@ -17,6 +17,7 @@
 
 #include "lib/algorithm/libtorchTest.h"
 #include "lib/algorithm/onnxinfer.h"
+#include "lib/algorithm/trtinfer.h"
 
 class ModelEvalPage:public QObject{
     Q_OBJECT
@@ -58,16 +59,19 @@ private:
     DatasetInfo *datasetInfo;
     ModelInfo *modelInfo;
 
-    std::string choicedDatasetPATH="E:/207Project/Data/HRRP";
-    std::string choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt";
-    std::string choicedSamplePATH="E:/207Project/Data/HRRP/DT/00.txt";
-
+//    std::string choicedDatasetPATH="E:/207Project/Data/HRRP";
+//    std::string choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt";
+//    std::string choicedSamplePATH="E:/207Project/Data/HRRP/DT/00.txt";
+    std::string choicedDatasetPATH;
+    std::string choicedModelPATH;
+    std::string choicedSamplePATH;
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
 
     //推理算法
     LibtorchTest *libtorchTest;
     OnnxInfer *onnxInfer;
+    TrtInfer *trtInfer;
     QThread *qthread1;
 };
 
