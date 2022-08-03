@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 	connect(ui->action_SceneSetting, &QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_ModelChoice, &QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_Evaluate, &QAction::triggered, this, &MainWindow::switchPage);
+    connect(ui->action_ModelTrain, &QAction::triggered, this, &MainWindow::switchPage);
 
     // 视图设置
 	connect(ui->actionFullScreen, &QAction::triggered, this, &MainWindow::fullScreen);
@@ -40,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);
     this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo);
     this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
+
 }
 
 

@@ -35,7 +35,7 @@ class DatasetInfo{
 
     private:
 
-        // 数据集核心数据Map
+        // 所有数据集核心数据Map
         std::map<std::string, std::map<std::string, std::map<std::string,std::string>>> infoMap;
         // map<datasetType, map<datasetName, map<datasetAttri, attriValue>>>
 };

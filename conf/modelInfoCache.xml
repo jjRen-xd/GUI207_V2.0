@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="4">
-    <FEA_OPTI typeID="1" />
-    <FEA_RELE typeID="2">
+<globalModelInfo datasetTypeNum="5">
+    < typeID="1" />
+    <FEA_OPTI typeID="2" />
+    <FEA_RELE typeID="3">
         <FEA_RELE_001.pt nameID="1">
             <PATH>未定义</PATH>
             <accuracy>99.99%</accuracy>
@@ -29,7 +30,7 @@
             <trainLR>0.001</trainLR>
         </FEA_RELE_002.pt>
     </FEA_RELE>
-    <INCRE typeID="3">
+    <INCRE typeID="4">
         <INCRE_001.pt nameID="3">
             <PATH>未定义</PATH>
             <accuracy>99.99%</accuracy>
@@ -57,7 +58,7 @@
             <trainLR>0.001</trainLR>
         </INCRE_002.pt>
     </INCRE>
-    <TRA_DL typeID="4">
+    <TRA_DL typeID="5">
         <HRN2_gpu_0.pt nameID="5">
             <PATH>未定义</PATH>
             <accuracy>99.99%</accuracy>

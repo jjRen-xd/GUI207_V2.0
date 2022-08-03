@@ -22,6 +22,21 @@ bool SearchFolder::getFiles(vector<string> &files, string filesType, string fold
     return true;
 }
 
+bool SearchFolder::getAllFiles(vector<string> &files, string folderPath){
+    intptr_t hFile = 0;
+    struct _finddata_t fileInfo;
+    int a=0;
+    if ((hFile = _findfirst((folderPath+"/*").c_str(), &fileInfo)) != -1){
+        do{
+            files.push_back(fileInfo.name);
+        } while(_findnext(hFile, &fileInfo) == 0);
+    }
+    else{
+        return false;
+    }
+    return true;
+}
+
 bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
     intptr_t hFile = 0;
     struct _finddata_t fileInfo;

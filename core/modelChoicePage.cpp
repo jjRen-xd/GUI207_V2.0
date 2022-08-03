@@ -40,7 +40,7 @@ ModelChoicePage::~ModelChoicePage(){
 }
 
 
-void ModelChoicePage::changeType(){
+void ModelChoicePage::changeType(){//选择模型类型
 //    this->BtnGroup_typeChoice->checkedId()<<endl;
     // 获取选择的类型内容
     QString selectedType = this->BtnGroup_typeChoice->checkedButton()->objectName().split("__")[1];

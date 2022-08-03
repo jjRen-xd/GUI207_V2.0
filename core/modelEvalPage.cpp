@@ -70,24 +70,51 @@ void ModelEvalPage::randSample(){
     // 已选类别的随机取样
     if(!selectedClass.empty()){
         string classPath = choicedDatasetPATH +"/" +selectedClass;
-        vector<string> sampleNames;
+        string datafileFormat =datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "dataFileFormat");
+        srand((unsigned)time(NULL));
+        Chart *previewChart;
+        if(datafileFormat=="txt"){
+            vector<string> sampleNames;
+            if(dirTools->getFiles(sampleNames,".txt",classPath)){
+                string choicedFile = sampleNames[(rand())%sampleNames.size()];
+                QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
+                this->choicedSamplePATH = txtFilePath.toStdString();
 
-        if(dirTools->getFiles(sampleNames,".txt",classPath)){
-            srand((unsigned)time(NULL));
+                // 可视化所选样本
+                ui->label_mE_choicedSample->setText(QString::fromStdString(choicedFile).split(".").first());
 
-            string choicedFile = sampleNames[(rand())%sampleNames.size()];
-            QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
-            this->choicedSamplePATH = txtFilePath.toStdString();
+                QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
+                ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
 
-            // 可视化所选样本
-            ui->label_mE_choicedSample->setText(QString::fromStdString(choicedFile).split(".").first());
-
-            QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
-            ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
-
-            Chart *previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-            previewChart->drawHRRPimage(ui->label_mE_chartGT);
+                previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
+                previewChart->drawHRRPimage(ui->label_mE_chartGT,0);
+            }
         }
+        else if(datafileFormat=="mat"){
+            vector<string> allMatFile;
+            if(dirTools->getFiles(allMatFile, ".mat", classPath)){
+                QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
+                QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
+                //下面这部分代码都是为了让randomIdx在合理的范围内（
+                MATFile* pMatFile = NULL;
+                mxArray* pMxArray = NULL;
+                pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
+                if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
+                std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+                pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+                if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
+                int M = mxGetM(pMxArray);  //M=36 样本数量
+                int randomIdx = (rand())%36;
+                if(randomIdx>M) randomIdx=M-1;
+                // 可视化所选样本
+                ui->label_mE_choicedSample->setText("Index:"+QString::number(randomIdx));
+                ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
+                //绘图
+                previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",matFilePath);
+                previewChart->drawHRRPimage(ui->label_mE_chartGT,randomIdx);
+            }
+        }
+
     }
     else{
         QMessageBox::warning(NULL, "数据取样", "数据取样失败，请指定数据集类型!");

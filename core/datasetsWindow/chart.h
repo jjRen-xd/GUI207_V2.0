@@ -8,6 +8,7 @@
 #include <QSplineSeries>
 #include <QHBoxLayout>
 #include <QValueAxis>
+#include <mat.h>
 
 class Chart : public QWidget{
     Q_OBJECT
@@ -22,7 +23,9 @@ class Chart : public QWidget{
         QValueAxis *axisY;
 
         QString chartname;
-        QString filename;
+        QString filefullpath;
+
+        int examIdx;
         //坐标轴参数
         QString xname;
         qreal xmin;
@@ -44,8 +47,9 @@ class Chart : public QWidget{
         void setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, \
                      QString _yname, qreal _ymin, qreal _ymax, int _ytickc);
         void readHRRPtxt();
+        void readHRRPmat(int emIndex);
         void buildChart(QList<QPointF> pointlist);
-        void drawHRRPimage(QLabel* chartLabel);
+        void drawHRRPimage(QLabel* chartLabel, int examIdx=0);
         void showChart(QLabel *imagelabel);
         void Show_Save();
 

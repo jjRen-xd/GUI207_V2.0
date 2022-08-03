@@ -61,7 +61,7 @@ void ModelDock::reloadTreeView(){
     modelTreeView->setModel(typeTreeModel);
     //链接节点点击事件
     connect(modelTreeView, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
-    terminal->print("i am here!");
+    //terminal->print("i am here!");
 }
 
 

@@ -8,6 +8,7 @@
 #include "./core/sensePage.h"
 #include "./core/modelChoicePage.h"
 #include "./core/modelEvalPage.h"
+#include "./core/modelTrainPage.h"
 
 //#include "./lib/guiLogic/modelEval.h"
 // 悬浮窗部件类
@@ -50,6 +51,7 @@ class MainWindow: public QMainWindow{
         SenseSetPage *senseSetPage;
         ModelChoicePage *modelChoicePage;
         ModelEvalPage *modelEvalPage;
+        ModelTrainPage *modelTrainPage;
 
         DatasetInfo *globalDatasetInfo;
         ModelInfo *globalModelInfo;

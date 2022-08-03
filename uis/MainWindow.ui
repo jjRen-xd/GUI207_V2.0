@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>753</width>
-             <height>999</height>
+             <width>731</width>
+             <height>1097</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1405,8 +1405,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>763</width>
-             <height>602</height>
+             <width>745</width>
+             <height>586</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2282,8 +2282,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>375</width>
-               <height>575</height>
+               <width>338</width>
+               <height>551</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3199,8 +3199,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>375</width>
-               <height>575</height>
+               <width>390</width>
+               <height>591</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -4111,7 +4111,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -4135,6 +4135,7 @@
     <addaction name="action_ModelChoice"/>
     <addaction name="separator"/>
     <addaction name="action_Evaluate"/>
+    <addaction name="action_ModelTrain"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_dataset">
@@ -4469,6 +4470,18 @@
   <action name="action_importModel_INCRE">
    <property name="text">
     <string>导入小样本增量学习模型</string>
+   </property>
+  </action>
+  <action name="action_ModelTrain">
+   <property name="icon">
+    <iconset>
+     <normaloff>../sources/icon/train.png</normaloff>../sources/icon/train.png</iconset>
+   </property>
+   <property name="text">
+    <string>模型训练</string>
+   </property>
+   <property name="toolTip">
+    <string>模型训练</string>
    </property>
   </action>
  </widget>

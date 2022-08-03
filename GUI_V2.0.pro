@@ -23,6 +23,7 @@ HEADERS += \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
     core/modelsWindow/modelDock.h \
+    core/modeltrainpage.h \
     core/sensePage.h \
     lib/algorithm/libtorchTest.h \
     lib/algorithm/logging.h \
@@ -35,6 +36,7 @@ HEADERS += \
     lib/guiLogic/tools/guithreadrun.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
+    core/modeltrainpage.cpp \
     lib/algorithm/onnxinfer.cpp \######
     lib/guiLogic/tools/guithreadrun.cpp \
     main.cpp \

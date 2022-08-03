@@ -169,7 +169,7 @@ int DatasetInfo::loadFromXML(string xmlPath){
 }
 
 
-int DatasetInfo::addItemFromXML(string xmlPath){
+int DatasetInfo::addItemFromXML(string xmlPath){    //根据对应的xml将数据集的信息写入datasetInfoCache
     TiXmlDocument datasetInfoDoc(xmlPath.c_str());   //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){

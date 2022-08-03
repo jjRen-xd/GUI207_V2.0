@@ -5,10 +5,10 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
-Chart::Chart(QWidget* parent, QString _chartname, QString _filename){
+Chart::Chart(QWidget* parent, QString _chartname, QString _filefullpath){
     setParent(parent);
     chartname = _chartname;
-    filename = _filename;
+    filefullpath = _filefullpath;
     series = new QSplineSeries(this);
     qchart = new QChart;
     chartview = new QChartView(qchart);
@@ -37,10 +37,19 @@ Chart::~Chart(){
 //    download_btn=NULL;
 }
 
+void Chart::drawHRRPimage(QLabel* chartLabel, int examIdx){
 
-void Chart::drawHRRPimage(QLabel* chartLabel){
-    readHRRPtxt();
-    setAxis("Range/cm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+    QString dataFileFormat=filefullpath.split(".").last();
+
+    if(dataFileFormat==QString::fromStdString("txt")){
+        readHRRPtxt();
+        setAxis("Range/cm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+    }else if (dataFileFormat==QString::fromStdString("mat")){
+        //qDebug()<<"(Chart::drawHRRPimage)"<<filefullpath;
+        readHRRPmat(examIdx);
+        setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+    }
+
     buildChart(points);
     showChart(chartLabel);
 }
@@ -51,11 +60,12 @@ void Chart::readHRRPtxt(){
     //=======================================================
     //             文件读操作，后续可更换
     //=======================================================
-    QFile file(filename);
+    QFile file(filefullpath);
+    //qDebug()<<"(Chart::readHRRPtxt) filefullpath："<<filefullpath;
     if(file.open(QIODevice::ReadOnly)){
         QByteArray line = file.readLine();
         QString str(line);
-        QStringList strList = str.split(" ");
+//        QStringList strList = str.split(" ");
 //        if(!(strList.filter("Range").length()&&strList.filter("HRRP").length()))
 //            return;
         file.readLine();
@@ -82,6 +92,42 @@ void Chart::readHRRPtxt(){
     }
 }
 
+void Chart::readHRRPmat(int emIdx){
+    points.clear();
+    float y_min = 200000,y_max = -200000;
+    MATFile* pMatFile = NULL;
+    mxArray* pMxArray = NULL;
+    // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
+    double* matdata;
+    pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
+    if(!pMatFile){
+        qDebug()<<"(Chart::readHRRPmat)文件指针空！！！！！！";
+        return;
+    }
+    std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+    if(!pMxArray){
+        qDebug()<<"(Chart::readHRRPmat)pMxArray变量没找到！！！！！！";
+        return;
+    }
+    matdata = (double*)mxGetData(pMxArray);
+    int M = mxGetM(pMxArray);  //M=36 样本数量
+    int N = mxGetN(pMxArray);  //N=128 单一样本维度
+    if(emIdx>M) emIdx=M-1; //说明是随机数
+    for(int i=0;i<N;i++){
+        float y=matdata[M*i+emIdx];
+        y_min = fmin(y_min,y);
+        y_max = fmax(y_max,y);
+        points.append(QPointF(2*i,y));
+    }
+    //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
+    xmin = 0; xmax = N*2+4;
+    ymin = y_min-3; ymax = y_max+3;
+    //qDebug()<<"(Chart::readHRRPmat)ymin:"<<ymin<<"      ymax:"<<ymax;
+//    mxFree(pMxArray);
+//    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
+
+}
 
 void Chart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, \
              QString _yname, qreal _ymin, qreal _ymax, int _ytickc){
@@ -163,10 +209,10 @@ void Chart::showChart(QLabel *imagelabel){
 
 
 void Chart::Show_infor(){
-    QStringList spilited_names = filename.split('/');
+    QStringList spilited_names = filefullpath.split('/');
     int id = spilited_names.length()-2;
     QString cls = spilited_names[id];
-    QString content = "文件路径:   "+filename+"\n"+"类别标签:   "+cls;
+    QString content = "文件路径:   "+filefullpath+"\n"+"类别标签:   "+cls;
     QMessageBox::about(NULL, "文件信息", content);
 }
 
