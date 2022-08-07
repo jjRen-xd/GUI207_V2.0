@@ -4,23 +4,10 @@
     <FEA_RELE typeID="2" />
     <INCRE typeID="3" />
     <TRA_DL typeID="4">
-        <HRN2_gpu_0.pt nameID="1">
-            <PATH>未定义</PATH>
-            <accuracy>99.99%</accuracy>
-            <algorithm>xml载入测试</algorithm>
-            <batch>未定义</batch>
-            <framework>0</framework>
-            <name>HRN2_gpu_0.pt</name>
-            <note>测试下备注</note>
-            <other>未定义</other>
-            <trainDataset>HRRP_0508</trainDataset>
-            <trainEpoch>100轮</trainEpoch>
-            <trainLR>0.001</trainLR>
-        </HRN2_gpu_0.pt>
-        <HRRPModel_cpu.pt nameID="2">
-            <PATH>D:/code/Github/HRRPModel_cpu.pt</PATH>
-        </HRRPModel_cpu.pt>
-        <onnxmodel.trt nameID="3">
+        <dense121_6class.trt nameID="1">
+            <PATH>E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt</PATH>
+        </dense121_6class.trt>
+        <onnxmodel.trt nameID="2">
             <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>
         </onnxmodel.trt>
     </TRA_DL>

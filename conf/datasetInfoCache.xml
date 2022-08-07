@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="4">
     <HRRP typeID="1">
-        <HRRP nameID="1">
-            <PATH>E:/207Project/Data/HRRP</PATH>
-            <dataFileFormat>txt</dataFileFormat>
-        </HRRP>
-        <SNR_6 nameID="2">
-            <PATH>E:/207Project/GUI207_V2.0/db/datasets/SNR_6</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
-            <dataFileFormat>txt</dataFileFormat>
-            <datasetName>未定义</datasetName>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>未定义</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>512</samplingNum>
-            <targetNumEachCla>未定义001</targetNumEachCla>
-        </SNR_6>
-        <falseHRRPmat_1x128 nameID="3">
+        <falseHRRPmat_1x128 nameID="1">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </falseHRRPmat_1x128>

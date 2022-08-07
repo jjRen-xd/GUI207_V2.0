@@ -15,7 +15,7 @@
 #include <vector>
 #include <stdio.h>
 #include <QThread>
-#include "libtorchTest.h"
+//#include "libtorchTest.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
 #include <mat.h>
 
@@ -23,9 +23,12 @@ class TrtInfer
 {
 public:
     TrtInfer(std::map<std::string, int> class2label);
+    void setBatchSize(int batchSize);//留出来的接口
 public slots:
 
-    void testOneSample(std::string targetPath, int emIndex, std::string modelPath, int &predIdx,std::vector<float> &degrees);
+    void testOneSample(std::string targetPath, int emIndex, std::string modelPath, int *predIdx,std::vector<float> &degrees);
+    void testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+
 private:
     nvinfer1::IBuilder* builder{ nullptr };
     nvinfer1::INetworkDefinition* network{ nullptr };
@@ -34,13 +37,13 @@ private:
     nvinfer1::ICudaEngine* engine{ nullptr };
     nvinfer1::IExecutionContext* context{ nullptr };
     bool isDynamic{true};//模型是否是动态batch
-    int batchSize{1};
+    int INFERENCE_BATCH{-1};
     std::vector<int> inputdims; std::vector<int> outputdims;
-    int input_len{1}; int output_len{1};//不包含batchsize
+    int inputLen{1}; int outputLen{1};//不包含batchsize
     // 不同平台下文件夹搜索工具
     std::map<std::string, int> class2label;
 
-    void doInference(nvinfer1::IExecutionContext&context,  float* input, float* output);
+    void doInference(nvinfer1::IExecutionContext&context,  float* input, float* output, int batchsize);
 
 };
 

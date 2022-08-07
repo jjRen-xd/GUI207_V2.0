@@ -32,25 +32,27 @@ public:
     void testOneSample_ui();
     friend void testOneSample_ui2(ModelEvalPage dv);
     //推理需要的全局变量
-    std::promise<int> predIdx_promise;
-    std::promise<std::vector<float>> degrees_promise;
-    std::future<int> predIdx_future;
-    std::future<std::vector<float>> degrees_future;
+//    std::promise<int> predIdx_promise;
+//    std::promise<std::vector<float>> degrees_promise;
+//    std::future<int> predIdx_future;
+//    std::future<std::vector<float>> degrees_future;
+    int emIndex{0};
 
     Ui_MainWindow *ui;
     BashTerminal *terminal;
-
+//    std::string choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
+//    std::string choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
+//    std::string choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
 
 public slots:
     void refreshGlobalInfo();
 
     // 针对全部样本
-
+    void testAllSample();
     // 针对单样本
     void randSample();
     void testOneSample();
 
-    void testAllSample();
 signals:
     void stating(std::string choicedsamplePATH,std::string choicedmodelPATH,std::vector<float> &degrees);
 private:
@@ -59,9 +61,7 @@ private:
     DatasetInfo *datasetInfo;
     ModelInfo *modelInfo;
 
-//    std::string choicedDatasetPATH="E:/207Project/Data/HRRP";
-//    std::string choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt";
-//    std::string choicedSamplePATH="E:/207Project/Data/HRRP/DT/00.txt";
+
     std::string choicedDatasetPATH;
     std::string choicedModelPATH;
     std::string choicedSamplePATH;

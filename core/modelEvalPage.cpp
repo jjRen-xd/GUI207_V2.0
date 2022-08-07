@@ -19,17 +19,17 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     modelInfo(globalModelInfo)
 {
     // 网络输出标签对应类别名称初始化
-    label2class[0] = "XQ";
-    label2class[1] = "DQ";
-    label2class[2] = "Z";
-    label2class[3] = "QDZ";
-    label2class[4] = "DT";
+    label2class[0] ="bigball"; //"XQ";'bigball','DT','Moxiu','sallball','taper', 'WD'
+    label2class[1] ="DT"; //"DQ";
+    label2class[2] ="Moxiu"; //"Z";
+    label2class[3] ="sallball"; //"QDZ";
+    label2class[4] ="taper"; //"DT";
+    label2class[5] ="WD"; //"FG";
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
-
-    predIdx_future=predIdx_promise.get_future();
-    degrees_future=degrees_promise.get_future();
+//    predIdx_future=predIdx_promise.get_future();
+//    degrees_future=degrees_promise.get_future();
     // 先用libtorch
     libtorchTest = new LibtorchTest(class2label);
     onnxInfer = new OnnxInfer(class2label);
@@ -40,6 +40,9 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     // 测试按钮
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
+    choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
+    choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
+    choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
 }
 
 ModelEvalPage::~ModelEvalPage(){
@@ -94,6 +97,8 @@ void ModelEvalPage::randSample(){
             vector<string> allMatFile;
             if(dirTools->getFiles(allMatFile, ".mat", classPath)){
                 QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
+                this->choicedSamplePATH = matFilePath.toStdString();
+
                 QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
                 //下面这部分代码都是为了让randomIdx在合理的范围内（
                 MATFile* pMatFile = NULL;
@@ -106,6 +111,8 @@ void ModelEvalPage::randSample(){
                 int M = mxGetM(pMxArray);  //M=36 样本数量
                 int randomIdx = (rand())%36;
                 if(randomIdx>M) randomIdx=M-1;
+
+                this->emIndex=randomIdx;
                 // 可视化所选样本
                 ui->label_mE_choicedSample->setText("Index:"+QString::number(randomIdx));
                 ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
@@ -146,35 +153,6 @@ void removeLayout(QLayout *layout){
     }
 }
 
-//void  testOneSample_ui(LPVOID param){
-void  ModelEvalPage::testOneSample_ui(){
-    //ModelEvalPage * pTaskMain = (ModelEvalPage *) param;
-    //通过pTaskMain指针引用
-//    qDebug() << "predIdx" << predIdx;
-//    qDebug() << "识别结果：" << predClass;q
-    qDebug() << "(ModelEvalPage::testOneSample_ui)子线程id：" << QThread::currentThreadId();
-    int predIdx=predIdx_future.get();
-    std::vector<float> degrees=degrees_future.get();
-    QString predClass = QString::fromStdString(label2class[predIdx]);
-    terminal->print("(ModelEvalPage::testOneSample_ui)识别结果(类序号)： " + predClass);
-    terminal->print(QString("(ModelEvalPage::testOneSample_ui)隶属度：%1").arg(degrees[predIdx]));
-
-    // 可视化结果
-    ui->label_predClass->setText(predClass);
-    ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-    QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
-    ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
-
-    // 绘制隶属度柱状图
-    GuiThreadRun::excute(&ModelEvalPage::disDegreeChart, &*this, predClass, degrees, label2class);
-    //disDegreeChart(predClass, degrees, label2class);
-
-}
-
-void  testOneSample_ui2(ModelEvalPage *dv){
-    qDebug() << "(ModelEvalPage::testOneSample_ui2)子线程id：" << QThread::currentThreadId();
-    GuiThreadRun::excute(&ModelEvalPage::testOneSample_ui,&*dv);
-}
 
 void  ModelEvalPage::testOneSample(){
 /*
@@ -184,54 +162,34 @@ void  ModelEvalPage::testOneSample(){
     if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
-        qDebug() << "(ModelEvalPage::testOneSample)主线程id：" << QThread::currentThreadId();
         //classnum==(datasetInfo->selectedClassNames.size())
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
+        trtInfer->testOneSample(choicedSamplePATH, this->emIndex,choicedModelPATH,&predIdx, degrees);
 
-        //std::promise<int> promisePredIdx;
-        //std::cout << "(callfun)promisePred_addr : " << &promisePredIdx << std::endl;
-        //std::future<int> futurePredIdx = promisePredIdx.get_future();
-        //std::promise<std::vector<float>> promiseDegrees;  //隶属度
-        //std::future<std::vector<float>> futureDegrees=promiseDegrees.get_future();
-
-        onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
+        //onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        oneinferThread.detach();
 //        std::thread oneinferThread_ui2(testOneSample_ui2,this);
 //        oneinferThread_ui2.detach();
 
-        testOneSample_ui();
-//        std::thread oneinferThread_ui(&ModelEvalPage::testOneSample_ui,this);
-//        oneinferThread_ui.detach();
-
-//        connect(qthread1, &QThread::finished,qthread1, &QThread::deleteLater);
-//        connect(this, &ModelEvalPage::stating, onnxInfer, &OnnxInfer::testOneSample);//发送带参数的信号给子线程
-//        emit stating(choicedSamplePATH, choicedModelPATH, degrees);//发送信号
-//        qthread1->start();//启动子线程
-//        int predIdx;
-//        connect(onnxInfer, &OnnxInfer::finished, [&predIdx](int pred){
-//            predIdx=pred;
-//        });
-
-
-
 /////////////////把下面都当做对UI的操作
-//        predIdx=predIdx_future.get();
-//        degrees=degrees_future.get();
-//        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
-//        terminal->print("识别结果： " + predClass);
-//        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
+        std::cout<<"(ModelEvalPage::testOneSample)degrees:";
+        for(int i=0;i<degrees.size();i++){
+            std::cout<<degrees[i]<<" ";
+        }
+        QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+        terminal->print("识别结果： " + predClass);
+        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
 
-//        // 可视化结果
-//        ui->label_predClass->setText(predClass);
-//        ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-//        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
-//        ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+        // 可视化结果
+        ui->label_predClass->setText(predClass);
+        ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+        QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
+        ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
 
-//        // 绘制隶属度柱状图
-//        disDegreeChart(predClass, degrees, label2class);
-//        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
+        // 绘制隶属度柱状图
+        disDegreeChart(predClass, degrees, label2class);
 
     }
     else{
@@ -240,16 +198,35 @@ void  ModelEvalPage::testOneSample(){
 }
 
 
-
-
+// TODO 待优化
+void ModelEvalPage::testAllSample(){
+    /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
+    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
+        qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
+        float acc = 0.6;
+        std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
+        //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
+        //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
+        trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, acc, confusion_matrix);
+        QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
+        ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
+//        for(int i=0;i<5;i++){
+//            for(int j=0;j<5;j++){
+//                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
+//                valuelabel->setText(QString::number(confusion_matrix[i][j]));
+//            }
+//        }
+    }
+    else{
+        QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");
+    }
+}
 
 void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
     QChart *chart = new QChart;
-//    std::vector<int> list0 = { 101,505,200,301 };
-    qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
+    //qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
     std::map<QString, vector<float>> mapnum;
     mapnum.insert(pair<QString, vector<float>>(classGT, degrees));  //后续可拓展
-    //std::cout<<"(ModelEvalPage::disDegreeChart): H11111111111"<<std::endl;
     QBarSeries *series = new QBarSeries();
     map<QString, vector<float>>::iterator it = mapnum.begin();
     //std::cout<<"(ModelEvalPage::disDegreeChart): H22222222222"<<std::endl;
@@ -264,7 +241,6 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
         series->append(set);
         it++;
     }
-    //std::cout<<"(ModelEvalPage::disDegreeChart): H3333333333"<<std::endl;
     series->setVisible(true);
     series->setLabelsVisible(true);
     // 横坐标参数
@@ -287,29 +263,3 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     ui->horizontalLayout_degreeChart->addWidget(view);
     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
-
-
-
-// TODO 待优化
-void ModelEvalPage::testAllSample(){
-    /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
-    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
-        float acc = 0.0;
-        std::vector<std::vector<int>> confusion_matrix(5, std::vector<int>(5, 0));
-        //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
-
-        ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
-        for(int i=0;i<5;i++){
-            for(int j=0;j<5;j++){
-                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
-                valuelabel->setText(QString::number(confusion_matrix[i][j]));
-            }
-        }
-    }
-    else{
-        QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");
-    }
-}
-
