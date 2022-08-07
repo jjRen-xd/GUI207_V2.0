@@ -210,12 +210,12 @@ void ModelEvalPage::testAllSample(){
         trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, acc, confusion_matrix);
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
-//        for(int i=0;i<5;i++){
-//            for(int j=0;j<5;j++){
-//                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
-//                valuelabel->setText(QString::number(confusion_matrix[i][j]));
-//            }
-//        }
+        for(int i=0;i<6;i++){
+            for(int j=0;j<6;j++){
+                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
+                valuelabel->setText(QString::number(confusion_matrix[i][j]));
+            }
+        }
     }
     else{
         QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");

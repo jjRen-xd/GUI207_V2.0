@@ -293,10 +293,10 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
         doInference(*context, indata, outdata, thisBatch);
 
 //        std::cout<<"(TrtInfer::testAllSample) after inference outdata:"<<std::endl;
-//        for (unsigned int i = 0; i < outputLen*INFERENCE_BATCH; i++){
-//            std::cout << outdata[i] << ", ";
-//            output_tensor[i/outputLen][i%outputLen]=outdata[i];
-//        }std::cout<<std::endl;
+        for (unsigned int i = 0; i < outputLen*thisBatch; i++){
+            //std::cout << outdata[i] << ", ";
+            output_tensor[i/outputLen][i%outputLen]=outdata[i];
+        }//std::cout<<std::endl;
 
         auto pred = output_tensor.argmax(1);
         correct += pred.eq(labels_tensor).sum().template item<int64_t>();
