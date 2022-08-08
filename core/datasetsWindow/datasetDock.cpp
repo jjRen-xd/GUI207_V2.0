@@ -92,7 +92,6 @@ void DatasetDock::deleteDataset(){
     return;
 }
 
-
 void DatasetDock::reloadTreeView(){
     for(auto &currTreeView: datasetTreeViewGroup){
         // 不可编辑节点
@@ -112,7 +111,6 @@ void DatasetDock::reloadTreeView(){
         connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
     }
 }
-
 
 void DatasetDock::treeItemClicked(const QModelIndex &index){
     // 获取点击预览数据集的类型和名称

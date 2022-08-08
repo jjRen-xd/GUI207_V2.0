@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalDatasetInfo datasetTypeNum="4">
-    <HRRP typeID="1">
-        <falseHRRPmat_1x128 nameID="1">
+<globalDatasetInfo datasetTypeNum="5">
+    < typeID="1">
+        < nameID="1">
+            <PATH></PATH>
+        </>
+    </>
+    <HRRP typeID="2">
+        <falseHRRPmat_1x128 nameID="2">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </falseHRRPmat_1x128>
     </HRRP>
-    <IMAGE typeID="2" />
-    <RADIO typeID="3" />
-    <RCS typeID="4" />
+    <IMAGE typeID="3" />
+    <RADIO typeID="4" />
+    <RCS typeID="5" />
 </globalDatasetInfo>
