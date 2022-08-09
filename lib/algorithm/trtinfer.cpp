@@ -27,12 +27,12 @@ void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std:
         return;
     }
     matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M=36 样本数量
-    int N = mxGetN(pMxArray);  //N=128 单一样本维度
-    for(int i=0;i<M;i++){
+    int M = mxGetM(pMxArray);  //行数
+    int N = mxGetN(pMxArray);  //列数
+    for(int i=0;i<N;i++){
         torch::Tensor temp=torch::rand({inputLen});
         for(int j=0;j<inputLen;j++){
-            temp[j]=matdata[M*(j%N)+i];//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
+            temp[j]=matdata[i*M+j%M];//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
         }
         //std::cout<<&temp<<std::endl;
         data.push_back(temp);
@@ -106,11 +106,11 @@ void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int input_le
         return;
     }
     matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M=36 样本数量
-    int N = mxGetN(pMxArray);  //N=128 单一样本维度
-    if(emIdx>M) emIdx=M-1; //说明是随机数
+    int M = mxGetM(pMxArray);  //M=128 行数
+    int N = mxGetN(pMxArray);  //N=1000 列数
+    if(emIdx>N) emIdx=N-1; //说明是随机数
     for(int i=0;i<input_len;i++){
-        data[i]=matdata[M*(i%N)+emIdx];//一个
+        data[i]=matdata[emIdx*M+i%M];//matlab按列存储
     }
 //    mxFree(pMxArray);
 //    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
@@ -246,6 +246,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
+    INFERENCE_BATCH=100;
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){

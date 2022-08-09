@@ -111,17 +111,17 @@ void Chart::readHRRPmat(int emIdx){
         return;
     }
     matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M=36 样本数量
-    int N = mxGetN(pMxArray);  //N=128 单一样本维度
-    if(emIdx>M) emIdx=M-1; //说明是随机数
-    for(int i=0;i<N;i++){
-        float y=matdata[M*i+emIdx];
+    int M = mxGetM(pMxArray);  //M=128 行数
+    int N = mxGetN(pMxArray);  //N=1000 列数
+    if(emIdx>N) emIdx=N-1; //说明是随机数
+    for(int i=0;i<M;i++){
+        float y=matdata[M*emIdx+i];
         y_min = fmin(y_min,y);
         y_max = fmax(y_max,y);
         points.append(QPointF(2*i,y));
     }
     //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
-    xmin = 0; xmax = N*2+4;
+    xmin = 0; xmax = M*2+4;
     ymin = y_min-3; ymax = y_max+3;
     //qDebug()<<"(Chart::readHRRPmat)ymin:"<<ymin<<"      ymax:"<<ymax;
 //    mxFree(pMxArray);
