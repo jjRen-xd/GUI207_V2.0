@@ -146,7 +146,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
             string choicedClass = subDirNames[(rand()+i)%subDirNames.size()];
             string classPath = rootPath +"/"+ choicedClass;
             // 随机选取数据
-            if(dataFileFormat==QString::fromStdString("txt")){
+            if(dataFileFormat==QString::fromStdString("txt")){//可以被淘汰的
                 vector<string> allTxtFile;
                 if(dirTools->getFiles(allTxtFile, ".txt", classPath)){
                     string choicedFile = allTxtFile[(rand())%allTxtFile.size()];
@@ -154,20 +154,25 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                     choicedFile = QString::fromStdString(choicedFile).split(".").first().toStdString();
                     // 绘图
                     Chart *previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-                    previewChart->drawHRRPimage(chartGroup[i],0);
+                    previewChart->drawImage(chartGroup[i],"HRRP",0);
                     chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+choicedFile));
                 }
             }
             else if(dataFileFormat==QString::fromStdString("mat")){
                 vector<string> allMatFile;
                 if(dirTools->getFiles(allMatFile, ".mat", classPath)){
-                    int randomIdx = (rand())%100;
+                    int randomIdx = (rand())%5000;
                     std::cout<<"(DatasetDock::treeItemClicked)randomIdx:"<<randomIdx;
                     //绘图
                     QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
-                    Chart *previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",matFilePath);
-                    previewChart->drawHRRPimage(chartGroup[i],randomIdx);
+                    QString chartTitle="Temporary Title";
+                    if(clickedType=="HRRP") chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";
+                    else if (clickedType=="RADIO") chartTitle="RADIO Temporary Title";
+                    Chart *previewChart = new Chart(chartGroup[i],chartTitle,matFilePath);
+                    previewChart->drawImage(chartGroup[i],clickedType,randomIdx);
                     chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));
+
+
                 }
             }
             else{

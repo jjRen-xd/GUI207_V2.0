@@ -24,7 +24,6 @@ class Chart : public QWidget{
 
         QString chartname;
         QString filefullpath;
-
         int examIdx;
         //坐标轴参数
         QString xname;
@@ -48,9 +47,10 @@ class Chart : public QWidget{
                      QString _yname, qreal _ymin, qreal _ymax, int _ytickc);
         void readHRRPtxt();
         void readHRRPmat(int emIndex);
+        void readRadiomat(int emIndex);
         void buildChart(QList<QPointF> pointlist);
-        void drawHRRPimage(QLabel* chartLabel, int examIdx=0);
-        void showChart(QLabel *imagelabel);
+        void drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx=0);
+        void showChart(QLabel* imagelabel);
         void Show_Save();
 
     private slots:

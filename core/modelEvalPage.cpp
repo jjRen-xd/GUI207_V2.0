@@ -76,7 +76,7 @@ void ModelEvalPage::randSample(){
         string datafileFormat =datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "dataFileFormat");
         srand((unsigned)time(NULL));
         Chart *previewChart;
-        if(datafileFormat=="txt"){
+        if(datafileFormat=="txt"){//可以被淘汰的
             vector<string> sampleNames;
             if(dirTools->getFiles(sampleNames,".txt",classPath)){
                 string choicedFile = sampleNames[(rand())%sampleNames.size()];
@@ -90,7 +90,7 @@ void ModelEvalPage::randSample(){
                 ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
 
                 previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-                previewChart->drawHRRPimage(ui->label_mE_chartGT,0);
+                previewChart->drawImage(ui->label_mE_chartGT,"HRRP",0);
             }
         }
         else if(datafileFormat=="mat"){
@@ -106,19 +106,23 @@ void ModelEvalPage::randSample(){
                 pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
                 if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
                 std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+
+                QString chartTitle="Temporary Title";
+                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]"; matVariable="hrrp128";}
+                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title"; matVariable="radio101";}
+
                 pMxArray = matGetVariable(pMatFile,matVariable.c_str());
                 if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
-                int M = mxGetM(pMxArray);  //M=36 样本数量
-                int randomIdx = (rand())%36;
-                if(randomIdx>M) randomIdx=M-1;
+                int N = mxGetN(pMxArray);  //N 列数
+                int randomIdx = N-(rand())%N;
 
                 this->emIndex=randomIdx;
                 // 可视化所选样本
                 ui->label_mE_choicedSample->setText("Index:"+QString::number(randomIdx));
                 ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
                 //绘图
-                previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",matFilePath);
-                previewChart->drawHRRPimage(ui->label_mE_chartGT,randomIdx);
+                previewChart = new Chart(ui->label_mE_chartGT,chartTitle,matFilePath);
+                previewChart->drawImage(ui->label_mE_chartGT,datasetInfo->selectedType,randomIdx);
             }
         }
 

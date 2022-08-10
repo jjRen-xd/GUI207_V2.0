@@ -37,16 +37,19 @@ Chart::~Chart(){
 //    download_btn=NULL;
 }
 
-void Chart::drawHRRPimage(QLabel* chartLabel, int examIdx){
+void Chart::drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx){
 
     QString dataFileFormat=filefullpath.split(".").last();
 
-    if(dataFileFormat==QString::fromStdString("txt")){
+    if(dataFileFormat==QString::fromStdString("txt")&&dataSetType=="HRRP"){
         readHRRPtxt();
         setAxis("Range/cm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
-    }else if (dataFileFormat==QString::fromStdString("mat")){
+    }else if (dataFileFormat==QString::fromStdString("mat")&&dataSetType=="HRRP"){
         //qDebug()<<"(Chart::drawHRRPimage)"<<filefullpath;
         readHRRPmat(examIdx);
+        setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+    }else if(dataFileFormat==QString::fromStdString("mat")&&dataSetType=="RADIO"){
+        readRadiomat(examIdx);
         setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
     }
 
@@ -54,6 +57,41 @@ void Chart::drawHRRPimage(QLabel* chartLabel, int examIdx){
     showChart(chartLabel);
 }
 
+void Chart::readRadiomat(int emIdx){
+    points.clear();
+    float y_min = 200000,y_max = -200000;
+    MATFile* pMatFile = NULL;
+    mxArray* pMxArray = NULL;
+
+    pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
+    if(!pMatFile){
+        qDebug()<<"(Chart::readHRRPmat)文件指针空！！！！！！";
+        return;
+    }
+    std::string matVariable="radio101";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+    if(!pMxArray){
+        qDebug()<<"(Chart::readHRRPmat)pMxArray变量没找到！！！！！！";
+        return;
+    }
+
+    mxComplexDouble* pc= mxGetComplexDoubles(pMxArray);
+    int M = mxGetM(pMxArray);  //M=128 行数
+    int N = mxGetN(pMxArray);  //N=1000 列数
+    if(emIdx>N) emIdx=N-rand()%N; //说明是随机数
+
+    for(int i=0;i<M;i++){
+        double real=pc[M*emIdx+i].real;
+        double imag=pc[M*emIdx+i].imag;
+        float y=pow((pow(real,2)+pow(imag,2)),0.5);
+        y_min = fmin(y_min,y);
+        y_max = fmax(y_max,y);
+        points.append(QPointF(2*i,y));
+    }
+    //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
+    xmin = 0; xmax = M*2+4;
+    ymin = y_min-3; ymax = y_max+3;
+}
 
 void Chart::readHRRPtxt(){
     float x_min = 200,x_max = -200,y_min = 200,y_max = -200;
@@ -97,7 +135,7 @@ void Chart::readHRRPmat(int emIdx){
     float y_min = 200000,y_max = -200000;
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
-    // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
+
     double* matdata;
     pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
     if(!pMatFile){

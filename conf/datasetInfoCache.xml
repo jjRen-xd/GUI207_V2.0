@@ -7,6 +7,11 @@
         </falseHRRPmat_1x128>
     </HRRP>
     <IMAGE typeID="2" />
-    <RADIO typeID="3" />
+    <RADIO typeID="3">
+        <radiomat_1x101 nameID="2">
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
+            <dataFileFormat>mat</dataFileFormat>
+        </radiomat_1x101>
+    </RADIO>
     <RCS typeID="4" />
 </globalDatasetInfo>

@@ -178,30 +178,32 @@ void SenseSetPage::nextBatchChart(){
                 pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
                 if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
                 std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+
+                QString chartTitle="Temporary Title";
+                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]"; matVariable="hrrp128";}
+                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title"; matVariable="radio101";}
+
                 pMxArray = matGetVariable(pMatFile,matVariable.c_str());
                 if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
-                int M = mxGetM(pMxArray);  //M=36 样本数量
-                int randomIdx = (rand())%36;
-                if(randomIdx>M) randomIdx=M-1;
+                int N = mxGetN(pMxArray);  //N 列数
+                int randomIdx = N-(rand())%N;
+
                 //绘图
-                previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",matFilePath);
-                previewChart->drawHRRPimage(chartGroup[i],randomIdx);
+                previewChart = new Chart(ui->label_mE_chartGT,chartTitle,matFilePath);
+                previewChart->drawImage(chartGroup[i],datasetInfo->selectedType,randomIdx);
                 chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":Index")+QString::number(randomIdx));
             }
-
-
         }
-        else if(datafileFormat=="txt"){
+        else if(datafileFormat=="txt"){//可以被淘汰
             vector<string> allTxtFile;
             if(dirTools->getFiles(allTxtFile,".txt",classPath)){
                 // 随机选取数据
                 string choicedFile = allTxtFile[(rand())%allTxtFile.size()];
                 QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
                 choicedFile = QString::fromStdString(choicedFile).split(".").first().toStdString();
-
                 // 绘图显示
                 previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-                previewChart->drawHRRPimage(chartGroup[i],0);
+                previewChart->drawImage(chartGroup[i],"HRRP",0);
                 chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+choicedFile));
             }
         }
