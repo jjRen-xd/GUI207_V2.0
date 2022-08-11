@@ -92,6 +92,56 @@ void DatasetDock::deleteDataset(){
     return;
 }
 
+void DatasetDock::onActionTrans(){
+    QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->currentIndex();
+    QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["RADIO"]->model())->itemFromIndex(curIndex);
+    string clickedName = currItem->data(0).toString().toStdString();
+    if(curIndex.isValid()){
+        qDebug()<<"onActionView_here  "<<QString::fromStdString(clickedName);
+    }
+    string sourceDataSetPath = datasetInfo->getAttri("RADIO", clickedName, "PATH");
+    //创建平行的datasetpath文件夹
+    string destDataSetPath=sourceDataSetPath+"(HRRP)";
+    if(0 == opendir(destDataSetPath.c_str())){//destPath目录不存在就建立一个
+        if (CreateDirectoryA(destDataSetPath.c_str(), NULL))  printf("Create Dir Failed...\n");
+        else    printf("Creaat Dir %s Successed...\n", destDataSetPath.c_str());
+    }
+
+    SearchFolder *dirTools = new SearchFolder();
+    // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
+    std::vector<std::string> sourceSubDirs;
+    dirTools->getDirs(sourceSubDirs, sourceDataSetPath);
+    for(auto &subDir: sourceSubDirs){
+        ///创建平行的subDir文件夹
+        // 寻找每个子文件夹下的样本文件
+        std::vector<std::string> fileNames;
+        std::string subDirPath = destDataSetPath+"/"+subDir;
+        dirTools->getFiles(fileNames, ".mat", subDirPath);
+        std:: string sourcePath,destPath;
+        for(auto &fileName: fileNames){
+            sourcePath=subDirPath+"/"+fileName;
+            destPath=destDataSetPath+"/"+subDir;
+            //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
+            //getAllDataFromMat(subDirPath+"/"+fileName,data,labels,class2label[subDir],inputLen);
+        }
+    }
+}
+
+
+void DatasetDock::onTreeViewMenuRequested(const QPoint &pos){
+    QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->indexAt(pos);
+    if (curIndex.isValid()){ // 右键选中了有效index
+
+        QIcon transIcon = QApplication::style()->standardIcon(QStyle::SP_DesktopIcon);
+
+        // 创建菜单
+        QMenu menu;
+        menu.addAction(transIcon, tr("转换至HRRP"), this, &DatasetDock::onActionTrans);
+//        menu.addSeparator();
+//        menu.addAction(test, tr("测试"), this, &DatasetDock::onActionTest);
+        menu.exec(QCursor::pos());
+    }
+}
 void DatasetDock::reloadTreeView(){
     for(auto &currTreeView: datasetTreeViewGroup){
         // 不可编辑节点
@@ -108,6 +158,10 @@ void DatasetDock::reloadTreeView(){
         }
         currTreeView.second->setModel(treeModel);
         //链接节点点击事件
+        if(currTreeView.first=="RADIO"){
+            currTreeView.second->setContextMenuPolicy(Qt::CustomContextMenu);
+            connect(currTreeView.second, &QTreeView::customContextMenuRequested, this, &DatasetDock::onTreeViewMenuRequested);
+        }
         connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
     }
 }

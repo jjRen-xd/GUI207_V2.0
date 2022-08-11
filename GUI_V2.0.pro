@@ -25,9 +25,9 @@ HEADERS += \
     core/modelsWindow/modelDock.h \
     core/modeltrainpage.h \
     core/sensePage.h \
-    lib/algorithm/libtorchTest.h \
+    #lib/algorithm/libtorchTest.h \
     lib/algorithm/logging.h \
-    lib/algorithm/onnxinfer.h \#######
+    #lib/algorithm/onnxinfer.h \#######
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
@@ -38,7 +38,7 @@ HEADERS += \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
     core/modeltrainpage.cpp \
-    lib/algorithm/onnxinfer.cpp \######
+    #lib/algorithm/onnxinfer.cpp \######
     lib/algorithm/trtinfer.cpp \
     lib/guiLogic/tools/guithreadrun.cpp \
     main.cpp \
@@ -50,7 +50,7 @@ SOURCES += \
     core/modelEvalPage.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
-    lib/algorithm/libtorchTest.cpp \
+    #lib/algorithm/libtorchTest.cpp \
     lib/guiLogic/bashTerminal.cpp \
     lib/guiLogic/datasetInfo.cpp \
     lib/guiLogic/modelInfo.cpp \

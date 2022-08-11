@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include<dirent.h>//for opendir&mkdir
 
 class SearchFolder{
     public:

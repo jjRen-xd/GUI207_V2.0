@@ -2,6 +2,7 @@
 #define DATASETDOCK_H
 
 #include <QObject>
+#include <windows.h>//for CreateDirectory
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"
@@ -30,6 +31,9 @@ public slots:
 
 private slots:
     void treeItemClicked(const QModelIndex &index);
+    void onTreeViewMenuRequested(const QPoint &pos);
+    void onActionTrans();
+
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;

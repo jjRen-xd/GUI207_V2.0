@@ -1,6 +1,7 @@
 #include "searchFolder.h"
 #include <string.h>
 #include <string>
+
 using namespace std;
 
 // 为了兼容win与linux双平台
