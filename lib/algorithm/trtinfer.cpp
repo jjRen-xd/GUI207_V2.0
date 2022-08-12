@@ -205,9 +205,9 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
     getDataFromMat(targetPath,emIndex,indata,inputLen);
-
+    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";
     //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
-    doInference(*context, indata, outdata, 1);
+    doInference(*context, indata, outdata, INFERENCE_BATCH);
 
     torch::Tensor output_tensor = torch::ones({outputLen});
     std::cout << "(TrtInfer::testOneSample)output_tensor:  ";
@@ -246,7 +246,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=100;
+    INFERENCE_BATCH=1;
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){

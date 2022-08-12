@@ -3,12 +3,25 @@
     <HRRP typeID="1">
         <falseHRRPmat_1x128 nameID="1">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
+            <azimuthAngle>[0, 90, 1]</azimuthAngle>
+            <claNum>5</claNum>
             <dataFileFormat>mat</dataFileFormat>
+            <datasetName>未定义</datasetName>
+            <freq>10GHz</freq>
+            <incidentMode>水平入射</incidentMode>
+            <note>未定义</note>
+            <pitchAngle>0</pitchAngle>
+            <samplingNum>512</samplingNum>
+            <targetNumEachCla>未定义001</targetNumEachCla>
         </falseHRRPmat_1x128>
+        <radiomat_1x101_HRRP nameID="2">
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
+            <dataFileFormat>mat</dataFileFormat>
+        </radiomat_1x101_HRRP>
     </HRRP>
     <IMAGE typeID="2" />
     <RADIO typeID="3">
-        <radiomat_1x101 nameID="2">
+        <radiomat_1x101 nameID="3">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </radiomat_1x101>

@@ -31,8 +31,8 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 //    predIdx_future=predIdx_promise.get_future();
 //    degrees_future=degrees_promise.get_future();
     // 先用libtorch
-    libtorchTest = new LibtorchTest(class2label);
-    onnxInfer = new OnnxInfer(class2label);
+//    libtorchTest = new LibtorchTest(class2label);
+//    onnxInfer = new OnnxInfer(class2label);
     trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
@@ -40,9 +40,9 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     // 测试按钮
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
-    choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
-    choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
-    choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
+//    choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
+//    choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
+//    choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
 }
 
 ModelEvalPage::~ModelEvalPage(){

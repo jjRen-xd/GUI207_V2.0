@@ -7,7 +7,10 @@
         <dense121_6class.trt nameID="1">
             <PATH>E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt</PATH>
         </dense121_6class.trt>
-        <onnxmodel.trt nameID="2">
+        <dense121_6class300.trt nameID="2">
+            <PATH>E:/207Project/GUI207_V2.0/db/models/dense121_6class300.trt</PATH>
+        </dense121_6class300.trt>
+        <onnxmodel.trt nameID="3">
             <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>
         </onnxmodel.trt>
     </TRA_DL>

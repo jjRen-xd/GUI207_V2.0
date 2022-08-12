@@ -8,7 +8,7 @@
 #include <QSplineSeries>
 #include <QHBoxLayout>
 #include <QValueAxis>
-#include <mat.h>
+
 
 class Chart : public QWidget{
     Q_OBJECT

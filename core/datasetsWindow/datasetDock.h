@@ -2,14 +2,14 @@
 #define DATASETDOCK_H
 
 #include <QObject>
-#include <windows.h>//for CreateDirectory
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/datasetInfo.h"
 #include "core/datasetsWindow/chart.h"
-
+#include"./lib/TRANSFER/ToHRRP.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
+#include<mat.h>
 class DatasetDock:public QObject{
     Q_OBJECT
 public:

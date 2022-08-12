@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <mat.h>
 
 Chart::Chart(QWidget* parent, QString _chartname, QString _filefullpath){
     setParent(parent);

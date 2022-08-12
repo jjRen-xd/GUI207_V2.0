@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <time.h>
 
+#pragma comment(lib,"ToHRRP.lib")
+
 using namespace std;
 
 DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo):
@@ -43,6 +45,8 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
 
     // 初始化TreeView
     reloadTreeView();
+    for(auto &currTreeView: datasetTreeViewGroup){
+    connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));}
 }
 
 DatasetDock::~DatasetDock(){
@@ -92,7 +96,7 @@ void DatasetDock::deleteDataset(){
     return;
 }
 
-void DatasetDock::onActionTrans(){
+void DatasetDock::onActionTrans(){//Radio to Hrrp
     QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->currentIndex();
     QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["RADIO"]->model())->itemFromIndex(curIndex);
     string clickedName = currItem->data(0).toString().toStdString();
@@ -101,7 +105,7 @@ void DatasetDock::onActionTrans(){
     }
     string sourceDataSetPath = datasetInfo->getAttri("RADIO", clickedName, "PATH");
     //创建平行的datasetpath文件夹
-    string destDataSetPath=sourceDataSetPath+"(HRRP)";
+    string destDataSetPath=sourceDataSetPath+"_HRRP";
     if(0 == opendir(destDataSetPath.c_str())){//destPath目录不存在就建立一个
         if (CreateDirectoryA(destDataSetPath.c_str(), NULL))  printf("Create Dir Failed...\n");
         else    printf("Creaat Dir %s Successed...\n", destDataSetPath.c_str());
@@ -112,19 +116,30 @@ void DatasetDock::onActionTrans(){
     std::vector<std::string> sourceSubDirs;
     dirTools->getDirs(sourceSubDirs, sourceDataSetPath);
     for(auto &subDir: sourceSubDirs){
-        ///创建平行的subDir文件夹
+        //创建平行的subDir文件夹
+        if(0 == opendir((destDataSetPath+"/"+subDir).c_str())){//destPath目录不存在就建立一个
+            if (CreateDirectoryA((destDataSetPath+"/"+subDir).c_str(), NULL))  printf("Create Dir Failed...\n");
+            else    printf("Creaat Dir %s Successed...\n", (destDataSetPath+"/"+subDir).c_str());
+        }
         // 寻找每个子文件夹下的样本文件
         std::vector<std::string> fileNames;
-        std::string subDirPath = destDataSetPath+"/"+subDir;
+        std::string subDirPath = sourceDataSetPath+"/"+subDir;
         dirTools->getFiles(fileNames, ".mat", subDirPath);
         std:: string sourcePath,destPath;
+
         for(auto &fileName: fileNames){
             sourcePath=subDirPath+"/"+fileName;
-            destPath=destDataSetPath+"/"+subDir;
-            //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
-            //getAllDataFromMat(subDirPath+"/"+fileName,data,labels,class2label[subDir],inputLen);
+            destPath=destDataSetPath+"/"+subDir+"/"+fileName;
+            if (!ToHRRPInitialize()) {qDebug()<<"Could not initialize ZSLAdd!";return;}
+            mwArray sPath(sourcePath.c_str());
+            mwArray dPath(destPath.c_str());
+            mwArray tranF("0");
+            ToHRRP(1,tranF,sPath,dPath);//调用
         }
     }
+    QMessageBox::information(NULL, "转换数据集", "Radio数据集转换成功！");
+    this->datasetInfo->modifyAttri("HRRP", clickedName+"_HRRP","PATH", destDataSetPath);
+    this->reloadTreeView();
 }
 
 
@@ -148,7 +163,7 @@ void DatasetDock::reloadTreeView(){
         currTreeView.second->setEditTriggers(QAbstractItemView::NoEditTriggers);
         currTreeView.second->setHeaderHidden(true);
         // 构建节点
-        vector<string> datasetNames = datasetInfo->getNamesInType(currTreeView.first);
+        vector<string> datasetNames = datasetInfo->getNamesInType(currTreeView.first);//得到指定类别的数据集
         QStandardItemModel *treeModel = new QStandardItemModel(datasetNames.size(),1);
         int idx = 0;
         for(auto &datasetName: datasetNames){
@@ -157,13 +172,14 @@ void DatasetDock::reloadTreeView(){
             idx += 1;
         }
         currTreeView.second->setModel(treeModel);
-        //链接节点点击事件
+        //链接节点右键事件
         if(currTreeView.first=="RADIO"){
             currTreeView.second->setContextMenuPolicy(Qt::CustomContextMenu);
             connect(currTreeView.second, &QTreeView::customContextMenuRequested, this, &DatasetDock::onTreeViewMenuRequested);
         }
-        connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
+        //connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
     }
+
 }
 
 void DatasetDock::treeItemClicked(const QModelIndex &index){
