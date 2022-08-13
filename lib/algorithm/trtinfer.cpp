@@ -10,6 +10,17 @@ TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2lab
 
 }
 
+void oneNormalization(std::vector<double> &list){
+    //特征归一化
+    float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
+    //std::cout<<"maxdata"<<dMaxValue<<'\n';
+    float dMinValue = *min_element(list.begin(),list.end());  //求最小值
+    //std::cout<<"mindata"<<dMinValue<<'\n';
+    for (int f = 0; f < list.size(); ++f) {
+        list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
+    }
+}
+
 void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std::vector<int> &labels,int label,int inputLen){
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
@@ -30,9 +41,14 @@ void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std:
     int M = mxGetM(pMxArray);  //行数
     int N = mxGetN(pMxArray);  //列数
     for(int i=0;i<N;i++){
+        std::vector<double> onesmp;//存当前遍历的一个样本
+        for(int j=0;j<M;j++){
+            onesmp.push_back(matdata[i*M+j]);
+        }
+        oneNormalization(onesmp);//归一化
         torch::Tensor temp=torch::rand({inputLen});
         for(int j=0;j<inputLen;j++){
-            temp[j]=matdata[i*M+j%M];//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
+            temp[j]=onesmp[j%M];//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
         }
         //std::cout<<&temp<<std::endl;
         data.push_back(temp);
@@ -89,7 +105,7 @@ public:
     };
 };
 
-void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int input_len){
+void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int inputLen){
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
@@ -109,8 +125,14 @@ void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int input_le
     int M = mxGetM(pMxArray);  //M=128 行数
     int N = mxGetN(pMxArray);  //N=1000 列数
     if(emIdx>N) emIdx=N-1; //说明是随机数
-    for(int i=0;i<input_len;i++){
-        data[i]=matdata[emIdx*M+i%M];//matlab按列存储
+
+    std::vector<double> onesmp;//存当前样本
+    for(int i=0;i<M;i++){
+        onesmp.push_back(matdata[emIdx*M+i]);
+    }
+    oneNormalization(onesmp);//归一化
+    for(int i=0;i<inputLen;i++){
+        data[i]=onesmp[i%M];//matlab按列存储
     }
 //    mxFree(pMxArray);
 //    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
@@ -205,10 +227,13 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
     getDataFromMat(targetPath,emIndex,indata,inputLen);
-    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";
+    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
     doInference(*context, indata, outdata, INFERENCE_BATCH);
-
+    std::cout<<"======================================================"<<std::endl;
+    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     torch::Tensor output_tensor = torch::ones({outputLen});
     std::cout << "(TrtInfer::testOneSample)output_tensor:  ";
     for (unsigned int i = 0; i < outputLen; i++){
@@ -273,8 +298,8 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
         auto indata_tensor = batch.data;
         auto labels_tensor = batch.target;
         int thisBatch=labels_tensor.numel();
-        float *indata=new float[thisBatch*inputLen]; std::fill_n(indata,inputLen,6);
-        float *outdata=new float[thisBatch*outputLen]; std::fill_n(outdata,outputLen,6);
+        float *indata=new float[thisBatch*inputLen]; std::fill_n(indata,inputLen,class2label.size());
+        float *outdata=new float[thisBatch*outputLen]; std::fill_n(outdata,outputLen,class2label.size());
         torch::Tensor output_tensor = torch::ones({thisBatch,outputLen});
 
         //targets_tensor.resize_({INFERENCE_BATCH});
