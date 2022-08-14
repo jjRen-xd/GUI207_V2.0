@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="4">
-    <FEA_OPTI typeID="1" />
-    <FEA_RELE typeID="2" />
-    <INCRE typeID="3" />
-    <TRA_DL typeID="4">
-        <dense121_6class.trt nameID="1">
-            <PATH>E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt</PATH>
-        </dense121_6class.trt>
-        <dense121_6class300.trt nameID="2">
-            <PATH>E:/207Project/GUI207_V2.0/db/models/dense121_6class300.trt</PATH>
-        </dense121_6class300.trt>
-        <densenet121_hrrp_128.trt nameID="3">
-            <PATH>C:/Users/wyatt/Desktop/densenet121_hrrp_128.trt</PATH>
+<globalModelInfo datasetTypeNum="5">
+    < typeID="1" />
+    <FEA_OPTI typeID="2" />
+    <FEA_RELE typeID="3" />
+    <INCRE typeID="4" />
+    <TRA_DL typeID="5">
+        <densenet121_hrrp_128.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/densenet121_hrrp_128.trt</PATH>
         </densenet121_hrrp_128.trt>
-        <onnxmodel.trt nameID="4">
-            <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>
-        </onnxmodel.trt>
     </TRA_DL>
 </globalModelInfo>
