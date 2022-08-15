@@ -206,7 +206,7 @@ void  ModelEvalPage::testOneSample(){
 void ModelEvalPage::testAllSample(){
     /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
     if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
-        qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
+        //qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
         float acc = 0.6;
         std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);

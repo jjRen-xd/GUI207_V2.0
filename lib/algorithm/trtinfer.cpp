@@ -173,9 +173,9 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
     cudaStreamCreate(&stream);
 
     cudaMemcpyAsync(buffers[0], input, batchsize * inputLen * sizeof(float), cudaMemcpyHostToDevice, stream);
-    //start to infer
     //qDebug()<< "Start to infer ..." ;
-    context.enqueue(batchsize, buffers, stream, nullptr);
+//    context.enqueue(batchsize, buffers, stream, nullptr);
+    context.enqueueV2(buffers, stream, nullptr);
     cudaMemcpyAsync(output, buffers[1], batchsize * outputLen * sizeof(float), cudaMemcpyDeviceToHost, stream);
     cudaStreamSynchronize(stream);
     // Release stream and buffers
@@ -271,7 +271,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=1;
+    INFERENCE_BATCH=100;
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){
@@ -292,7 +292,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     //std::cout<<"(TrtInfer::testAllSample) test_dataset_size"<<test_dataset_size<<std::endl;
 
     int correct=0,real=0,guess=0;
-    qDebug()<<"(TrtInfer::testAllSample) AAAAAAAAAAAA";
+    qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
     int test_dataset_size=0;
     for (const auto &batch : *test_loader){
         auto indata_tensor = batch.data;
@@ -335,7 +335,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
 
     }
     qDebug()<<"test_dataset_size="<<test_dataset_size;
-    std::cout << "correct:"<<correct<<std::endl;
+    qDebug()<< "correct:"<<correct;
     //std::cout << "test_dataset_size:"<<test_dataset_size<<std::endl;
     Acc=test_dataset_size==0?0:static_cast<float> (correct) / (test_dataset_size);
 }

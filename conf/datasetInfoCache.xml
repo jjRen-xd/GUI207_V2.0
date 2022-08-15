@@ -14,8 +14,17 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
         </falseHRRPmat_1x128>
+        <radiomat_1x101_HRRP nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
+            <dataFileFormat>mat</dataFileFormat>
+        </radiomat_1x101_HRRP>
     </HRRP>
     <IMAGE typeID="2" />
-    <RADIO typeID="3" />
+    <RADIO typeID="3">
+        <radiomat_1x101 nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
+            <dataFileFormat>mat</dataFileFormat>
+        </radiomat_1x101>
+    </RADIO>
     <RCS typeID="4" />
 </globalDatasetInfo>
