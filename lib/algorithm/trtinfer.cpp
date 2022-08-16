@@ -1,7 +1,7 @@
 #include <torch/torch.h>
 #include "trtinfer.h"
 #include <QDebug>
-
+#include <QMessageBox>
 #include <Windows.h> //for sleep
 using namespace nvinfer1;
 static Logger gLogger;
@@ -227,13 +227,13 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
     getDataFromMat(targetPath,emIndex,indata,inputLen);
-    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
-    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
-    doInference(*context, indata, outdata, INFERENCE_BATCH);
+    doInference(*context, indata, outdata, 1);
     std::cout<<"======================================================"<<std::endl;
-    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
-    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     torch::Tensor output_tensor = torch::ones({outputLen});
     std::cout << "(TrtInfer::testOneSample)output_tensor:  ";
     for (unsigned int i = 0; i < outputLen; i++){
@@ -249,7 +249,7 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     *predIdx=pred;
 }
 
-void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int inferBatch, float &Acc,std::vector<std::vector<int>> &confusion_matrix){
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created successfully.";
     else qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -269,7 +269,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     }
     if(inputdims[0]==outputdims[0]&&inputdims[0]==-1) isDynamic=true;
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
-    else {qDebug()<<"模型输入输出批数不一致！";return;}
+    else {qDebug()<<"模型输入输出批数不一致！";return 0;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
     INFERENCE_BATCH=100;
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
@@ -278,7 +278,13 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
         nvinfer1::Dims dims4;   dims4.d[0]=INFERENCE_BATCH;
         for(int i=1;i<indims.nbDims;i++) dims4.d[i]=inputdims[i];
         dims4.nbDims = indims.nbDims;
-        context->setBindingDimensions(0, dims4);
+        try{
+            context->setBindingDimensions(0, dims4);
+        }
+        catch (...) {
+            QMessageBox::information(NULL, "所有样本测试", "批处理量超过模型预设值！");
+            return 0;
+        }
     }
 
     qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
@@ -338,6 +344,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     qDebug()<< "correct:"<<correct;
     //std::cout << "test_dataset_size:"<<test_dataset_size<<std::endl;
     Acc=test_dataset_size==0?0:static_cast<float> (correct) / (test_dataset_size);
+    return 1;
 }
 
 void TrtInfer::setBatchSize(int batchSize){

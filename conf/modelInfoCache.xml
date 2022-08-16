@@ -7,7 +7,10 @@
         <densenet121_hrrp_128.trt nameID="1">
             <PATH>D:/lyh/GUI207_V2.0/db/models/densenet121_hrrp_128.trt</PATH>
         </densenet121_hrrp_128.trt>
-        <temp_500.trt nameID="2">
+        <feature_select_711.trt nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/feature_select_711.trt</PATH>
+        </feature_select_711.trt>
+        <temp_500.trt nameID="3">
             <PATH>D:/lyh/models/hdf5/densenet121_hrrp_128/temp_500.trt</PATH>
         </temp_500.trt>
     </TRA_DL>

@@ -27,7 +27,7 @@ public:
 public slots:
 
     void testOneSample(std::string targetPath, int emIndex, std::string modelPath, int *predIdx,std::vector<float> &degrees);
-    void testAllSample(std::string dataset_path,std::string model_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+    bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
 
 private:
     nvinfer1::IBuilder* builder{ nullptr };

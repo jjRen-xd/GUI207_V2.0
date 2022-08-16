@@ -48,6 +48,7 @@ class Chart : public QWidget{
         void readHRRPtxt();
         void readHRRPmat(int emIndex);
         void readRadiomat(int emIndex);
+        void readFeaturemat(int emIndex);
         void buildChart(QList<QPointF> pointlist);
         void drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx=0);
         void showChart(QLabel* imagelabel);

@@ -54,7 +54,7 @@ void ModelEvalPage::refreshGlobalInfo(){
     // 基本信息更新
     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
-    ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+    //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     this->choicedModelPATH = modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     // 单样本测试下拉框刷新
@@ -63,7 +63,11 @@ void ModelEvalPage::refreshGlobalInfo(){
     for(auto &item: comboBoxContents){
         ui->comboBox_sampleType->addItem(QString::fromStdString(item));
     }
-
+    //
+    ui->comboBox_inferBatchsize->clear();
+    for(int i=512;i>3;i/=2){
+        ui->comboBox_inferBatchsize->addItem(QString::number(i));
+    }
 }
 
 
@@ -169,7 +173,7 @@ void  ModelEvalPage::testOneSample(){
         //classnum==(datasetInfo->selectedClassNames.size())
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        trtInfer->testOneSample(choicedSamplePATH, this->emIndex,choicedModelPATH,&predIdx, degrees);
+        trtInfer->testOneSample(choicedSamplePATH, this->emIndex,choicedModelPATH, &predIdx, degrees);
 
         //onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
@@ -204,14 +208,19 @@ void  ModelEvalPage::testOneSample(){
 
 // TODO 待优化
 void ModelEvalPage::testAllSample(){
+    // 获取批处理量
+    int inferBatch = ui->comboBox_inferBatchsize->currentText().toInt();
+    qDebug()<<"(ModelEvalPage::testAllSample)batchsize=="<<inferBatch;
     /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
-    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
+    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty() ){
         //qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
         float acc = 0.6;
         std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
         //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, acc, confusion_matrix);
+        if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, inferBatch, acc, confusion_matrix)){
+            return ;
+        }
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
         for(int i=0;i<6;i++){

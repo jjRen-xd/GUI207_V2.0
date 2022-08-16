@@ -17,7 +17,8 @@ SenseSetPage::SenseSetPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, 
     BtnGroup_typeChoice->addButton(ui->radioButton_HRRP_choice, 0);
     BtnGroup_typeChoice->addButton(ui->radioButton_RCS_choice, 1);
     BtnGroup_typeChoice->addButton(ui->radioButton_RADIO_choice, 2);
-    BtnGroup_typeChoice->addButton(ui->radioButton_IMAGE_choice, 3);
+    BtnGroup_typeChoice->addButton(ui->radioButton_FEATURE_choice, 3);
+    BtnGroup_typeChoice->addButton(ui->radioButton_IMAGE_choice, 4);
     connect(this->BtnGroup_typeChoice, &QButtonGroup::buttonClicked, this, &SenseSetPage::changeType);
 
     // 确定

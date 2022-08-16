@@ -44,7 +44,7 @@ void Chart::drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx){
 
     if(dataFileFormat==QString::fromStdString("txt")&&dataSetType=="HRRP"){
         readHRRPtxt();
-        setAxis("Range/cm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+        setAxis("Range/cm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);  
     }else if (dataFileFormat==QString::fromStdString("mat")&&dataSetType=="HRRP"){
         //qDebug()<<"(Chart::drawHRRPimage)"<<filefullpath;
         readHRRPmat(examIdx);
@@ -52,6 +52,10 @@ void Chart::drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx){
     }else if(dataFileFormat==QString::fromStdString("mat")&&dataSetType=="RADIO"){
         readRadiomat(examIdx);
         setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+    }else if(dataFileFormat==QString::fromStdString("mat")&&dataSetType=="FEATURE"){
+        readFeaturemat(examIdx);
+        setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+
     }
 
     buildChart(points);
@@ -59,32 +63,30 @@ void Chart::drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx){
 }
 
 void Chart::readRadiomat(int emIdx){
-    points.clear();
+points.clear();
     float y_min = 200000,y_max = -200000;
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
 
+    double* matdata;
     pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
     if(!pMatFile){
         qDebug()<<"(Chart::readHRRPmat)文件指针空！！！！！！";
         return;
     }
-    std::string matVariable="radio101";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+    std::string matVariable=filefullpath.split("/").last().split(".")[0].toStdString().c_str();//假设数据变量名同文件名的话
+    //qDebug()<<"(Chart::readRadiomat)matVariable="<<QString::fromStdString(matVariable);
     pMxArray = matGetVariable(pMatFile,matVariable.c_str());
     if(!pMxArray){
         qDebug()<<"(Chart::readHRRPmat)pMxArray变量没找到！！！！！！";
         return;
     }
-
-    mxComplexDouble* pc= mxGetComplexDoubles(pMxArray);
+    matdata = (double*)mxGetData(pMxArray);
     int M = mxGetM(pMxArray);  //M=128 行数
     int N = mxGetN(pMxArray);  //N=1000 列数
-    if(emIdx>N) emIdx=N-rand()%N; //说明是随机数
-
+    if(emIdx>N) emIdx=N-1; //说明是随机数
     for(int i=0;i<M;i++){
-        double real=pc[M*emIdx+i].real;
-        double imag=pc[M*emIdx+i].imag;
-        float y=pow((pow(real,2)+pow(imag,2)),0.5);
+        float y=matdata[M*emIdx+i];
         y_min = fmin(y_min,y);
         y_max = fmax(y_max,y);
         points.append(QPointF(2*i,y));
@@ -92,7 +94,81 @@ void Chart::readRadiomat(int emIdx){
     //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
     xmin = 0; xmax = M*2+4;
     ymin = y_min-3; ymax = y_max+3;
+    //qDebug()<<"(Chart::readHRRPmat)ymin:"<<ymin<<"      ymax:"<<ymax;
+//    mxFree(pMxArray);
+//    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
 }
+
+void Chart::readHRRPmat(int emIdx){
+    points.clear();
+    float y_min = 200000,y_max = -200000;
+    MATFile* pMatFile = NULL;
+    mxArray* pMxArray = NULL;
+
+    double* matdata;
+    pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
+    if(!pMatFile){
+        qDebug()<<"(Chart::readHRRPmat)文件指针空！！！！！！";
+        return;
+    }
+    std::string matVariable=filefullpath.split("/").last().split(".")[0].toStdString().c_str();//假设数据变量名同文件名
+    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+    if(!pMxArray){
+        qDebug()<<"(Chart::readHRRPmat)pMxArray变量没找到！！！！！！";
+        return;
+    }
+    matdata = (double*)mxGetData(pMxArray);
+    int M = mxGetM(pMxArray);  //M=128 行数
+    int N = mxGetN(pMxArray);  //N=1000 列数
+    if(emIdx>N) emIdx=N-1; //说明是随机数
+    for(int i=0;i<M;i++){
+        float y=matdata[M*emIdx+i];
+        y_min = fmin(y_min,y);
+        y_max = fmax(y_max,y);
+        points.append(QPointF(2*i,y));
+    }
+    //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
+    xmin = 0; xmax = M*2+4;
+    ymin = y_min-3; ymax = y_max+3;
+    //qDebug()<<"(Chart::readHRRPmat)ymin:"<<ymin<<"      ymax:"<<ymax;
+//    mxFree(pMxArray);
+//    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
+}
+
+void Chart::readFeaturemat(int emIdx){
+    points.clear();
+    float y_min = 200000,y_max = -200000;
+    MATFile* pMatFile = NULL;
+    mxArray* pMxArray = NULL;
+
+    double* matdata;
+    pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
+    if(!pMatFile){
+        qDebug()<<"(Chart::readFeaturemat)文件指针空！！！！！！";
+        return;
+    }
+    std::string matVariable=filefullpath.split("/").last().split(".")[0].toStdString().c_str();//假设数据变量名同文件名
+    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+    if(!pMxArray){
+        qDebug()<<"(Chart::readFeaturemat)pMxArray变量没找到！！！！！！";
+        return;
+    }
+    matdata = (double*)mxGetData(pMxArray);
+    int M = mxGetM(pMxArray);  //M 行数
+    int N = mxGetN(pMxArray);  //N= 列数
+    if(emIdx>N) emIdx=N-1; //说明是随机数
+    for(int i=0;i<M;i++){
+        float y=matdata[M*emIdx+i];
+        y_min = fmin(y_min,y);
+        y_max = fmax(y_max,y);
+        points.append(QPointF(2*i,y));
+    }
+
+    xmin = 0; xmax = M*1+4;
+    ymin = y_min-3; ymax = y_max+3;
+
+}
+
 
 void Chart::readHRRPtxt(){
     float x_min = 200,x_max = -200,y_min = 200,y_max = -200;
@@ -131,42 +207,7 @@ void Chart::readHRRPtxt(){
     }
 }
 
-void Chart::readHRRPmat(int emIdx){
-    points.clear();
-    float y_min = 200000,y_max = -200000;
-    MATFile* pMatFile = NULL;
-    mxArray* pMxArray = NULL;
 
-    double* matdata;
-    pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
-    if(!pMatFile){
-        qDebug()<<"(Chart::readHRRPmat)文件指针空！！！！！！";
-        return;
-    }
-    std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
-    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-    if(!pMxArray){
-        qDebug()<<"(Chart::readHRRPmat)pMxArray变量没找到！！！！！！";
-        return;
-    }
-    matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M=128 行数
-    int N = mxGetN(pMxArray);  //N=1000 列数
-    if(emIdx>N) emIdx=N-1; //说明是随机数
-    for(int i=0;i<M;i++){
-        float y=matdata[M*emIdx+i];
-        y_min = fmin(y_min,y);
-        y_max = fmax(y_max,y);
-        points.append(QPointF(2*i,y));
-    }
-    //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
-    xmin = 0; xmax = M*2+4;
-    ymin = y_min-3; ymax = y_max+3;
-    //qDebug()<<"(Chart::readHRRPmat)ymin:"<<ymin<<"      ymax:"<<ymax;
-//    mxFree(pMxArray);
-//    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
-
-}
 
 void Chart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, \
              QString _yname, qreal _ymin, qreal _ymax, int _ytickc){
