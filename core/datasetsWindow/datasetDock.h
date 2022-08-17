@@ -31,8 +31,10 @@ public slots:
 
 private slots:
     void treeItemClicked(const QModelIndex &index);
-    void onTreeViewMenuRequested(const QPoint &pos);
-    void onActionTrans();
+    void onTreeViewMenuRequestedRadio(const QPoint &pos);
+    void onTreeViewMenuRequestedHrrp(const QPoint &pos);
+    void onActionTransRadio();
+    void onActionExtractFea();
 
 private:
     Ui_MainWindow *ui;

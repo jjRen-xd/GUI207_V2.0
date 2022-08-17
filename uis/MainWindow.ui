@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_modelTrain">
        <layout class="QVBoxLayout" name="verticalLayout_52">
@@ -116,8 +116,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>494</width>
-             <height>1097</height>
+             <width>728</width>
+             <height>1056</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -136,7 +136,7 @@
                      <item>
                       <widget class="QRadioButton" name="radioButton_HRRP_choice">
                        <property name="text">
-                        <string>一维距离像序列</string>
+                        <string>一维距离像</string>
                        </property>
                        <property name="checked">
                         <bool>true</bool>
@@ -154,6 +154,13 @@
                       <widget class="QRadioButton" name="radioButton_RADIO_choice">
                        <property name="text">
                         <string>雷达回波</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="radioButton_FEATURE_choice">
+                       <property name="text">
+                        <string>特征</string>
                        </property>
                       </widget>
                      </item>
@@ -1422,8 +1429,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>622</width>
-             <height>574</height>
+             <width>605</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2255,26 +2262,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QLabel" name="label_7">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>批大小已设置为：</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_mE_batch">
-            <property name="text">
-             <string>空</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -2299,8 +2286,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>308</width>
-               <height>451</height>
+               <width>355</width>
+               <height>551</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2313,11 +2300,14 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_7">
                    <item>
-                    <widget class="QProgressBar" name="progressBar_2">
-                     <property name="value">
-                      <number>24</number>
+                    <widget class="QLabel" name="label_8">
+                     <property name="text">
+                      <string>测试批大小:</string>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="comboBox_inferBatchsize"/>
                    </item>
                    <item>
                     <widget class="QPushButton" name="pushButton_testAllSample">
@@ -2330,6 +2320,24 @@
                  </item>
                  <item>
                   <widget class="Line" name="line_15">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_48">
+                   <item>
+                    <widget class="QProgressBar" name="progressBar_2">
+                     <property name="value">
+                      <number>24</number>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line_20">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -2381,7 +2389,7 @@
                   </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_48">
+                  <layout class="QVBoxLayout" name="verticalLayout_51">
                    <item>
                     <widget class="QLabel" name="label_4">
                      <property name="text">
@@ -3502,8 +3510,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>390</width>
-               <height>591</height>
+               <width>373</width>
+               <height>584</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -4055,6 +4063,16 @@
        <property name="tabBarAutoHide">
         <bool>false</bool>
        </property>
+       <widget class="QWidget" name="tab_RADIO">
+        <attribute name="title">
+         <string>RADIO</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_22">
+         <item>
+          <widget class="QTreeView" name="treeView_RADIO"/>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="tab_HRRP">
         <attribute name="title">
          <string>HRRP</string>
@@ -4065,6 +4083,16 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="tab_FEATURE">
+        <attribute name="title">
+         <string>FEATURE</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_53">
+         <item>
+          <widget class="QTreeView" name="treeView_FEATURE"/>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="tab_RCS">
         <attribute name="title">
          <string>RCS</string>
@@ -4072,16 +4100,6 @@
         <layout class="QVBoxLayout" name="verticalLayout_20">
          <item>
           <widget class="QTreeView" name="treeView_RCS"/>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_RADIO">
-        <attribute name="title">
-         <string>RADIO</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_22">
-         <item>
-          <widget class="QTreeView" name="treeView_RADIO"/>
          </item>
         </layout>
        </widget>
@@ -4414,7 +4432,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="minimumSize">

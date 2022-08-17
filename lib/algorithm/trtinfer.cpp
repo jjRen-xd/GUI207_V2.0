@@ -1,7 +1,7 @@
 #include <torch/torch.h>
 #include "trtinfer.h"
 #include <QDebug>
-
+#include <QMessageBox>
 #include <Windows.h> //for sleep
 using namespace nvinfer1;
 static Logger gLogger;
@@ -158,7 +158,6 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
     cudaStreamCreate(&stream);
 
     cudaMemcpyAsync(buffers[0], input, batchsize * inputLen * sizeof(float), cudaMemcpyHostToDevice, stream);
-    //start to infer
     //qDebug()<< "Start to infer ..." ;
     context.enqueueV2(buffers, stream, nullptr);
     cudaMemcpyAsync(output, buffers[1], batchsize * outputLen * sizeof(float), cudaMemcpyDeviceToHost, stream);
@@ -212,13 +211,13 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
     getDataFromMat(targetPath,emIndex,indata,inputLen);
-    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
-    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
-    doInference(*context, indata, outdata, INFERENCE_BATCH);
+    doInference(*context, indata, outdata, 1);
     std::cout<<"======================================================"<<std::endl;
-    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
-    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+//    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     torch::Tensor output_tensor = torch::ones({outputLen});
     std::cout << "(TrtInfer::testOneSample)output_tensor:  ";
     for (unsigned int i = 0; i < outputLen; i++){
@@ -234,7 +233,7 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     *predIdx=pred;
 }
 
-void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int inferBatch, float &Acc,std::vector<std::vector<int>> &confusion_matrix){
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created successfully.";
     else qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -254,39 +253,48 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     }
     if(inputdims[0]==outputdims[0]&&inputdims[0]==-1) isDynamic=true;
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
-    else {qDebug()<<"模型输入输出批数不一致！";return;}
+    else {qDebug()<<"模型输入输出批数不一致！";return 0;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=3;
+    INFERENCE_BATCH=100;
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){
         nvinfer1::Dims dims4;   dims4.d[0]=INFERENCE_BATCH;
         for(int i=1;i<indims.nbDims;i++) dims4.d[i]=inputdims[i];
         dims4.nbDims = indims.nbDims;
-        context->setBindingDimensions(0, dims4);
+        try{
+            context->setBindingDimensions(0, dims4);
+        }
+        catch (...) {
+            QMessageBox::information(NULL, "所有样本测试", "批处理量超过模型预设值！");
+            return 0;
+        }
     }
+
+
 
     qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
     qDebug()<<"(TrtInfer::testAllSample) inputLen==="<<inputLen;
+
     // LOAD DataSet
     clock_t start,end;
     start = clock();
-
-
     auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
-
-//    auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
-//    auto test_loader = torch::data::make_data_loader(std::move(test_dataset), INFERENCE_BATCH);
-
     end = clock();
-
-    int correct=0,real=0,guess=0;
+    int correct=0;
     qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
     int test_dataset_size=test_dataset.labels.size();
     //qDebug()<<"(TrtInfer::testAllSample) DataSetsize: "<<test_dataset.data.size()<<"LabelSize: "<<test_dataset.labels.size();
     qDebug()<<"(TrtInfer::testAllSample) 数据加载用时: "<<(double)(end-start)/CLOCKS_PER_SEC;
 
-
+        float *indata=new float[thisBatchNum*inputLen]; std::fill_n(indata,inputLen,class2label.size());
+        float *outdata=new float[thisBatchNum*outputLen]; std::fill_n(outdata,outputLen,class2label.size());
+        if (!thisBatchData.empty()){
+            memcpy(indata, &thisBatchData[0], thisBatchData.size()*sizeof(float));
+        }
+//        for(int i=0;i<thisBatchNum*inputLen;i++){
+//            std::cout<<indata[i]<<" ";
+//        }return;
     for(int l=1;l<=ceil(test_dataset_size/INFERENCE_BATCH);l++){            //分批喂数据
         std::vector<float> thisBatchData;
         std::vector<float> thisBatchLabels;
@@ -305,21 +313,8 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
         if (!thisBatchData.empty()){
             memcpy(indata, &thisBatchData[0], thisBatchData.size()*sizeof(float));
         }
-//        for(int i=0;i<thisBatchNum*inputLen;i++){
-//            std::cout<<indata[i]<<" ";
-//        }return;
-//        auto a_size = indata_tensor.sizes();
-//        int num_ = indata_tensor.numel();
-//        std::cout << "======indata_tensor:" << a_size << "    &&&     " << num_ << std::endl;
-//        auto a_size2 = labels_tensor.sizes();
-//        int num_2 = labels_tensor.numel();
-//        std::cout << "======targets_tensor:" << a_size2 << "    &&&     " << num_2 << std::endl;
+        doInference(*context, indata, outdata, thisBatchNumNum);
 
-
-        doInference(*context, indata, outdata, thisBatchNum);
-
-//        std::cout<<"(TrtInfer::testAllSample) after inference outdata:"<<std::endl;
-        //torch::Tensor output_tensor = torch::ones({thisBatchNum,outputLen});
         std::vector<std::vector<float>> output_vec;
         std::vector<float> temp;
         for (int i = 1; i <= outputLen*thisBatchNum; i++){
@@ -342,13 +337,12 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
             confusion_matrix[real][guess]++;
             //std::cout<<"confusion_matrix["<<real<<"]["<<guess<<"]++"<<std::endl;
         }
-
-
     }
     qDebug()<<"test_dataset_size="<<test_dataset_size;
     qDebug()<< "correct:"<<correct;
 
     Acc=test_dataset_size==0?0:static_cast<float> (correct) / (test_dataset_size);
+    return 1;
 }
 
 void TrtInfer::setBatchSize(int batchSize){

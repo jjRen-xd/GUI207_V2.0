@@ -1,12 +1,12 @@
 #include "searchFolder.h"
 #include <string.h>
 #include <string>
-
+#include <io.h>
 using namespace std;
 
 // 为了兼容win与linux双平台
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#include <io.h>
+
 // Windows平台
 bool SearchFolder::getFiles(vector<string> &files, string filesType, string folderPath){
     intptr_t hFile = 0;

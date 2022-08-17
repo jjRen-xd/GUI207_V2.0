@@ -1,9 +1,11 @@
+#include <Python.h>
 #include "datasetDock.h"
-
+#include <cstdlib>
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <time.h>
+
 
 #pragma comment(lib,"ToHRRP.lib")
 
@@ -24,9 +26,10 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
     connect(ui->action_Delete_dataset, &QAction::triggered, this, &DatasetDock::deleteDataset);
 
     // 当前数据集预览树按类型成组
-    this->datasetTreeViewGroup["HRRP"] = ui->treeView_HRRP;
-    this->datasetTreeViewGroup["RCS"] = ui->treeView_RCS;
     this->datasetTreeViewGroup["RADIO"] = ui->treeView_RADIO;
+    this->datasetTreeViewGroup["HRRP"] = ui->treeView_HRRP;
+    this->datasetTreeViewGroup["FEATURE"] = ui->treeView_FEATURE;
+    this->datasetTreeViewGroup["RCS"] = ui->treeView_RCS;
     this->datasetTreeViewGroup["IMAGE"] = ui->treeView_IMAGE;
 
     // 数据集信息预览label按属性成组 std::map<std::string, QLabel*>
@@ -46,7 +49,7 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
     // 初始化TreeView
     reloadTreeView();
     for(auto &currTreeView: datasetTreeViewGroup){
-    connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));}
+        connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));}
 }
 
 DatasetDock::~DatasetDock(){
@@ -96,7 +99,7 @@ void DatasetDock::deleteDataset(){
     return;
 }
 
-void DatasetDock::onActionTrans(){//Radio to Hrrp
+void DatasetDock::onActionTransRadio(){//Radio101 to Hrrp128
     QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->currentIndex();
     QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["RADIO"]->model())->itemFromIndex(curIndex);
     string clickedName = currItem->data(0).toString().toStdString();
@@ -130,7 +133,7 @@ void DatasetDock::onActionTrans(){//Radio to Hrrp
         for(auto &fileName: fileNames){
             sourcePath=subDirPath+"/"+fileName;
             destPath=destDataSetPath+"/"+subDir+"/"+fileName;
-            if (!ToHRRPInitialize()) {qDebug()<<"Could not initialize ToHRRP!";return;}
+            if (!ToHRRPInitialize()) {qDebug()<<"Could not initialize ToHrrp!";return;}
             mwArray sPath(sourcePath.c_str());
             mwArray dPath(destPath.c_str());
             mwArray tranF("0");//保存ToHRRP返回的值
@@ -140,23 +143,23 @@ void DatasetDock::onActionTrans(){//Radio to Hrrp
     QMessageBox::information(NULL, "转换数据集", "Radio数据集转换成功！");
     this->datasetInfo->modifyAttri("HRRP", clickedName+"_HRRP","PATH", destDataSetPath);
     this->reloadTreeView();
+    this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
 }
 
-
-void DatasetDock::onTreeViewMenuRequested(const QPoint &pos){
+void DatasetDock::onTreeViewMenuRequestedRadio(const QPoint &pos){
     QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->indexAt(pos);
     if (curIndex.isValid()){ // 右键选中了有效index
 
         QIcon transIcon = QApplication::style()->standardIcon(QStyle::SP_DesktopIcon);
-
         // 创建菜单
         QMenu menu;
-        menu.addAction(transIcon, tr("转换至HRRP"), this, &DatasetDock::onActionTrans);
+        menu.addAction(transIcon, tr("提取特征"), this, &DatasetDock::onActionExtractFea);
 //        menu.addSeparator();
 //        menu.addAction(test, tr("测试"), this, &DatasetDock::onActionTest);
         menu.exec(QCursor::pos());
     }
 }
+
 void DatasetDock::reloadTreeView(){
     for(auto &currTreeView: datasetTreeViewGroup){
         // 不可编辑节点
@@ -175,7 +178,11 @@ void DatasetDock::reloadTreeView(){
         //链接节点右键事件
         if(currTreeView.first=="RADIO"){
             currTreeView.second->setContextMenuPolicy(Qt::CustomContextMenu);
-            connect(currTreeView.second, &QTreeView::customContextMenuRequested, this, &DatasetDock::onTreeViewMenuRequested);
+            connect(currTreeView.second, &QTreeView::customContextMenuRequested, this, &DatasetDock::onTreeViewMenuRequestedRadio);
+        }
+        if(currTreeView.first=="HRRP"){
+            currTreeView.second->setContextMenuPolicy(Qt::CustomContextMenu);
+            connect(currTreeView.second, &QTreeView::customContextMenuRequested, this, &DatasetDock::onTreeViewMenuRequestedHrrp);
         }
         //connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
     }
@@ -184,12 +191,11 @@ void DatasetDock::reloadTreeView(){
 
 void DatasetDock::treeItemClicked(const QModelIndex &index){
     // 获取点击预览数据集的类型和名称
-
     string clickedType = ui->tabWidget_datasetType->currentWidget()->objectName().split("_")[1].toStdString();
     string clickedName = datasetTreeViewGroup[clickedType]->model()->itemData(index).values()[0].toString().toStdString();
     this->previewName = clickedName;
     this->previewType = clickedType;
-
+    //qDebug()<<"(DatasetDock::treeItemClicked)点击预览数据集的类型和名称 "<<QString::fromStdString(clickedType)<<"  "<<QString::fromStdString(clickedName);
 
     // 显示数据集预览属性信息
     map<string,string> attriContents = datasetInfo->getAllAttri(previewType, previewName);
@@ -238,11 +244,10 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                     QString chartTitle="Temporary Title";
                     if(clickedType=="HRRP") chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";
                     else if (clickedType=="RADIO") chartTitle="RADIO Temporary Title";
+                    else if (clickedType=="FEATURE") chartTitle="Feture Temporary Title";
                     Chart *previewChart = new Chart(chartGroup[i],chartTitle,matFilePath);
                     previewChart->drawImage(chartGroup[i],clickedType,randomIdx);
                     chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));
-
-
                 }
             }
             else{
