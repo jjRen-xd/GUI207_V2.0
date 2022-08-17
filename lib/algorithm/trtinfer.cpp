@@ -10,7 +10,7 @@ TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2lab
 
 }
 
-void oneNormalization(std::vector<double> &list){
+void oneNormalization(std::vector<float> &list){
     //特征归一化
     float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
     //std::cout<<"maxdata"<<dMaxValue<<'\n';
@@ -21,7 +21,7 @@ void oneNormalization(std::vector<double> &list){
     }
 }
 
-void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std::vector<int> &labels,int label,int inputLen){
+void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
@@ -41,14 +41,14 @@ void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std:
     int M = mxGetM(pMxArray);  //行数
     int N = mxGetN(pMxArray);  //列数
     for(int i=0;i<N;i++){
-        std::vector<double> onesmp;//存当前遍历的一个样本
+        std::vector<float> onesmp;//存当前遍历的一个样本
         for(int j=0;j<M;j++){
             onesmp.push_back(matdata[i*M+j]);
         }
         oneNormalization(onesmp);//归一化
-        torch::Tensor temp=torch::rand({inputLen});
+        std::vector<float> temp;
         for(int j=0;j<inputLen;j++){
-            temp[j]=onesmp[j%M];//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
+            temp.push_back(onesmp[j%M]);//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
         }
         //std::cout<<&temp<<std::endl;
         data.push_back(temp);
@@ -56,7 +56,7 @@ void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std:
     }
 }
 
-void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<torch::Tensor> &data,
+void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<std::vector<float>> &data,
                            std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen){
     SearchFolder *dirTools = new SearchFolder();
     // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
@@ -75,32 +75,17 @@ void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<
     return;
 }
 
-class CustomDataset: public torch::data::Dataset<CustomDataset>{
-private:
-    std::vector<torch::Tensor> data;
+class CustomDataset{
+public:
+    std::vector<std::vector<float>> data;
     std::vector<int> labels;
     std::map<std::string, int> class2label;
-    int inputLen;
-public:
     CustomDataset(std::string dataSetPath, std::string type, std::map<std::string, int> class2label,int inputLen)
-        :class2label(class2label),inputLen(inputLen){
+        :class2label(class2label){
         loadAllDataFromFolder(dataSetPath, type, data, labels, class2label,inputLen);
-//        for(int i=0;i<5;i++){
-//            torch::Tensor data_tensor = data.at(i);
-//            data_tensor=data_tensor.flatten();
-//            std::cout<<"data["<<i<<"]:"<< "data_tensor.sizes()="<< data_tensor.sizes()<<"  data_tensor.numel()="<< data_tensor.numel() << std::endl;
-//        }
-    }
 
-    torch::data::Example<> get(size_t index) override{
-        torch::Tensor data_tensor = data.at(index);
-        int label = labels.at(index);
-        torch::Tensor label_tensor = torch::full({1}, label, torch::kInt64);
-        return {data_tensor.clone(), label_tensor.clone()};
     }
-
-    // Override size() function, return the length of data
-    torch::optional<size_t> size() const override{
+    int size(){
         return labels.size();
     };
 };
@@ -126,7 +111,7 @@ void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int inputLen
     int N = mxGetN(pMxArray);  //N=1000 列数
     if(emIdx>N) emIdx=N-1; //说明是随机数
 
-    std::vector<double> onesmp;//存当前样本
+    std::vector<float> onesmp;//存当前样本
     for(int i=0;i<M;i++){
         onesmp.push_back(matdata[emIdx*M+i]);
     }
@@ -287,62 +272,67 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
         }
     }
 
+
     qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
     qDebug()<<"(TrtInfer::testAllSample) inputLen==="<<inputLen;
+
     // LOAD DataSet
-    auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen)
-            .map(torch::data::transforms::Stack<>());
-    auto test_loader = torch::data::make_data_loader(std::move(test_dataset), INFERENCE_BATCH);
-
-    //auto test_dataset_size = test_dataset.size().value();
-    //std::cout<<"(TrtInfer::testAllSample) test_dataset_size"<<test_dataset_size<<std::endl;
-
-    int correct=0,real=0,guess=0;
+    clock_t start,end;
+    start = clock();
+    auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
+    end = clock();
+    int correct=0;
     qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
-    int test_dataset_size=0;
-    for (const auto &batch : *test_loader){
-        auto indata_tensor = batch.data;
-        auto labels_tensor = batch.target;
-        int thisBatch=labels_tensor.numel();
-        float *indata=new float[thisBatch*inputLen]; std::fill_n(indata,inputLen,class2label.size());
-        float *outdata=new float[thisBatch*outputLen]; std::fill_n(outdata,outputLen,class2label.size());
-        torch::Tensor output_tensor = torch::ones({thisBatch,outputLen});
+    int test_dataset_size=test_dataset.labels.size();
+    //qDebug()<<"(TrtInfer::testAllSample) DataSetsize: "<<test_dataset.data.size()<<"LabelSize: "<<test_dataset.labels.size();
+    qDebug()<<"(TrtInfer::testAllSample) 数据加载用时: "<<(double)(end-start)/CLOCKS_PER_SEC;
 
-        //targets_tensor.resize_({INFERENCE_BATCH});
-        indata_tensor=indata_tensor.flatten();
-        labels_tensor=labels_tensor.flatten();
+    for(int l=1;l<=ceil(test_dataset_size/INFERENCE_BATCH);l++){            //分批喂数据
+        std::vector<float> thisBatchData;
+        std::vector<float> thisBatchLabels;
+        int thisBatchNum=1;
+        if(l==ceil(test_dataset_size/INFERENCE_BATCH)) thisBatchNum=test_dataset_size-(l-1)*INFERENCE_BATCH;
+        else thisBatchNum=INFERENCE_BATCH;
 
-//        auto a_size = indata_tensor.sizes();
-//        int num_ = indata_tensor.numel();
-//        std::cout << "======indata_tensor:" << a_size << "    &&&     " << num_ << std::endl;
-//        auto a_size2 = labels_tensor.sizes();
-//        int num_2 = labels_tensor.numel();
-//        std::cout << "======targets_tensor:" << a_size2 << "    &&&     " << num_2 << std::endl;
-
-        auto res = indata_tensor.accessor<float,1>();            //拙劣待优化的tensor转float[]
-        memcpy(indata, res.data(), inputLen*thisBatch*sizeof(float));
-
-        doInference(*context, indata, outdata, thisBatch);
-
-//        std::cout<<"(TrtInfer::testAllSample) after inference outdata:"<<std::endl;
-        for (unsigned int i = 0; i < outputLen*thisBatch; i++){
-            //std::cout << outdata[i] << ", ";
-            output_tensor[i/outputLen][i%outputLen]=outdata[i];
-        }//std::cout<<std::endl;
-
-        auto pred = output_tensor.argmax(1);
-        correct += pred.eq(labels_tensor).sum().template item<int64_t>();
-        for(int i=0;i<thisBatch;i++){
-            real=labels_tensor[i].item<int>();
-            guess=pred[i].item<int>();
-            confusion_matrix[real][guess]++;
-            test_dataset_size++;
+        int beginIdx=(l-1)*INFERENCE_BATCH;
+        for(int i=0;i<thisBatchNum;i++){
+            thisBatchData.insert(thisBatchData.end(),test_dataset.data[beginIdx+i].begin(),test_dataset.data[beginIdx+i].end());
+            thisBatchLabels.push_back(test_dataset.labels[beginIdx+i]);
         }
 
+        float *indata=new float[thisBatchNum*inputLen]; std::fill_n(indata,inputLen,class2label.size());
+        float *outdata=new float[thisBatchNum*outputLen]; std::fill_n(outdata,outputLen,class2label.size());
+        if (!thisBatchData.empty()){
+            memcpy(indata, &thisBatchData[0], thisBatchData.size()*sizeof(float));
+        }
+        doInference(*context, indata, outdata, thisBatchNum);
+
+        std::vector<std::vector<float>> output_vec;
+        std::vector<float> temp;
+        for (int i = 1; i <= outputLen*thisBatchNum; i++){
+            //std::cout << outdata[i-1] << ", ";
+            //output_tensor[i/outputLen][i%outputLen]=outdata[i];
+            temp.push_back(outdata[i-1]);
+            if(i%outputLen==0){
+                output_vec.push_back(temp);
+                temp.clear();
+            }
+        }//std::cout<<std::endl;
+
+        //auto pred = output_tensor.argmax(1);
+        //std::cout<<std::endl<<"pred.sizes()="<<pred.sizes()<<"pred.numel()="<<pred.numel()<<std::endl;
+
+        for(int i=0;i<thisBatchNum;i++){
+            int guess=max_element(output_vec[i].begin(), output_vec[i].end())-output_vec[i].begin();
+            int real=test_dataset.labels[beginIdx+i];
+            if(guess==real) correct ++;
+            confusion_matrix[real][guess]++;
+            //std::cout<<"confusion_matrix["<<real<<"]["<<guess<<"]++"<<std::endl;
+        }
     }
     qDebug()<<"test_dataset_size="<<test_dataset_size;
     qDebug()<< "correct:"<<correct;
-    //std::cout << "test_dataset_size:"<<test_dataset_size<<std::endl;
+
     Acc=test_dataset_size==0?0:static_cast<float> (correct) / (test_dataset_size);
     return 1;
 }
