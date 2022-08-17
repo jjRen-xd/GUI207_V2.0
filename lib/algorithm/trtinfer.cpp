@@ -10,7 +10,7 @@ TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2lab
 
 }
 
-void oneNormalization(std::vector<double> &list){
+void oneNormalization(std::vector<float> &list){
     //特征归一化
     float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
     //std::cout<<"maxdata"<<dMaxValue<<'\n';
@@ -21,101 +21,7 @@ void oneNormalization(std::vector<double> &list){
     }
 }
 
-void oneNormalization2(std::vector<float> &list){
-    //特征归一化
-    float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
-    //std::cout<<"maxdata"<<dMaxValue<<'\n';
-    float dMinValue = *min_element(list.begin(),list.end());  //求最小值
-    //std::cout<<"mindata"<<dMinValue<<'\n';
-    for (int f = 0; f < list.size(); ++f) {
-        list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
-    }
-}
-
-void getAllDataFromMat(std::string matPath,std::vector<torch::Tensor> &data,std::vector<int> &labels,int label,int inputLen){
-    MATFile* pMatFile = NULL;
-    mxArray* pMxArray = NULL;
-    // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
-    double* matdata;
-    pMatFile = matOpen(matPath.c_str(), "r");
-    if(!pMatFile){
-        qDebug()<<"(trtInfer:getDataFromMat)文件指针空！！！！！！";
-        return;
-    }
-    std::string matVariable="hrrp128";//假设数据变量名同文件名的话就filefullpath.split(".").last().toStdString().c_str()
-    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-    if(!pMxArray){
-        qDebug()<<"(trtInfer:getDataFromMat)pMxArray变量没找到！！！！！！";
-        return;
-    }
-    matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //行数
-    int N = mxGetN(pMxArray);  //列数
-    for(int i=0;i<N;i++){
-        std::vector<double> onesmp;//存当前遍历的一个样本
-        for(int j=0;j<M;j++){
-            onesmp.push_back(matdata[i*M+j]);
-        }
-        oneNormalization(onesmp);//归一化
-        torch::Tensor temp=torch::rand({inputLen});
-        for(int j=0;j<inputLen;j++){
-            temp[j]=onesmp[j%M];//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
-        }
-        //std::cout<<&temp<<std::endl;
-        data.push_back(temp);
-        labels.push_back(label);
-    }
-}
-
-void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<torch::Tensor> &data,
-                           std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen){
-    SearchFolder *dirTools = new SearchFolder();
-    // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
-    std::vector<std::string> subDirs;
-    dirTools->getDirs(subDirs, datasetPath);
-    for(auto &subDir: subDirs){
-        // 寻找每个子文件夹下的样本文件
-        std::vector<std::string> fileNames;
-        std::string subDirPath = datasetPath+"/"+subDir;
-        dirTools->getFiles(fileNames, type, subDirPath);
-        for(auto &fileName: fileNames){
-            //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
-            getAllDataFromMat(subDirPath+"/"+fileName,data,labels,class2label[subDir],inputLen);
-        }
-    }
-    return;
-}
-class CustomDataset: public torch::data::Dataset<CustomDataset>{
-private:
-    std::vector<torch::Tensor> data;
-    std::vector<int> labels;
-    std::map<std::string, int> class2label;
-    int inputLen;
-public:
-    CustomDataset(std::string dataSetPath, std::string type, std::map<std::string, int> class2label,int inputLen)
-        :class2label(class2label),inputLen(inputLen){
-        loadAllDataFromFolder(dataSetPath, type, data, labels, class2label,inputLen);
-//        for(int i=0;i<5;i++){
-//            torch::Tensor data_tensor = data.at(i);
-//            data_tensor=data_tensor.flatten();
-//            std::cout<<"data["<<i<<"]:"<< "data_tensor.sizes()="<< data_tensor.sizes()<<"  data_tensor.numel()="<< data_tensor.numel() << std::endl;
-//        }
-    }
-
-    torch::data::Example<> get(size_t index) override{
-        torch::Tensor data_tensor = data.at(index);
-        int label = labels.at(index);
-        torch::Tensor label_tensor = torch::full({1}, label, torch::kInt64);
-        return {data_tensor.clone(), label_tensor.clone()};
-    }
-
-    // Override size() function, return the length of data
-    torch::optional<size_t> size() const override{
-        return labels.size();
-    };
-};
-
-void getAllDataFromMat2(std::string matPath,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
+void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
@@ -139,7 +45,7 @@ void getAllDataFromMat2(std::string matPath,std::vector<std::vector<float>> &dat
         for(int j=0;j<M;j++){
             onesmp.push_back(matdata[i*M+j]);
         }
-        oneNormalization2(onesmp);//归一化
+        oneNormalization(onesmp);//归一化
         std::vector<float> temp;
         for(int j=0;j<inputLen;j++){
             temp.push_back(onesmp[j%M]);//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
@@ -150,7 +56,7 @@ void getAllDataFromMat2(std::string matPath,std::vector<std::vector<float>> &dat
     }
 }
 
-void loadAllDataFromFolder2(std::string datasetPath,std::string type,std::vector<std::vector<float>> &data,
+void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<std::vector<float>> &data,
                            std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen){
     SearchFolder *dirTools = new SearchFolder();
     // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
@@ -163,20 +69,20 @@ void loadAllDataFromFolder2(std::string datasetPath,std::string type,std::vector
         dirTools->getFiles(fileNames, type, subDirPath);
         for(auto &fileName: fileNames){
             //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
-            getAllDataFromMat2(subDirPath+"/"+fileName,data,labels,class2label[subDir],inputLen);
+            getAllDataFromMat(subDirPath+"/"+fileName,data,labels,class2label[subDir],inputLen);
         }
     }
     return;
 }
 
-class CustomDataset2{
+class CustomDataset{
 public:
     std::vector<std::vector<float>> data;
     std::vector<int> labels;
     std::map<std::string, int> class2label;
-    CustomDataset2(std::string dataSetPath, std::string type, std::map<std::string, int> class2label,int inputLen)
+    CustomDataset(std::string dataSetPath, std::string type, std::map<std::string, int> class2label,int inputLen)
         :class2label(class2label){
-        loadAllDataFromFolder2(dataSetPath, type, data, labels, class2label,inputLen);
+        loadAllDataFromFolder(dataSetPath, type, data, labels, class2label,inputLen);
 
     }
     int size(){
@@ -205,7 +111,7 @@ void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int inputLen
     int N = mxGetN(pMxArray);  //N=1000 列数
     if(emIdx>N) emIdx=N-1; //说明是随机数
 
-    std::vector<double> onesmp;//存当前样本
+    std::vector<float> onesmp;//存当前样本
     for(int i=0;i<M;i++){
         onesmp.push_back(matdata[emIdx*M+i]);
     }
@@ -367,7 +273,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     start = clock();
 
 
-    auto test_dataset = CustomDataset2(dataset_path, ".mat", class2label,inputLen);
+    auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
 
 //    auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
 //    auto test_loader = torch::data::make_data_loader(std::move(test_dataset), INFERENCE_BATCH);
