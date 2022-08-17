@@ -292,7 +292,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
     //std::cout<<"(TrtInfer::testAllSample) test_dataset_size"<<test_dataset_size<<std::endl;
 
     int correct=0,real=0,guess=0;
-    qDebug()<<"(TrtInfer::testAllSample) AAAAAAAAAAAA";
+    qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
     int test_dataset_size=0;
     for (const auto &batch : *test_loader){
         auto indata_tensor = batch.data;
@@ -335,7 +335,7 @@ void TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,floa
 
     }
     qDebug()<<"test_dataset_size="<<test_dataset_size;
-    std::cout << "correct:"<<correct<<std::endl;
+    qDebug()<< "correct:"<<correct;
     //std::cout << "test_dataset_size:"<<test_dataset_size<<std::endl;
     Acc=test_dataset_size==0?0:static_cast<float> (correct) / (test_dataset_size);
 }

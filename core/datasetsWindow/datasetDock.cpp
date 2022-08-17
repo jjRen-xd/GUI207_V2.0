@@ -130,10 +130,10 @@ void DatasetDock::onActionTrans(){//Radio to Hrrp
         for(auto &fileName: fileNames){
             sourcePath=subDirPath+"/"+fileName;
             destPath=destDataSetPath+"/"+subDir+"/"+fileName;
-            if (!ToHRRPInitialize()) {qDebug()<<"Could not initialize ZSLAdd!";return;}
+            if (!ToHRRPInitialize()) {qDebug()<<"Could not initialize ToHRRP!";return;}
             mwArray sPath(sourcePath.c_str());
             mwArray dPath(destPath.c_str());
-            mwArray tranF("0");
+            mwArray tranF("0");//保存ToHRRP返回的值
             ToHRRP(1,tranF,sPath,dPath);//调用
         }
     }
