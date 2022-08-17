@@ -16,5 +16,8 @@
         <onnxmodel.trt nameID="4">
             <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>
         </onnxmodel.trt>
+        <temp_500.trt nameID="5">
+            <PATH>E:/207Project/GUI207_V2.0/db/models/temp_500.trt</PATH>
+        </temp_500.trt>
     </TRA_DL>
 </globalModelInfo>
