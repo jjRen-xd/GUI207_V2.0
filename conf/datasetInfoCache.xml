@@ -2,20 +2,20 @@
 <globalDatasetInfo datasetTypeNum="5">
     <FEATURE typeID="1">
         <radiomat_1x101_HRRP_FEATURE nameID="1">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP_FEATURE</PATH>
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP_FEATURE</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </radiomat_1x101_HRRP_FEATURE>
     </FEATURE>
     <HRRP typeID="2">
         <radiomat_1x101_HRRP nameID="2">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </radiomat_1x101_HRRP>
     </HRRP>
     <IMAGE typeID="3" />
     <RADIO typeID="4">
         <radiomat_1x101 nameID="3">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </radiomat_1x101>
     </RADIO>
