@@ -5,7 +5,7 @@
     <INCRE typeID="3" />
     <TRA_DL typeID="4">
         <densenet121_hrrp_128.trt nameID="1">
-            <PATH>D:/lyh/GUI207_V2.0/db/models/densenet121_hrrp_128.trt</PATH>
+            <PATH>E:/207Project/GUI207_V2.0/db/models/densenet121_hrrp_128.trt</PATH>
         </densenet121_hrrp_128.trt>
         <onnxmodel.trt nameID="4">
             <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>

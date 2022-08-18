@@ -159,6 +159,7 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
 
     cudaMemcpyAsync(buffers[0], input, batchsize * inputLen * sizeof(float), cudaMemcpyHostToDevice, stream);
     //qDebug()<< "Start to infer ..." ;
+//    context.enqueue(batchsize, buffers, stream, nullptr);
     context.enqueueV2(buffers, stream, nullptr);
     cudaMemcpyAsync(output, buffers[1], batchsize * outputLen * sizeof(float), cudaMemcpyDeviceToHost, stream);
     cudaStreamSynchronize(stream);
@@ -272,7 +273,6 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
     }
 
 
-
     qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
     qDebug()<<"(TrtInfer::testAllSample) inputLen==="<<inputLen;
 
@@ -287,14 +287,6 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
     //qDebug()<<"(TrtInfer::testAllSample) DataSetsize: "<<test_dataset.data.size()<<"LabelSize: "<<test_dataset.labels.size();
     qDebug()<<"(TrtInfer::testAllSample) 数据加载用时: "<<(double)(end-start)/CLOCKS_PER_SEC;
 
-        float *indata=new float[thisBatchNum*inputLen]; std::fill_n(indata,inputLen,class2label.size());
-        float *outdata=new float[thisBatchNum*outputLen]; std::fill_n(outdata,outputLen,class2label.size());
-        if (!thisBatchData.empty()){
-            memcpy(indata, &thisBatchData[0], thisBatchData.size()*sizeof(float));
-        }
-//        for(int i=0;i<thisBatchNum*inputLen;i++){
-//            std::cout<<indata[i]<<" ";
-//        }return;
     for(int l=1;l<=ceil(test_dataset_size/INFERENCE_BATCH);l++){            //分批喂数据
         std::vector<float> thisBatchData;
         std::vector<float> thisBatchLabels;
@@ -313,7 +305,7 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
         if (!thisBatchData.empty()){
             memcpy(indata, &thisBatchData[0], thisBatchData.size()*sizeof(float));
         }
-        doInference(*context, indata, outdata, thisBatchNumNum);
+        doInference(*context, indata, outdata, thisBatchNum);
 
         std::vector<std::vector<float>> output_vec;
         std::vector<float> temp;
