@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="5">
-
+    <FEATURE typeID="1" />
+    <HRRP typeID="2" />
+    <IMAGE typeID="3" />
+    <RADIO typeID="4" />
+    <RCS typeID="5" />
 </globalDatasetInfo>

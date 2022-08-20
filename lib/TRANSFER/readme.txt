@@ -1,4 +1,4 @@
-ToHRRP C++ Shared Library
+ToHrrp C++ Shared Library
 
 1. Prerequisites for Deployment 
 
@@ -34,10 +34,10 @@ Files for the generic interface can be found in the v2\generic_interface subdire
 
 Files to Package for the Legacy Interface
 =========================================
--ToHRRP.ctf (component technology file) 
--ToHRRP.dll
--ToHRRP.h
--ToHRRP.lib
+-ToHrrp.ctf (component technology file) 
+-ToHrrp.dll
+-ToHrrp.h
+-ToHrrp.lib
 -MCRInstaller.exe 
     Note: if end users are unable to download the MATLAB Runtime using the
     instructions in the previous section, include it when building your 
@@ -48,7 +48,7 @@ Files to Package for the Legacy Interface
 Files to Package for the Generic Interface
 (in the v2\generic_interface subdirectory)
 ==========================================
--ToHRRP.ctf (component technology file) 
+-ToHrrp.ctf (component technology file) 
 -readme.txt
 
 3. Definitions

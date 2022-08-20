@@ -1,11 +1,11 @@
 //
 // MATLAB Compiler: 8.4 (R2022a)
-// Date: Thu Aug 11 11:06:41 2022
-// Arguments: "-B""macro_default""-W""cpplib:ToHRRP""-T""link:lib""ToHRRP.m""-C"
+// Date: Sat Aug 20 10:52:00 2022
+// Arguments: "-B""macro_default""-W""cpplib:ToHrrp""-T""link:lib""ToHrrp""-C"
 //
 
-#define EXPORTING_ToHRRP 1
-#include "ToHRRP.h"
+#define EXPORTING_ToHrrp 1
+#include "ToHrrp.h"
 
 static HMCRINSTANCE _mcr_inst = NULL; /* don't use nullptr; this may be either C or C++ */
 
@@ -70,12 +70,12 @@ static int mclDefaultErrorHandler(const char *s)
 /* This symbol is defined in shared libraries. Define it here
  * (to nothing) in case this isn't a shared library. 
  */
-#ifndef LIB_ToHRRP_C_API
-#define LIB_ToHRRP_C_API /* No special import/export declaration */
+#ifndef LIB_ToHrrp_C_API
+#define LIB_ToHrrp_C_API /* No special import/export declaration */
 #endif
 
-LIB_ToHRRP_C_API 
-bool MW_CALL_CONV ToHRRPInitializeWithHandlers(
+LIB_ToHrrp_C_API 
+bool MW_CALL_CONV ToHrrpInitializeWithHandlers(
     mclOutputHandlerFcn error_handler,
     mclOutputHandlerFcn print_handler)
 {
@@ -84,11 +84,11 @@ bool MW_CALL_CONV ToHRRPInitializeWithHandlers(
         return true;
     if (!mclmcrInitialize())
         return false;
-    if (!GetModuleFileName(GetModuleHandle("ToHRRP"), path_to_dll, _MAX_PATH))
+    if (!GetModuleFileName(GetModuleHandle("ToHrrp"), path_to_dll, _MAX_PATH))
         return false;
     bResult = mclInitializeComponentInstanceNonEmbeddedStandalone(&_mcr_inst,
         path_to_dll,
-        "ToHRRP",
+        "ToHrrp",
         LibTarget,
         error_handler, 
         print_handler);
@@ -97,21 +97,21 @@ bool MW_CALL_CONV ToHRRPInitializeWithHandlers(
     return true;
 }
 
-LIB_ToHRRP_C_API 
-bool MW_CALL_CONV ToHRRPInitialize(void)
+LIB_ToHrrp_C_API 
+bool MW_CALL_CONV ToHrrpInitialize(void)
 {
-    return ToHRRPInitializeWithHandlers(mclDefaultErrorHandler, mclDefaultPrintHandler);
+    return ToHrrpInitializeWithHandlers(mclDefaultErrorHandler, mclDefaultPrintHandler);
 }
 
-LIB_ToHRRP_C_API 
-void MW_CALL_CONV ToHRRPTerminate(void)
+LIB_ToHrrp_C_API 
+void MW_CALL_CONV ToHrrpTerminate(void)
 {
     if (_mcr_inst)
         mclTerminateInstance(&_mcr_inst);
 }
 
-LIB_ToHRRP_C_API 
-void MW_CALL_CONV ToHRRPPrintStackTrace(void) 
+LIB_ToHrrp_C_API 
+void MW_CALL_CONV ToHrrpPrintStackTrace(void) 
 {
     char** stackTrace;
     int stackDepth = mclGetStackTrace(&stackTrace);
@@ -125,16 +125,16 @@ void MW_CALL_CONV ToHRRPPrintStackTrace(void)
 }
 
 
-LIB_ToHRRP_C_API 
-bool MW_CALL_CONV mlxToHRRP(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[])
+LIB_ToHrrp_C_API 
+bool MW_CALL_CONV mlxToHrrp(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[])
 {
-    return mclFeval(_mcr_inst, "ToHRRP", nlhs, plhs, nrhs, prhs);
+    return mclFeval(_mcr_inst, "ToHrrp", nlhs, plhs, nrhs, prhs);
 }
 
-LIB_ToHRRP_CPP_API 
-void MW_CALL_CONV ToHRRP(int nargout, mwArray& retn, const mwArray& sPath, const mwArray& 
-                         dPath)
+LIB_ToHrrp_CPP_API 
+void MW_CALL_CONV ToHrrp(int nargout, mwArray& retn, const mwArray& sPath, const mwArray& 
+                         dPath, const mwArray& sName)
 {
-    mclcppMlfFeval(_mcr_inst, "ToHRRP", nargout, 1, 2, &retn, &sPath, &dPath);
+    mclcppMlfFeval(_mcr_inst, "ToHrrp", nargout, 1, 3, &retn, &sPath, &dPath, &sName);
 }
 

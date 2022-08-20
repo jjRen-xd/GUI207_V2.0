@@ -23,7 +23,7 @@ in the MathWorks Documentation Center.
 
 Files to Package for the Generic Interface
 ==========================================
--ToHRRP.ctf (component technology file) 
+-ToHrrp.ctf (component technology file) 
 -This readme file
 
 3. Definitions

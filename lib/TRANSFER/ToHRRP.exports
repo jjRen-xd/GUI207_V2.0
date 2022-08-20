@@ -1,6 +1,6 @@
-ToHRRPInitialize
-ToHRRPInitializeWithHandlers
-ToHRRPTerminate
-ToHRRPPrintStackTrace
-mlxToHRRP
+ToHrrpInitialize
+ToHrrpInitializeWithHandlers
+ToHrrpTerminate
+ToHrrpPrintStackTrace
+mlxToHrrp
 

@@ -1,8 +1,8 @@
-function retn = ToHrrp(sPath,dPath)
-    
+function retn = ToHrrp(sPath,dPath,sName)
+
     retn=0;
     data6 = load(sPath);
-    data6 = getfield(data6,'radio101');
+    data6 = getfield(data6,sName);
     
     X = data6;
     
@@ -22,12 +22,11 @@ function retn = ToHrrp(sPath,dPath)
     
     x = zeros(N_fft, dataNum);
     for n = 1:dataNum
-        Xw = X(:,n).*w; % 扫频数据加窗
-        x(:,n) = ifftshift(ifft(Xw,N_fft))*point; %IFFT变换到时�?
+        Xw = X(:,n).*w;
+        x(:,n) = ifftshift(ifft(Xw,N_fft))*point;
     end
-    x = x./maxRng0; %去除加窗对幅度的影响
-    hrrp128 = log(abs(x));
-    % x_dB = log(abs(x))/log(20);
-    save(dPath,'hrrp128')
+    x = x./maxRng0;
+    hrrp = log(abs(x));
+    save(dPath,'hrrp')
     retn=1;
 end

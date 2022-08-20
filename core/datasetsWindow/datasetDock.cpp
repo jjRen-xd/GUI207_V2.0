@@ -7,7 +7,7 @@
 #include <time.h>
 
 
-#pragma comment(lib,"ToHRRP.lib")
+#pragma comment(lib,"ToHrrp.lib")
 
 using namespace std;
 
@@ -99,7 +99,7 @@ void DatasetDock::deleteDataset(){
     return;
 }
 
-void DatasetDock::onActionTransRadio(){//Radio101 to Hrrp128
+void DatasetDock::onActionTransRadio(){//Radio to Hrrp
     QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->currentIndex();
     QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["RADIO"]->model())->itemFromIndex(curIndex);
     string clickedName = currItem->data(0).toString().toStdString();
@@ -132,12 +132,15 @@ void DatasetDock::onActionTransRadio(){//Radio101 to Hrrp128
 
         for(auto &fileName: fileNames){
             sourcePath=subDirPath+"/"+fileName;
-            destPath=destDataSetPath+"/"+subDir+"/"+"hrrp128";  //WARRRRRRRRRRING!
-            if (!ToHRRPInitialize()) {qDebug()<<"Could not initialize ToHRRP!";return;}
+            //WARRRRRRRRRRING!目前默认Resource数据集(Radio)里数据文件名等于文件里的矩阵名；
+            //而转出的Hrrp数据集里数据文件名和矩阵名写死为hrrp
+            destPath=destDataSetPath+"/"+subDir+"/"+"hrrp";
+            if (!ToHrrpInitialize()) {qDebug()<<"Could not initialize ToHRRP!";return;}
             mwArray sPath(sourcePath.c_str());
             mwArray dPath(destPath.c_str());
+            mwArray sName(fileName.substr(0,fileName.find_last_of('.')).c_str());
             mwArray tranF("0");
-            ToHRRP(1,tranF,sPath,dPath);//调用
+            ToHrrp(1,tranF,sPath,dPath,sName);//调用
         }
     }
     QMessageBox::information(NULL, "转换数据集", "Radio数据集转换成功！");
@@ -166,7 +169,7 @@ void DatasetDock::onActionExtractFea(){
     string clickedName = currItem->data(0).toString().toStdString();
     std::string sourceDataSetPath = datasetInfo->getAttri("HRRP", clickedName, "PATH");
     std::string destDataSetPath=sourceDataSetPath+"_FEATURE";
-    std::string commd="python ../../db/datasets/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
+    std::string commd="python ../../lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
     qDebug()<<QString::fromStdString(commd);
     system(commd.c_str());
 //    Py_Initialize();
