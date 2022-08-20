@@ -171,7 +171,7 @@ void DatasetDock::onActionExtractFea(){
     std::string destDataSetPath=sourceDataSetPath+"_FEATURE";
     std::string commd="python ../../lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
     qDebug()<<QString::fromStdString(commd);
-    system(commd.c_str());
+    qDebug()<<system(commd.c_str());
 //    Py_Initialize();
 //    PyObject* pModule = NULL;
 //    PyObject* pFunc = NULL;

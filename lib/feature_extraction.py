@@ -41,7 +41,6 @@ def feature_extraction(read_path, save_path):
         # 判断文件夹与文件
         if os.path.isdir(folder_path+'/'+file_name[i]):
             folder_name.append(file_name[i])
-    folder_name.sort()  # 按文件夹名进行排序
 
     # 读取单个文件夹下的内容
     for i in range(0, len(folder_name)):
@@ -94,9 +93,11 @@ def feature_extraction(read_path, save_path):
         new_class_data_norm = fea_normalization(new_class_data)  # 归一化
         new_class_data_norm = np.array(new_class_data_norm).transpose()  # 将列表转换为数组
 
-        os.makedirs(save_path + '/' + folder_name[i])  # 建立转换后存储类别数据的文件夹
-        mat_path = save_path + '/' + folder_name[i] + '/' + class_mat_name[0]  # 转换完成后的.mat文件存储路径
-        sio.savemat(mat_path, {matrix_name: new_class_data_norm})  # 保存到.mat文件
+        if not os.path.exists(save_path + '/' + folder_name[i]):  # 判断文件夹是否存在
+            os.makedirs(save_path + '/' + folder_name[i])  # 建立转换后存储类别数据的文件夹
+        new_matrix_name = 'feature'
+        mat_path = save_path + '/' + folder_name[i] + '/' + new_matrix_name + os.path.splitext(matrix_base)[-1]  # 转换完成后的.mat文件存储路径
+        sio.savemat(mat_path, {new_matrix_name: new_class_data_norm})  # 保存到.mat文件
 
 
 if __name__ == '__main__':

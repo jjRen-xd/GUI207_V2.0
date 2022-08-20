@@ -3,7 +3,6 @@
     <FEATURE typeID="1">
         <radiomat_1x101_HRRP_FEATURE nameID="1">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP_FEATURE</PATH>
-            <dataFileFormat>mat</dataFileFormat>
         </radiomat_1x101_HRRP_FEATURE>
     </FEATURE>
     <HRRP typeID="2">
@@ -16,7 +15,16 @@
     <RADIO typeID="4">
         <radiomat_1x101 nameID="3">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
+            <azimuthAngle>[0, 90, 1]</azimuthAngle>
+            <claNum>6</claNum>
             <dataFileFormat>mat</dataFileFormat>
+            <datasetName>radiomat_1x101</datasetName>
+            <freq>10GHz</freq>
+            <incidentMode>水平入射</incidentMode>
+            <note>数据为MatLab随机生成</note>
+            <pitchAngle>0</pitchAngle>
+            <samplingNum>101</samplingNum>
+            <targetNumEachCla>5901</targetNumEachCla>
         </radiomat_1x101>
     </RADIO>
     <RCS typeID="5" />

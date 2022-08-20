@@ -6,10 +6,10 @@
 /temp
 GUI_V2.0.pro.user
 
-!/db/datasets/feature_extraction.py
-!/db/datasets/TRANSFER
-#conf/datasetInfoCache.xml
-#conf/modelInfoCache.xml
+#!/db/datasets/feature_extraction.py
+#!/db/datasets/TRANSFER
+/conf/datasetInfoCache.xml
+/conf/modelInfoCache.xml
 
 #!/db/models/model_here
 #!/lib\algorithm\code_here
