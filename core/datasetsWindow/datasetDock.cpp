@@ -152,7 +152,60 @@ void DatasetDock::onActionTransRadio(){//Radio to Hrrp
 void DatasetDock::onTreeViewMenuRequestedRadio(const QPoint &pos){
     QModelIndex curIndex = datasetTreeViewGroup["RADIO"]->indexAt(pos);
     if (curIndex.isValid()){ // 右键选中了有效index
+        QIcon transIcon = QApplication::style()->standardIcon(QStyle::SP_DesktopIcon);
+        // 创建菜单
+        QMenu menu;
+        menu.addAction(transIcon, tr("转换至HRRP"), this, &DatasetDock::onActionTransRadio);
+//        menu.addSeparator();
+//        menu.addAction(test, tr("测试"), this, &DatasetDock::onActionTest);
+        menu.exec(QCursor::pos());
+    }
+}
 
+void DatasetDock::onActionExtractFea(){
+    //system("python D:\\lyh\\GUI207_V2.0\\db\\datasets\\feature_extraction.py --data_path D:\\lyh\\GUI207_V2.0\\db\\datasets\\falseHRRPmat_1x128 --save_path D:\\lyh\\GUI207_V2.0\\db\\datasets\\fea_falseHRRPmat_1x128");
+    QModelIndex curIndex = datasetTreeViewGroup["HRRP"]->currentIndex();
+    QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["HRRP"]->model())->itemFromIndex(curIndex);
+    string clickedName = currItem->data(0).toString().toStdString();
+    std::string sourceDataSetPath = datasetInfo->getAttri("HRRP", clickedName, "PATH");
+    std::string destDataSetPath=sourceDataSetPath+"_FEATURE";
+    std::string commd="python ../../lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
+    qDebug()<<QString::fromStdString(commd);
+    system(commd.c_str());
+//    Py_Initialize();
+//    PyObject* pModule = NULL;
+//    PyObject* pFunc = NULL;
+
+//    PyRun_SimpleString("import sys");
+//    //PyRun_SimpleString("sys.path.append('.\')");
+//    //PyRun_SimpleString("sys.path.append('')");
+
+//    pModule = PyImport_ImportModule("feature_extraction");
+//    if( pModule == NULL ){
+//        qDebug()<<"(DatasetDock::onActionExtractFea)pModule not found" ;
+//        return ;
+//    }
+//    pFunc = PyObject_GetAttrString(pModule, "doinfer");
+//    PyObject* pArgs = PyTuple_New(2);
+
+//    PyTuple_SetItem(pArgs, 0, Py_BuildValue("s", sourceDataSetPath.c_str()));
+//    PyTuple_SetItem(pArgs, 1, Py_BuildValue("s", destDataSetPath.c_str()));
+//    PyObject* pReturn = PyObject_CallObject(pFunc, pArgs);//Excute
+//    int nResult;
+//    // i表示转换成int型变量。
+//    // PyArg_Parse的最后一个参数，必须加上“&”符号
+//    PyArg_Parse(pReturn, "i", &nResult);
+//    qDebug()<< "(DatasetDock::onActionExtractFea)feature_extraction return result is " << nResult ;
+//    Py_Finalize();
+
+    QMessageBox::information(NULL, "特征提取", "HRRP数据集特征提取成功！");
+    this->datasetInfo->modifyAttri("FEATURE", clickedName+"_FEATURE","PATH", destDataSetPath);
+    this->reloadTreeView();
+}
+
+void DatasetDock::onTreeViewMenuRequestedHrrp(const QPoint &pos){
+    QModelIndex curIndex = datasetTreeViewGroup["HRRP"]->indexAt(pos);
+    if (curIndex.isValid()){ // 右键选中了有效index
         QIcon transIcon = QApplication::style()->standardIcon(QStyle::SP_DesktopIcon);
         // 创建菜单
         QMenu menu;
