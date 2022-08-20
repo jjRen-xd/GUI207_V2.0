@@ -1,8 +1,8 @@
-LIBRARY ToHRRP
+LIBRARY ToHrrp
 EXPORTS
-ToHRRPInitialize
-ToHRRPInitializeWithHandlers
-ToHRRPTerminate
-ToHRRPPrintStackTrace
-mlxToHRRP
+ToHrrpInitialize
+ToHrrpInitializeWithHandlers
+ToHrrpTerminate
+ToHrrpPrintStackTrace
+mlxToHrrp
 

@@ -1,11 +1,11 @@
 //
 // MATLAB Compiler: 8.4 (R2022a)
-// Date: Thu Aug 11 11:06:41 2022
-// Arguments: "-B""macro_default""-W""cpplib:ToHRRP""-T""link:lib""ToHRRP.m""-C"
+// Date: Sat Aug 20 10:52:00 2022
+// Arguments: "-B""macro_default""-W""cpplib:ToHrrp""-T""link:lib""ToHrrp""-C"
 //
 
-#ifndef ToHRRP_h
-#define ToHRRP_h 1
+#ifndef ToHrrp_h
+#define ToHrrp_h 1
 
 #if defined(__cplusplus) && !defined(mclmcrrt_h) && defined(__linux__)
 #  pragma implementation "mclmcrrt.h"
@@ -19,32 +19,32 @@ extern "C" { // sbcheck:ok:extern_c
 /* This symbol is defined in shared libraries. Define it here
  * (to nothing) in case this isn't a shared library. 
  */
-#ifndef LIB_ToHRRP_C_API 
-#define LIB_ToHRRP_C_API /* No special import/export declaration */
+#ifndef LIB_ToHrrp_C_API 
+#define LIB_ToHrrp_C_API /* No special import/export declaration */
 #endif
 
 /* GENERAL LIBRARY FUNCTIONS -- START */
 
-extern LIB_ToHRRP_C_API 
-bool MW_CALL_CONV ToHRRPInitializeWithHandlers(
+extern LIB_ToHrrp_C_API 
+bool MW_CALL_CONV ToHrrpInitializeWithHandlers(
        mclOutputHandlerFcn error_handler, 
        mclOutputHandlerFcn print_handler);
 
-extern LIB_ToHRRP_C_API 
-bool MW_CALL_CONV ToHRRPInitialize(void);
+extern LIB_ToHrrp_C_API 
+bool MW_CALL_CONV ToHrrpInitialize(void);
 
-extern LIB_ToHRRP_C_API 
-void MW_CALL_CONV ToHRRPTerminate(void);
+extern LIB_ToHrrp_C_API 
+void MW_CALL_CONV ToHrrpTerminate(void);
 
-extern LIB_ToHRRP_C_API 
-void MW_CALL_CONV ToHRRPPrintStackTrace(void);
+extern LIB_ToHrrp_C_API 
+void MW_CALL_CONV ToHrrpPrintStackTrace(void);
 
 /* GENERAL LIBRARY FUNCTIONS -- END */
 
 /* C INTERFACE -- MLX WRAPPERS FOR USER-DEFINED MATLAB FUNCTIONS -- START */
 
-extern LIB_ToHRRP_C_API 
-bool MW_CALL_CONV mlxToHRRP(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[]);
+extern LIB_ToHrrp_C_API 
+bool MW_CALL_CONV mlxToHrrp(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[]);
 
 /* C INTERFACE -- MLX WRAPPERS FOR USER-DEFINED MATLAB FUNCTIONS -- END */
 
@@ -60,27 +60,27 @@ bool MW_CALL_CONV mlxToHRRP(int nlhs, mxArray *plhs[], int nrhs, mxArray *prhs[]
 /* On Windows, use __declspec to control the exported API */
 #if defined(_MSC_VER) || defined(__MINGW64__)
 
-#ifdef EXPORTING_ToHRRP
-#define PUBLIC_ToHRRP_CPP_API __declspec(dllexport)
+#ifdef EXPORTING_ToHrrp
+#define PUBLIC_ToHrrp_CPP_API __declspec(dllexport)
 #else
-#define PUBLIC_ToHRRP_CPP_API __declspec(dllimport)
+#define PUBLIC_ToHrrp_CPP_API __declspec(dllimport)
 #endif
 
-#define LIB_ToHRRP_CPP_API PUBLIC_ToHRRP_CPP_API
+#define LIB_ToHrrp_CPP_API PUBLIC_ToHrrp_CPP_API
 
 #else
 
-#if !defined(LIB_ToHRRP_CPP_API)
-#if defined(LIB_ToHRRP_C_API)
-#define LIB_ToHRRP_CPP_API LIB_ToHRRP_C_API
+#if !defined(LIB_ToHrrp_CPP_API)
+#if defined(LIB_ToHrrp_C_API)
+#define LIB_ToHrrp_CPP_API LIB_ToHrrp_C_API
 #else
-#define LIB_ToHRRP_CPP_API /* empty! */ 
+#define LIB_ToHrrp_CPP_API /* empty! */ 
 #endif
 #endif
 
 #endif
 
-extern LIB_ToHRRP_CPP_API void MW_CALL_CONV ToHRRP(int nargout, mwArray& retn, const mwArray& sPath, const mwArray& dPath);
+extern LIB_ToHrrp_CPP_API void MW_CALL_CONV ToHrrp(int nargout, mwArray& retn, const mwArray& sPath, const mwArray& dPath, const mwArray& sName);
 
 /* C++ INTERFACE -- WRAPPERS FOR USER-DEFINED MATLAB FUNCTIONS -- END */
 #endif
