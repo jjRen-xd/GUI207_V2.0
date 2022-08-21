@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="4">
-    <FEA_OPTI typeID="1" />
-    <FEA_RELE typeID="2" />
-    <INCRE typeID="3" />
-    <TRA_DL typeID="4" />
-</globalModelInfo>
