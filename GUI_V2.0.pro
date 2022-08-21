@@ -26,10 +26,9 @@ HEADERS += \
     core/modelTrainPage.h \
     core/sensePage.h \
     core/modelTrain.h \
-    lib/algorithm/libtorchTest.h \
-    lib/algorithm/logging.h \
     #lib/algorithm/libtorchTest.h \
     #lib/algorithm/onnxinfer.h \
+    lib/algorithm/logging.h \
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
