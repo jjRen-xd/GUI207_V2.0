@@ -5,10 +5,10 @@
     <INCRE typeID="3" />
     <TRA_DL typeID="4">
         <dense121_6class.trt nameID="1">
-            <PATH>E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt</PATH>
+            <PATH>E:/GitHub/dev_zyx/db/models/dense121_6class.trt</PATH>
         </dense121_6class.trt>
         <onnxmodel.trt nameID="2">
-            <PATH>E:/207Project/GUI207_V2.0/db/models/onnxmodel.trt</PATH>
+            <PATH>E:/GitHub/dev_zyx/db/models/onnxmodel.trt</PATH>
         </onnxmodel.trt>
     </TRA_DL>
 </globalModelInfo>

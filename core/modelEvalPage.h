@@ -55,6 +55,7 @@ public slots:
 
 signals:
     void stating(std::string choicedsamplePATH,std::string choicedmodelPATH,std::vector<float> &degrees);
+
 private:
 //    Ui_MainWindow *ui;
 //    BashTerminal *terminal;

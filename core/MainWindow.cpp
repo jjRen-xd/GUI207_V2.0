@@ -10,10 +10,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 	QRibbon::install(this);
 
     // 全局数据记录设置
-    this->globalDatasetInfo = new DatasetInfo("../../conf/datasetInfoCache.xml");
-    this->globalModelInfo = new ModelInfo("../../conf/modelInfoCache.xml");
-//    this->globalDatasetInfo = new DatasetInfo("E:/207Project/GUI207_V2.0/conf/datasetInfoCache.xml");
-//    this->globalModelInfo = new ModelInfo("E:/207Project/GUI207_V2.0/conf/modelInfoCache.xml");
+    this->globalDatasetInfo = new DatasetInfo("../conf/datasetInfoCache.xml");
+    this->globalModelInfo = new ModelInfo("../conf/modelInfoCache.xml");
 	
 	// 悬浮窗设置
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
@@ -41,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);
     this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo);
     this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
+    this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
 
 }
 
@@ -59,6 +58,9 @@ void MainWindow::switchPage(){
     else if(action==ui->action_Evaluate){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelEval);
         this->modelEvalPage->refreshGlobalInfo();
+    }
+    else if(action==ui->action_ModelTrain){
+        ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelTrain);
     }
 }
 
