@@ -2,13 +2,16 @@
 /.history/
 /db/datasets/*
 /build/*
-/GUI_V1.0.pro.user
+GUI_V1.0.pro.user
 /.qt_for_python/*
 GUI_V2.0.pro.user
 
 !/db/datasets/dataset_here
 !/db/models/model_here
 !/build/build_here
+
+conf/datasetInfoCache.xml
+conf/modelInfoCache.xml
 
 !/lib\algorithm\code_here
 !/lib\guiLogic\code_here
