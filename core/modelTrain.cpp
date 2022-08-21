@@ -77,9 +77,9 @@ void ModelTrain::startTrain(int modelType, QString dataDir, QString bathSize, QS
     QString cmd;
     modelTypeId = modelType;
     switch(modelType){
-        case 0:cmd = "activate TF2 && python ../db/bashs/hrrp/train.py"
+        case 0:cmd = "python ../../db/bashs/hrrp/train.py"
                     " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-        case 1:cmd = "activate TF2 && python ../db/bashs/afs/train.py"
+        case 1:cmd = "activate TF2 && python ../../db/bashs/afs/train.py"
                     " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
     }
     dataRoot = dataDir;

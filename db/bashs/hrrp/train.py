@@ -226,7 +226,8 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
     val_acc(h_parameter['accuracy'])
     save_model = tf.keras.models.load_model(args.data_dir+'/model_saving.hdf5')
     Y_test = np.argmax(y_test, axis=1)
-    y_pred = save_model.predict_classes(x_test)
+    #y_pred = save_model.predict_classes(x_test)   
+    y_pred = np.argmax(save_model.predict(x_test), axis=1)
     labels = folder_name  # 标签显示
     characteristic_matrix, accuracy_every_class = storage_characteristic_matrix(y_pred, Y_test, class_num)
     show_confusion_matrix(labels, characteristic_matrix)

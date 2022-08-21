@@ -20,6 +20,7 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
     connect(ui->action_import_HRRP, &QAction::triggered, this, [this]{importDataset("HRRP");});
     connect(ui->action_import_RCS, &QAction::triggered, this, [this]{importDataset("RCS");});
     connect(ui->action_import_RADIO, &QAction::triggered, this, [this]{importDataset("RADIO");});
+    connect(ui->action_import_FEATURE, &QAction::triggered, this, [this]{importDataset("FEATURE");});
     connect(ui->action_import_IMAGE, &QAction::triggered, this, [this]{importDataset("IMAGE");});
 
     // 数据集删除事件
