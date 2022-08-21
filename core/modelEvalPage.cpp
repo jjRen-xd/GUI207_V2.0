@@ -40,9 +40,6 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     // 测试按钮
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
-//    choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
-//    choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
-//    choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
 }
 
 ModelEvalPage::~ModelEvalPage(){
@@ -109,11 +106,11 @@ void ModelEvalPage::randSample(){
                 mxArray* pMxArray = NULL;
                 pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
                 if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
-                std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+                std::string matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
 
                 QString chartTitle="Temporary Title";
-                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]"; matVariable="hrrp128";}
-                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title"; matVariable="radio101";}
+                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}// matVariable="hrrp128";}
+                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title";}// matVariable="radio101";}
 
                 pMxArray = matGetVariable(pMatFile,matVariable.c_str());
                 if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
@@ -276,3 +273,4 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     ui->horizontalLayout_degreeChart->addWidget(view);
     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
+

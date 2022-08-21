@@ -23,11 +23,12 @@ HEADERS += \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
     core/modelsWindow/modelDock.h \
-    core/modeltrainpage.h \
+    core/modelTrainPage.h \
     core/sensePage.h \
-    lib/algorithm/logging.h \
+    core/modelTrain.h \
     #lib/algorithm/libtorchTest.h \
     #lib/algorithm/onnxinfer.h \
+    lib/algorithm/logging.h \
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
@@ -47,6 +48,8 @@ SOURCES += \
     core/datasetsWindow/datasetDock.cpp \
     core/modelChoicePage.cpp \
     core/modelEvalPage.cpp \
+    core/modelTrainPage.cpp \
+    core/modelTrain.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
     #lib/algorithm/libtorchTest.cpp \

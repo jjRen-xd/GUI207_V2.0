@@ -5,7 +5,7 @@
 #include <Windows.h> //for sleep
 using namespace nvinfer1;
 static Logger gLogger;
-
+int n=0;
 TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2label){
 
 }
@@ -22,24 +22,29 @@ void oneNormalization(std::vector<float> &list){
 }
 
 void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
+    qDebug()<<"this is number "<<n++;
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
     double* matdata;
     pMatFile = matOpen(matPath.c_str(), "r");
     if(!pMatFile){
-        qDebug()<<"(trtInfer:getDataFromMat)文件指针空！！！！！！";
+        qDebug()<<"(trtInfer:getAllDataFromMat)文件指针空！！！！！！";
         return;
     }
-    std::string matVariable="hrrp128";//假设数据变量名同文件名的话就filefullpath.split(".").last().toStdString().c_str()
+    std::string matVariable=matPath.substr(
+                matPath.find_last_of('/')+1,
+                matPath.find_last_of('.')-matPath.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
+    qDebug()<<"(trtInfer:getAllDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
     pMxArray = matGetVariable(pMatFile,matVariable.c_str());
     if(!pMxArray){
-        qDebug()<<"(trtInfer:getDataFromMat)pMxArray变量没找到！！！！！！";
+        qDebug()<<"(trtInfer:getAllDataFromMat)pMxArray变量没找到！！！！！！";
         return;
     }
     matdata = (double*)mxGetData(pMxArray);
     int M = mxGetM(pMxArray);  //行数
     int N = mxGetN(pMxArray);  //列数
+
     for(int i=0;i<N;i++){
         std::vector<float> onesmp;//存当前遍历的一个样本
         for(int j=0;j<M;j++){
@@ -83,7 +88,6 @@ public:
     CustomDataset(std::string dataSetPath, std::string type, std::map<std::string, int> class2label,int inputLen)
         :class2label(class2label){
         loadAllDataFromFolder(dataSetPath, type, data, labels, class2label,inputLen);
-
     }
     int size(){
         return labels.size();
@@ -100,15 +104,19 @@ void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int inputLen
         qDebug()<<"(trtInfer:getDataFromMat)文件指针空！！！！！！";
         return;
     }
-    std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+
+    std::string matVariable=targetMatFile.substr(
+                targetMatFile.find_last_of('/')+1,
+                targetMatFile.find_last_of('.')-targetMatFile.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
+    qDebug()<<"(trtInfer:getDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
     pMxArray = matGetVariable(pMatFile,matVariable.c_str());
     if(!pMxArray){
         qDebug()<<"(trtInfer:getDataFromMat)pMxArray变量没找到！！！！！！";
         return;
     }
     matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M=128 行数
-    int N = mxGetN(pMxArray);  //N=1000 列数
+    int M = mxGetM(pMxArray);  //M行数
+    int N = mxGetN(pMxArray);  //N 列数
     if(emIdx>N) emIdx=N-1; //说明是随机数
 
     std::vector<float> onesmp;//存当前样本
@@ -280,6 +288,7 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
     clock_t start,end;
     start = clock();
     auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
+    qDebug()<<"HELLO";
     end = clock();
     int correct=0;
     qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
