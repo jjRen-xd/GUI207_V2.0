@@ -2,6 +2,7 @@
 /.history/
 /db/datasets/*
 /build/*
+GUI_V1.0.pro.user
 /.qt_for_python/*
 /temp
 GUI_V2.0.pro.user
@@ -11,10 +12,11 @@ GUI_V2.0.pro.user
 /conf/datasetInfoCache.xml
 /conf/modelInfoCache.xml
 
-#!/db/models/model_here
-#!/lib\algorithm\code_here
-#!/lib\guiLogic\code_here
-#!/api\api_here
+conf/datasetInfoCache.xml
+conf/modelInfoCache.xml
 
+!/lib\algorithm\code_here
+!/lib\guiLogic\code_here
+!/api\api_here
 conf/libtorch.pri
 

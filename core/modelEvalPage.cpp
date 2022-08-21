@@ -40,9 +40,6 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     // 测试按钮
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
-//    choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
-//    choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
-//    choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
 }
 
 ModelEvalPage::~ModelEvalPage(){
@@ -276,3 +273,4 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     ui->horizontalLayout_degreeChart->addWidget(view);
     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
+

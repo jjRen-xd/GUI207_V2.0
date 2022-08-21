@@ -48,8 +48,12 @@ DatasetDock::DatasetDock(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
 
     // 初始化TreeView
     reloadTreeView();
+
     for(auto &currTreeView: datasetTreeViewGroup){
-        connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));}
+        //链接节点点击事件
+        //重复绑定信号和槽函数导致bug弹窗已修复
+        connect(currTreeView.second, SIGNAL(clicked(QModelIndex)), this, SLOT(treeItemClicked(QModelIndex)));
+    }
 }
 
 DatasetDock::~DatasetDock(){
@@ -260,6 +264,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
     }
     // 获取所有类别子文件夹
     string rootPath = datasetInfo->getAttri(previewType, previewName, "PATH");
+    ui->datadirEdit->setText(QString::fromStdString(rootPath));
     vector<string> subDirNames;
     if(dirTools->getDirs(subDirNames, rootPath)){
         //先确定数据集中数据文件的format
