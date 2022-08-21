@@ -4,7 +4,7 @@
 /build/*
 /GUI_V1.0.pro.user
 /.qt_for_python/*
-/GUI_V2.0.pro.user
+GUI_V2.0.pro.user
 
 !/db/datasets/dataset_here
 !/db/models/model_here
