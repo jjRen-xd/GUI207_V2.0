@@ -1,6 +1,7 @@
 /.vscode/
 /.history/
 /db/datasets/*
+/db/models/*
 /build/*
 GUI_V1.0.pro.user
 /.qt_for_python/*

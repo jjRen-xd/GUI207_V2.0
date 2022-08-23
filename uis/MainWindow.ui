@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>493</width>
-             <height>1081</height>
+             <width>494</width>
+             <height>1097</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1412,8 +1412,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>618</width>
-             <height>551</height>
+             <width>622</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2269,8 +2269,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>322</width>
-               <height>468</height>
+               <width>308</width>
+               <height>491</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3493,8 +3493,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>386</width>
-               <height>599</height>
+               <width>390</width>
+               <height>591</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3782,8 +3782,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>731</width>
-             <height>579</height>
+             <width>743</width>
+             <height>589</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -5151,7 +5151,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -5194,6 +5194,7 @@
      <addaction name="action_import_HRRP"/>
      <addaction name="action_import_RCS"/>
      <addaction name="action_import_RADIO"/>
+     <addaction name="action_import_FEATURE"/>
      <addaction name="action_import_IMAGE"/>
     </widget>
     <addaction name="submenu_import_dataset"/>
@@ -5526,6 +5527,14 @@
    </property>
    <property name="toolTip">
     <string>模型训练</string>
+   </property>
+  </action>
+  <action name="action_import_FEATURE">
+   <property name="text">
+    <string>导入特征数据</string>
+   </property>
+   <property name="toolTip">
+    <string>导入特征数据</string>
    </property>
   </action>
  </widget>
