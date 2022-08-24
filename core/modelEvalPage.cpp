@@ -170,7 +170,11 @@ void  ModelEvalPage::testOneSample(){
         //classnum==(datasetInfo->selectedClassNames.size())
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        trtInfer->testOneSample(choicedSamplePATH, this->emIndex,choicedModelPATH, &predIdx, degrees);
+        std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
+        std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
+        bool dataProcess=true;
+        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
+        trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees);
 
         //onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
@@ -215,7 +219,9 @@ void ModelEvalPage::testAllSample(){
         std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
         //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, inferBatch, acc, confusion_matrix)){
+        bool dataProcess=true;
+        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
+        if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, inferBatch, dataProcess, acc, confusion_matrix)){
             return ;
         }
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");

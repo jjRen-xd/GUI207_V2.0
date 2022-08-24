@@ -5,7 +5,7 @@
 #include <Windows.h> //for sleep
 using namespace nvinfer1;
 static Logger gLogger;
-int n=0;
+
 TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2label){
 
 }
@@ -21,8 +21,20 @@ void oneNormalization(std::vector<float> &list){
     }
 }
 
-void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
-    qDebug()<<"this is number "<<n++;
+void softmax(std::vector<float> &input){
+    float maxn = 0.0;
+    float sum= 0.0;
+    maxn = *max_element(input.begin(), input.end());
+
+    std::for_each(input.begin(), input.end(), [maxn,&sum](float& d) {d=exp(d-maxn);sum+=d;}); //cmath c11
+
+    std::for_each(input.begin(), input.end(), [sum](float& d) { d=d/sum;});
+
+    return ;
+}
+
+void getAllDataFromMat(std::string matPath,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
+
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
@@ -35,7 +47,7 @@ void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data
     std::string matVariable=matPath.substr(
                 matPath.find_last_of('/')+1,
                 matPath.find_last_of('.')-matPath.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
-    qDebug()<<"(trtInfer:getAllDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
+    //qDebug()<<"(trtInfer:getAllDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
     pMxArray = matGetVariable(pMatFile,matVariable.c_str());
     if(!pMxArray){
         qDebug()<<"(trtInfer:getAllDataFromMat)pMxArray变量没找到！！！！！！";
@@ -50,7 +62,7 @@ void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data
         for(int j=0;j<M;j++){
             onesmp.push_back(matdata[i*M+j]);
         }
-        oneNormalization(onesmp);//归一化
+        if(dataProcess) oneNormalization(onesmp);//归一化
         std::vector<float> temp;
         for(int j=0;j<inputLen;j++){
             temp.push_back(onesmp[j%M]);//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
@@ -61,7 +73,7 @@ void getAllDataFromMat(std::string matPath,std::vector<std::vector<float>> &data
     }
 }
 
-void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<std::vector<float>> &data,
+void loadAllDataFromFolder(std::string datasetPath,std::string type,bool dataProcess,std::vector<std::vector<float>> &data,
                            std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen){
     SearchFolder *dirTools = new SearchFolder();
     // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
@@ -74,7 +86,7 @@ void loadAllDataFromFolder(std::string datasetPath,std::string type,std::vector<
         dirTools->getFiles(fileNames, type, subDirPath);
         for(auto &fileName: fileNames){
             //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
-            getAllDataFromMat(subDirPath+"/"+fileName,data,labels,class2label[subDir],inputLen);
+            getAllDataFromMat(subDirPath+"/"+fileName,dataProcess,data,labels,class2label[subDir],inputLen);
         }
     }
     return;
@@ -85,16 +97,16 @@ public:
     std::vector<std::vector<float>> data;
     std::vector<int> labels;
     std::map<std::string, int> class2label;
-    CustomDataset(std::string dataSetPath, std::string type, std::map<std::string, int> class2label,int inputLen)
+    CustomDataset(std::string dataSetPath, bool dataProcess, std::string type, std::map<std::string, int> class2label,int inputLen)
         :class2label(class2label){
-        loadAllDataFromFolder(dataSetPath, type, data, labels, class2label,inputLen);
+        loadAllDataFromFolder(dataSetPath, type,dataProcess, data, labels, class2label,inputLen);
     }
     int size(){
         return labels.size();
     };
 };
 
-void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int inputLen){
+void getDataFromMat(std::string targetMatFile,int emIdx,bool dataProcess,float *data,int inputLen){
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
@@ -123,7 +135,7 @@ void getDataFromMat(std::string targetMatFile,int emIdx,float *data,int inputLen
     for(int i=0;i<M;i++){
         onesmp.push_back(matdata[emIdx*M+i]);
     }
-    oneNormalization(onesmp);//归一化
+    if(dataProcess) oneNormalization(onesmp);//归一化
     for(int i=0;i<inputLen;i++){
         data[i]=onesmp[i%M];//matlab按列存储
     }
@@ -178,7 +190,9 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
     //qDebug()<< "Inference Done." ;
 }
 
-void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string modelPath, int *predIdx,std::vector<float> &degrees){
+void TrtInfer::testOneSample(
+        std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
+        int *predIdx,std::vector<float> &degrees){
     //qDebug() << "(OnnxInfer::testOneSample)子线程id：" << QThread::currentThreadId();
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
@@ -219,30 +233,35 @@ void TrtInfer::testOneSample(std::string targetPath, int emIndex, std::string mo
     //ready to send data to context
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
-    getDataFromMat(targetPath,emIndex,indata,inputLen);
-//    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+    getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
+    //for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
 //    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
-    //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
+    qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
     doInference(*context, indata, outdata, 1);
     std::cout<<"======================================================"<<std::endl;
 //    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
 //    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
     torch::Tensor output_tensor = torch::ones({outputLen});
-    std::cout << "(TrtInfer::testOneSample)output_tensor:  ";
+    std::cout << "(TrtInfer::testOneSample)outdata:  ";
+    float outdatasum=0.0;
     for (unsigned int i = 0; i < outputLen; i++){
         std::cout << outdata[i] << ", ";
+        outdatasum+=outdata[i];
         output_tensor[i]=outdata[i];
-    }
-    //output_tensor = torch::softmax(output_tensor, 0).flatten();
+    }std::cout<<std::endl;
+    //和不为1说明网络模型最后一层不是softmax，就主动做一下softmax
+    if(abs(outdatasum-1.0)>1e-8) output_tensor = torch::softmax(output_tensor, 0).flatten();
     int pred=output_tensor.argmax(0).item<int>();
-    //int classnum=5;
+    //for(int i=0;i<outputLen;i++) std::cout<<output_tensor[i]<<" ";std::cout<<std::endl;
     qDebug()<< "(TrtInfer::testOneSample)predicted label:"<<QString::number(pred);
     std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
     degrees=output;
     *predIdx=pred;
 }
 
-bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int inferBatch, float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+bool TrtInfer::testAllSample(
+        std::string dataset_path,std::string modelPath,int inferBatch, bool dataProcess,
+        float &Acc,std::vector<std::vector<int>> &confusion_matrix){
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created successfully.";
     else qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -254,6 +273,7 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
     for (int i = 0; i < indims.nbDims; i++){
         if(i!=0) inputLen*=indims.d[i];
         inputdims.push_back(indims.d[i]);
+        qDebug()<<"indims[]"<<indims.d[i];
     }
     nvinfer1::Dims oudims = engine->getBindingDimensions(1);
     for (int i = 0; i < oudims.nbDims; i++){
@@ -264,7 +284,7 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return 0;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=100;
+    INFERENCE_BATCH=50;
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){
@@ -287,8 +307,8 @@ bool TrtInfer::testAllSample(std::string dataset_path,std::string modelPath,int 
     // LOAD DataSet
     clock_t start,end;
     start = clock();
-    auto test_dataset = CustomDataset(dataset_path, ".mat", class2label,inputLen);
-    qDebug()<<"HELLO";
+    auto test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label,inputLen);
+
     end = clock();
     int correct=0;
     qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
