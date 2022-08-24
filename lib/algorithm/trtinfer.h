@@ -26,8 +26,8 @@ public:
     void setBatchSize(int batchSize);//留出来的接口
 public slots:
 
-    void testOneSample(std::string targetPath, int emIndex, std::string modelPath, int *predIdx,std::vector<float> &degrees);
-    bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+    void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees);
+    bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, bool dataProcess, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
 
 private:
     nvinfer1::IBuilder* builder{ nullptr };
