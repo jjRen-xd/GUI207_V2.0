@@ -30,9 +30,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     }
 //    predIdx_future=predIdx_promise.get_future();
 //    degrees_future=degrees_promise.get_future();
-    // 先用libtorch
-//    libtorchTest = new LibtorchTest(class2label);
-//    onnxInfer = new OnnxInfer(class2label);
+
     trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
@@ -53,7 +51,10 @@ void ModelEvalPage::refreshGlobalInfo(){
     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
     //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    this->choicedModelPATH = modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
+        trtInfer = new TrtInfer(class2label);
+        this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+    }
     // 单样本测试下拉框刷新
     vector<string> comboBoxContents = datasetInfo->selectedClassNames;
     ui->comboBox_sampleType->clear();

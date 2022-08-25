@@ -241,21 +241,22 @@ void TrtInfer::testOneSample(
     std::cout<<"======================================================"<<std::endl;
 //    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
 //    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
-    torch::Tensor output_tensor = torch::ones({outputLen});
-    std::cout << "(TrtInfer::testOneSample)outdata:  ";
+
+    std::vector<float> output_vec;
+    //std::cout << "(TrtInfer::testOneSample)outdata:  ";
     float outdatasum=0.0;
     for (unsigned int i = 0; i < outputLen; i++){
-        std::cout << outdata[i] << ", ";
+        //std::cout << outdata[i] << ", ";
         outdatasum+=outdata[i];
-        output_tensor[i]=outdata[i];
+        output_vec.push_back(outdata[i]);
     }std::cout<<std::endl;
+
     //和不为1说明网络模型最后一层不是softmax，就主动做一下softmax
-    if(abs(outdatasum-1.0)>1e-8) output_tensor = torch::softmax(output_tensor, 0).flatten();
-    int pred=output_tensor.argmax(0).item<int>();
-    //for(int i=0;i<outputLen;i++) std::cout<<output_tensor[i]<<" ";std::cout<<std::endl;
+    if(abs(outdatasum-1.0)>1e-8) softmax(output_vec);
+
+    int pred = std::distance(output_vec.begin(),std::max_element(output_vec.begin(),output_vec.end()));
     qDebug()<< "(TrtInfer::testOneSample)predicted label:"<<QString::number(pred);
-    std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
-    degrees=output;
+    degrees=output_vec;
     *predIdx=pred;
 }
 

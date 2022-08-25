@@ -40,9 +40,6 @@ public:
 
     Ui_MainWindow *ui;
     BashTerminal *terminal;
-//    std::string choicedDatasetPATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
-//    std::string choicedModelPATH="E:/207Project/GUI207_V2.0/db/models/dense121_6class.trt";
-//    std::string choicedSamplePATH="E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/00.txt";
 
 public slots:
     void refreshGlobalInfo();
@@ -64,7 +61,7 @@ private:
 
 
     std::string choicedDatasetPATH;
-    std::string choicedModelPATH;
+    std::string choicedModelPATH=" ";
     std::string choicedSamplePATH;
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
