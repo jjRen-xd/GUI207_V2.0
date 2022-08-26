@@ -189,7 +189,7 @@ void Chart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, \
     qchart->addAxis(axisX, Qt::AlignBottom); //下：Qt::AlignBottom  上：Qt::AlignTop
     qchart->addAxis(axisY, Qt::AlignLeft);   //左：Qt::AlignLeft    右：Qt::AlignRight
     qchart->setContentsMargins(-10, -10, -10, -10);  //设置外边界全部为0
-    qchart->setMargins(QMargins(-35, 0, -5, -15));
+    qchart->setMargins(QMargins(-25, 0, -10, -15));
 }
 
 

@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="4">
-    <FEATURE typeID="1" />
-    <HRRP typeID="2" />
-    <IMAGE typeID="3" />
+    <HRRP typeID="1">
+        <falseHRRPmat_1x128 nameID="1">
+            <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
+            <dataFileFormat>mat</dataFileFormat>
+        </falseHRRPmat_1x128>
+    </HRRP>
+    <IMAGE typeID="2" />
+    <RADIO typeID="3" />
     <RCS typeID="4" />
 </globalDatasetInfo>

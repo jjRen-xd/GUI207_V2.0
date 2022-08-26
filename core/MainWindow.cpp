@@ -1,4 +1,4 @@
-﻿#include <QShortcut>
+#include <QShortcut>
 
 #include "MainWindow.h"
 
@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     // 全局数据记录设置
     this->globalDatasetInfo = new DatasetInfo("../../conf/datasetInfoCache.xml");
     this->globalModelInfo = new ModelInfo("../../conf/modelInfoCache.xml");
-	
+
 	// 悬浮窗设置
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);

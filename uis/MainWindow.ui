@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>493</width>
-             <height>1081</height>
+             <width>719</width>
+             <height>1131</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -121,8 +121,11 @@
                        <property name="text">
                         <string>一维距离像序列</string>
                        </property>
-                       <property name="checked">
+                       <property name="checkable">
                         <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
                        </property>
                       </widget>
                      </item>
@@ -1405,8 +1408,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>618</width>
-             <height>551</height>
+             <width>635</width>
+             <height>602</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1423,8 +1426,11 @@
                    <property name="text">
                     <string>传统深度学习模型</string>
                    </property>
-                   <property name="checked">
+                   <property name="checkable">
                     <bool>true</bool>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -2282,8 +2288,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>322</width>
-               <height>468</height>
+               <width>326</width>
+               <height>475</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3485,8 +3491,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>386</width>
-               <height>599</height>
+               <width>404</width>
+               <height>606</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3774,8 +3780,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>731</width>
-             <height>579</height>
+             <width>713</width>
+             <height>319</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -5133,7 +5139,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -5496,18 +5502,24 @@
    </property>
   </action>
   <action name="action_ModelTrain">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../sources/icon/train.png</normaloff>../sources/icon/train.png</iconset>
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/train.png</normaloff>:/icon/train.png</iconset>
    </property>
    <property name="text">
     <string>模型训练</string>
    </property>
    <property name="toolTip">
     <string>模型训练</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

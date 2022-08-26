@@ -167,7 +167,6 @@ void  ModelEvalPage::testOneSample(){
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         trtInfer->testOneSample(choicedSamplePATH, this->emIndex,choicedModelPATH,&predIdx, degrees);
-
         //onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        oneinferThread.detach();

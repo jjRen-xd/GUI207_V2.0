@@ -127,6 +127,10 @@ void ModelDock::importModel(string type){
 
 
 void ModelDock::deleteModel(){
+    if(previewType==""||previewName==""){
+        QMessageBox::information(NULL, "错误", "未选择任何模型!");
+        return;
+    }
     QMessageBox confirmMsg;
     confirmMsg.setText(QString::fromStdString("确认要删除模型："+previewType+"->"+previewName));
     confirmMsg.setStandardButtons(QMessageBox::No | QMessageBox::Yes);

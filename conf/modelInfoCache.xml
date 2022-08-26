@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="4">
-    <FEA_OPTI typeID="1" />
-    <FEA_RELE typeID="2" />
-    <INCRE typeID="3" />
-    <TRA_DL typeID="4" />
+<globalModelInfo datasetTypeNum="5">
+    < typeID="1" />
+    <FEA_OPTI typeID="2" />
+    <FEA_RELE typeID="3" />
+    <INCRE typeID="4" />
+    <TRA_DL typeID="5">
+        <dense121_6class.trt nameID="1">
+            <PATH>E:/GitHub/dev_zyx/db/models/dense121_6class.trt</PATH>
+        </dense121_6class.trt>
+        <onnxmodel.trt nameID="2">
+            <PATH>E:/GitHub/dev_zyx/db/models/onnxmodel.trt</PATH>
+        </onnxmodel.trt>
+    </TRA_DL>
 </globalModelInfo>
