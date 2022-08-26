@@ -122,7 +122,7 @@
                         <string>一维距离像</string>
                        </property>
                        <property name="checkable">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
                        <property name="checked">
                         <bool>false</bool>
@@ -1434,7 +1434,7 @@
                     <string>传统深度学习模型</string>
                    </property>
                    <property name="checkable">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -3788,8 +3788,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>743</width>
-             <height>589</height>
+             <width>694</width>
+             <height>290</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -5525,8 +5525,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../sources/icon/train.png</normaloff>../sources/icon/train.png</iconset>
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/train.png</normaloff>:/icon/train.png</iconset>
    </property>
    <property name="text">
     <string>模型训练</string>
