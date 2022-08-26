@@ -138,7 +138,6 @@ int DatasetInfo::loadFromXML(string xmlPath){
     //遍历该结点
     for(TiXmlElement *currTypeEle = RootElement->FirstChildElement(); currTypeEle != NULL; currTypeEle = currTypeEle->NextSiblingElement()){
         map<string, map<string,string>> datasetNameMap;
-
         // 遍历节点属性
         TiXmlAttribute *pAttr=currTypeEle->FirstAttribute();
         while( NULL != pAttr){
