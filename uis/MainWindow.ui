@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,7 +99,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>480</width>
+             <width>728</width>
              <height>1056</height>
             </rect>
            </property>
@@ -121,8 +121,11 @@
                        <property name="text">
                         <string>一维距离像</string>
                        </property>
+                       <property name="checkable">
+                        <bool>false</bool>
+                       </property>
                        <property name="checked">
-                        <bool>true</bool>
+                        <bool>false</bool>
                        </property>
                       </widget>
                      </item>
@@ -1412,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>605</width>
-             <height>533</height>
+             <width>745</width>
+             <height>586</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1430,8 +1433,11 @@
                    <property name="text">
                     <string>传统深度学习模型</string>
                    </property>
+                   <property name="checkable">
+                    <bool>false</bool>
+                   </property>
                    <property name="checked">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -5151,7 +5157,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="minimumSize">

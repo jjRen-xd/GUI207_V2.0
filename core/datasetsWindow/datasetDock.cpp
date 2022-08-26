@@ -89,17 +89,21 @@ void DatasetDock::importDataset(string type){
 }
 
 void DatasetDock::deleteDataset(){
+    if(previewType==""||previewName==""){
+        QMessageBox::information(NULL, "错误", "未选择任何数据集!");
+        return;
+    }
     QMessageBox confirmMsg;
     confirmMsg.setText(QString::fromStdString("确认要删除数据集："+previewType+"->"+previewName));
     confirmMsg.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     if(confirmMsg.exec() == QMessageBox::Yes){
         this->datasetInfo->deleteItem(previewType,previewName);
         this->reloadTreeView();
+        qDebug()<<"delete and writeToXML";
         this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
         terminal->print(QString::fromStdString("数据集删除成功:"+previewName));
         QMessageBox::information(NULL, "删除数据集", "数据集删除成功！");
     }
-    else{}
 
     return;
 }
@@ -275,9 +279,10 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
             dataFileFormat = QString::fromStdString(allFileWithTheClass[2]).split('.').last();//因为前两个是.和..
         }else{qDebug()<<QString::fromStdString(rootPath +"/"+subDirNames[0])<<"此路径下没有带后缀的数据文件,可能出错";}
         //给Cache加上数据集的数据文件类型  这意味着不点dataseTree
-        this->datasetInfo->modifyAttri(previewType, previewName ,"dataFileFormat", dataFileFormat.toStdString());
+        //this->datasetInfo->modifyAttri(previewType, previewName ,"dataFileFormat", dataFileFormat.toStdString());
+        //this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
         //qDebug()<<"数据集的dataFileFormat："<<QString::fromStdString(datasetInfo->getAttri(previewType, previewName, "dataFileFormat"));
-        this->datasetInfo->writeToXML(datasetInfo->defaultXmlPath);
+        
         for(int i = 0; i<chartGroup.size(); i++){
             srand((unsigned)time(NULL));
             // 随机选取类别
