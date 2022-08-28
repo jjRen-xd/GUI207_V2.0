@@ -14,7 +14,7 @@ class ModelTrain: public QObject{
     public:
         ModelTrain(QTextBrowser* Widget, QLabel* trainImg, QLabel* valImg, QLabel* confusionMat,
                    QTextEdit* timeRestEdit, QProgressBar* trainProgressBar);
-        void startTrain(int modelType, QString dataDir, QString bathSize, QString maxEpoch);   // 开放在终端运行命令接口
+        void startTrain(QString cmd);   // 开放在终端运行命令接口
         void stopTrain();
         ~ModelTrain();
 

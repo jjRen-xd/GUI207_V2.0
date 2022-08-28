@@ -1,0 +1,462 @@
+2022-05-21 21:45:29
+Namespace(all_class=5, batch_size=32, bound=0.3, increment_epoch=10, learning_rate=0.001, memory_size=200, old_class=4, pretrain_epoch=0, random_seed=2022, snr=2, task_size=1, test_ratio=0.5)
+Old_OA:tensor(100.)
+New_OA:tensor(100.)
+All_OA:tensor(100.)
+
+2022-05-21 21:45:53
+Namespace(all_class=5, batch_size=32, bound=0.3, increment_epoch=10, learning_rate=0.001, memory_size=200, old_class=4, pretrain_epoch=0, random_seed=2022, snr=2, task_size=1, test_ratio=0.5)
+Old_OA:tensor(100.)
+New_OA:tensor(100.)
+All_OA:tensor(100.)
+
+2022-05-21 21:58:39
+Namespace(all_class=5, batch_size=32, bound=0.3, increment_epoch=10, learning_rate=0.001, memory_size=200, old_class=3, pretrain_epoch=10, random_seed=2022, snr=2, task_size=1, test_ratio=0.5)
+Old_OA:tensor(100.)
+New_OA:tensor(100.)
+All_OA:tensor(100.)
+
+2022-05-24 15:57:54
+Namespace(all_class=5, batch_size=32, bound=0.3, increment_epoch=10, learning_rate=0.001, memory_size=200, old_class=3, pretrain_epoch=10, random_seed=2022, snr=2, task_size=1, test_ratio=0.5)
+Old_OA:tensor(100.)
+New_OA:tensor(100.)
+All_OA:tensor(100.)
+
+2022-07-29 17:12:28
+Namespace(all_class=5, batch_size=32, bound=0.3, increment_epoch=5, learning_rate=0.001, memory_size=200, old_class=4, pretrain_epoch=5, random_seed=2022, snr=2, task_size=1, test_ratio=0.5)
+Old_OA:tensor(100.)
+New_OA:tensor(100.)
+All_OA:tensor(100.)
+
+2022-07-30 20:24:22
+Namespace(all_class=5, batch_size=32, bound=0.3, increment_epoch=5, learning_rate=0.001, memory_size=200, old_class=4, pretrain_epoch=5, random_seed=2022, snr=2, task_size=1, test_ratio=0.5)
+Old_OA:tensor(100.)
+New_OA:tensor(100.)
+All_OA:tensor(100.)
+
+2022-07-30 22:58:39
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=5, learning_rate=0.001, memory_size=200, old_class=5, pretrain_epoch=5, random_seed=2022, task_size=1, test_ratio=0.5)
+Old_OA:tensor(87.1329)
+New_OA:tensor(83.7452)
+All_OA:tensor(86.6027)
+
+2022-07-30 23:41:22
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=100, learning_rate=0.001, memory_size=200, old_class=5, pretrain_epoch=100, random_seed=2022, task_size=1, test_ratio=0.5)
+Old_OA:tensor(88.1295)
+New_OA:tensor(82.1293)
+All_OA:tensor(87.1904)
+
+2022-07-31 13:27:53
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=100, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=100, random_seed=2022, task_size=1, test_ratio=0.5)
+Old_OA:tensor(90.7664)
+New_OA:tensor(84.1255)
+All_OA:tensor(89.7270)
+
+2022-07-31 14:23:23
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=50, random_seed=2022, task_size=1)
+Old_OA:tensor(93.1179)
+New_OA:tensor(49.6198)
+All_OA:tensor(88.4169)
+
+2022-07-31 14:38:40
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=10, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=10, random_seed=2022, task_size=1)
+Old_OA:tensor(89.3285)
+New_OA:tensor(59.7433)
+All_OA:tensor(86.1311)
+
+2022-07-31 15:03:48
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=10, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=10, random_seed=2022, task_size=1)
+Old_OA:tensor(89.3377)
+New_OA:tensor(85.5989)
+All_OA:tensor(88.7525)
+
+2022-07-31 15:40:56
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=20, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(87.6973)
+New_OA:tensor(74.8099)
+All_OA:tensor(83.0888)
+
+2022-07-31 15:45:50
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=20, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(83.8257)
+New_OA:tensor(83.0323)
+All_OA:tensor(83.4877)
+
+2022-07-31 15:56:00
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.001, memory_size=1000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(83.9492)
+New_OA:tensor(92.9183)
+All_OA:tensor(88.2657)
+
+2022-07-31 16:04:45
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.001, memory_size=1500, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(90.6253)
+New_OA:tensor(77.3764)
+All_OA:tensor(83.6456)
+
+2022-07-31 16:30:01
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=50, random_seed=2022, task_size=1)
+Old_OA:tensor(92.4597)
+New_OA:tensor(83.8403)
+All_OA:tensor(91.1106)
+
+2022-07-31 17:07:36
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(89.8051)
+New_OA:tensor(79.0875)
+All_OA:tensor(86.9042)
+
+2022-07-31 17:16:37
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(89.8051)
+New_OA:tensor(79.0875)
+All_OA:tensor(86.9042)
+
+2022-07-31 17:17:49
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(89.8051)
+New_OA:tensor(79.0875)
+All_OA:tensor(86.9042)
+
+2022-07-31 17:29:54
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=1e-05, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, task_size=1)
+Old_OA:tensor(92.0187)
+New_OA:tensor(82.8422)
+All_OA:tensor(88.7372)
+
+2022-07-31 17:41:13
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(89.8492)
+New_OA:tensor(83.2700)
+All_OA:tensor(87.0463)
+
+2022-07-31 17:43:47
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(89.8051)
+New_OA:tensor(79.0875)
+All_OA:tensor(85.2392)
+
+2022-07-31 17:44:44
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(92.4597)
+New_OA:tensor(83.8403)
+All_OA:tensor(88.7877)
+
+2022-07-31 17:46:40
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(92.4597)
+New_OA:tensor(83.8403)
+All_OA:tensor(88.7877)
+
+2022-07-31 17:48:28
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(92.4597)
+New_OA:tensor(83.8403)
+All_OA:tensor(88.7877)
+
+2022-07-31 17:48:41
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(89.8051)
+New_OA:tensor(79.0875)
+All_OA:tensor(85.2392)
+
+2022-07-31 17:52:17
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(89.8492)
+New_OA:tensor(83.2700)
+All_OA:tensor(87.0463)
+
+2022-07-31 17:55:58
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=100, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=100, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(89.8492)
+New_OA:tensor(83.2700)
+All_OA:tensor(87.0463)
+
+2022-07-31 18:43:58
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=100, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=100, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(84.3813)
+New_OA:tensor(80.7034)
+All_OA:tensor(83.8057)
+
+              precision    recall  f1-score   support
+
+           0       0.82      0.57      0.67      2951
+           1       1.00      0.84      0.91      2160
+           2       1.00      1.00      1.00      2092
+           3       1.00      1.00      1.00      2069
+           4       0.52      0.93      0.67      2067
+           5       1.00      0.81      0.89      2104
+
+    accuracy                           0.84     13443
+   macro avg       0.89      0.86      0.86     13443
+weighted avg       0.89      0.84      0.84     13443
+2022-07-31 20:42:32
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+Old_OA:tensor(91.9570)
+New_OA:tensor(88.9734)
+All_OA:tensor(91.4900)
+
+              precision    recall  f1-score   support
+
+           0       0.93      0.76      0.83      2951
+           1       1.00      0.94      0.97      2160
+           2       0.99      1.00      1.00      2092
+           3       0.98      1.00      0.99      2069
+           4       0.69      0.97      0.81      2067
+           5       1.00      0.89      0.94      2104
+
+    accuracy                           0.91     13443
+   macro avg       0.93      0.93      0.92     13443
+weighted avg       0.93      0.91      0.92     13443
+
+2022-07-31 20:55:57
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=0, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+pretrain_consume_time: 2.6226043701171875e-06
+increment_consume_time: 1.430511474609375e-06
+Old_OA:tensor(90.9163)
+New_OA:tensor(93.0608)
+All_OA:tensor(91.4967)
+
+              precision    recall  f1-score   support
+
+           0       0.91      0.72      0.80      2951
+           1       1.00      0.93      0.97      2160
+           2       0.99      1.00      1.00      2092
+           3       0.98      1.00      0.99      2069
+           4       0.67      0.97      0.79      2067
+           5       0.99      0.93      0.96      4208
+
+    accuracy                           0.91     15547
+   macro avg       0.92      0.93      0.92     15547
+weighted avg       0.93      0.91      0.92     15547
+
+2022-07-31 21:01:31
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=True, task_size=1)
+pretrain_consume_time: 2.1457672119140625e-06
+increment_consume_time: 276.79970049858093
+Old_OA:tensor(90.9163)
+New_OA:tensor(93.0608)
+All_OA:tensor(91.6832)
+
+              precision    recall  f1-score   support
+
+           0       0.88      0.72      0.79      2951
+           1       1.00      0.93      0.97      2160
+           2       0.99      1.00      0.99      2092
+           3       0.97      1.00      0.98      2069
+           4       0.66      0.97      0.78      2067
+           5       0.99      0.93      0.96      6312
+
+    accuracy                           0.92     17651
+   macro avg       0.91      0.93      0.91     17651
+weighted avg       0.93      0.92      0.92     17651
+
+2022-07-31 21:04:19
+Namespace(all_class=6, batch_size=32, bound=0.3, increment_epoch=0, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=True, task_size=1)
+pretrain_consume_time: 2.6226043701171875e-06
+increment_consume_time: 9.5367431640625e-07
+Old_OA:tensor(89.3730)
+New_OA:tensor(95.5798)
+All_OA:tensor(91.5925)
+
+              precision    recall  f1-score   support
+
+           0       0.96      0.69      0.80      2951
+           1       1.00      0.90      0.95      2160
+           2       1.00      1.00      1.00      2092
+           3       1.00      1.00      1.00      2069
+           4       0.60      0.96      0.74      2067
+           5       0.99      0.96      0.97      6312
+
+    accuracy                           0.92     17651
+   macro avg       0.92      0.92      0.91     17651
+weighted avg       0.94      0.92      0.92     17651
+
+2022-07-31 21:48:06
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=50, random_seed=2022, reduce_sample=False, task_size=1)
+pretrain_consume_time: 380.1260256767273
+increment_consume_time: 180.84826183319092
+Old_OA:tensor(94.9493)
+New_OA:tensor(77.4240)
+All_OA:tensor(93.0553)
+
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4151
+           1       0.91      0.74      0.81      2951
+           2       0.99      0.98      0.98      2160
+           3       0.99      1.00      0.99      4056
+           4       0.79      0.99      0.88      4046
+           5       1.00      0.77      0.87      2104
+
+    accuracy                           0.93     19468
+   macro avg       0.95      0.91      0.92     19468
+weighted avg       0.94      0.93      0.93     19468
+
+2022-07-31 21:52:16
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=True, task_size=1)
+pretrain_consume_time: 2.384185791015625e-06
+increment_consume_time: 141.48710560798645
+Old_OA:tensor(95.2142)
+New_OA:tensor(72.1008)
+All_OA:tensor(90.7055)
+
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4151
+           1       0.76      0.74      0.75      2951
+           2       1.00      0.99      0.99      2160
+           3       0.98      1.00      0.99      4056
+           4       0.76      0.99      0.86      4046
+           5       1.00      0.72      0.84      4208
+
+    accuracy                           0.91     21572
+   macro avg       0.92      0.91      0.91     21572
+weighted avg       0.92      0.91      0.91     21572
+
+2022-07-31 21:59:56
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=39, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=50, random_seed=2022, reduce_sample=True, task_size=1)
+pretrain_consume_time: 241.80219769477844
+increment_consume_time: 101.56700229644775
+Old_OA:tensor(96.8090)
+New_OA:tensor(73.4615)
+All_OA:tensor(93.1574)
+
+              precision    recall  f1-score   support
+
+           0       0.84      0.89      0.86      2927
+           1       0.99      0.99      0.99      2136
+           2       1.00      1.00      1.00      2068
+           3       1.00      1.00      1.00      2045
+           4       0.84      1.00      0.91      2043
+           5       1.00      0.73      0.85      2080
+
+    accuracy                           0.93     13299
+   macro avg       0.94      0.93      0.93     13299
+weighted avg       0.94      0.93      0.93     13299
+
+2022-07-31 22:04:16
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=39, increment_epoch=50, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=0, random_seed=2022, reduce_sample=False, task_size=1)
+pretrain_consume_time: 1.430511474609375e-06
+increment_consume_time: 150.03296661376953
+Old_OA:tensor(96.3455)
+New_OA:tensor(90.2404)
+All_OA:tensor(94.6941)
+
+              precision    recall  f1-score   support
+
+           0       0.93      0.87      0.90      2927
+           1       1.00      0.99      1.00      2136
+           2       1.00      1.00      1.00      2068
+           3       0.93      1.00      0.97      2045
+           4       0.81      1.00      0.90      2043
+           5       1.00      0.90      0.95      4160
+
+    accuracy                           0.95     15379
+   macro avg       0.95      0.96      0.95     15379
+weighted avg       0.95      0.95      0.95     15379
+
+2022-08-28 15:32:52
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.001, memory_size=5120, old_class=5, pretrain_epoch=1, random_seed=2022, reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 19.52839946746826
+increment_consume_time: 44.68246006965637
+Old_OA:tensor(19.9200)
+New_OA:tensor(0.4000)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.20      0.18       500
+           1       0.17      0.05      0.08       500
+           2       0.17      0.12      0.14       500
+           3       0.17      0.53      0.25       500
+           4       0.17      0.10      0.12       500
+           5       0.17      0.00      0.01       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.13      3000
+weighted avg       0.17      0.17      0.13      3000
+
+2022-08-28 21:05:33
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.001, memory_size=5120, old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 56.83690643310547
+increment_consume_time: 89.43426823616028
+Old_OA:tensor(16.6000)
+New_OA:tensor(17.)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.35      0.22       500
+           1       0.17      0.18      0.17       500
+           2       0.17      0.09      0.11       500
+           3       0.17      0.16      0.16       500
+           4       0.17      0.06      0.09       500
+           5       0.17      0.17      0.17       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.15      3000
+weighted avg       0.17      0.17      0.15      3000
+
+2022-08-28 21:19:36
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.001, memory_size=5120, old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 52.60710954666138
+increment_consume_time: 70.44489216804504
+Old_OA:tensor(17.6000)
+New_OA:tensor(12.)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.34      0.22       500
+           1       0.17      0.06      0.08       500
+           2       0.17      0.28      0.21       500
+           3       0.17      0.15      0.16       500
+           4       0.17      0.06      0.09       500
+           5       0.17      0.12      0.14       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.15      3000
+weighted avg       0.17      0.17      0.15      3000
+
+2022-08-28 21:31:18
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.001, memory_size=5120, old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 14.441819667816162
+increment_consume_time: 37.01583957672119
+Old_OA:tensor(19.9600)
+New_OA:tensor(0.2000)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.48      0.25       500
+           1       0.17      0.00      0.00       500
+           2       0.17      0.31      0.22       500
+           3       0.17      0.12      0.14       500
+           4       0.17      0.08      0.10       500
+           5       0.17      0.00      0.00       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.12      3000
+weighted avg       0.17      0.17      0.12      3000
+
+2022-08-28 21:32:57
+Namespace(all_class=6, batch_size=1, bound=0.1, data_dimension=128, increment_epoch=1, learning_rate=0.001, memory_size=200, old_class=1, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 9.615529537200928
+increment_consume_time: 58.705177307128906
+Old_OA:tensor(48.4000)
+New_OA:tensor(10.3200)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.48      0.25       500
+           1       0.17      0.00      0.00       500
+           2       0.17      0.31      0.22       500
+           3       0.17      0.12      0.14       500
+           4       0.17      0.08      0.10       500
+           5       0.17      0.00      0.00       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.12      3000
+weighted avg       0.17      0.17      0.12      3000
