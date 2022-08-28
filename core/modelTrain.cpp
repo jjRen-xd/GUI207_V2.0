@@ -72,17 +72,8 @@ void ModelTrain::readLogError(){
     stopTrain();
 }
 
-void ModelTrain::startTrain(int modelType, QString dataDir, QString bathSize, QString maxEpoch){
+void ModelTrain::startTrain(QString cmd){
   // TODO add code here
-    QString cmd;
-    modelTypeId = modelType;
-    switch(modelType){
-        case 0:cmd = "activate TF2 && python ../db/bashs/hrrp/train.py"
-                    " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-        case 1:cmd = "activate TF2 && python ../db/bashs/afs/train.py"
-                    " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-    }
-    dataRoot = dataDir;
     if(process_train->state()==QProcess::Running){
         showLog=false;
         process_train->close();

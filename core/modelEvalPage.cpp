@@ -30,9 +30,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     }
 //    predIdx_future=predIdx_promise.get_future();
 //    degrees_future=degrees_promise.get_future();
-    // 先用libtorch
-    libtorchTest = new LibtorchTest(class2label);
-    onnxInfer = new OnnxInfer(class2label);
+
     trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
@@ -51,16 +49,23 @@ void ModelEvalPage::refreshGlobalInfo(){
     // 基本信息更新
     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
-    ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+    //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    this->choicedModelPATH = modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
+        trtInfer = new TrtInfer(class2label);
+        this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+    }
     // 单样本测试下拉框刷新
     vector<string> comboBoxContents = datasetInfo->selectedClassNames;
     ui->comboBox_sampleType->clear();
     for(auto &item: comboBoxContents){
         ui->comboBox_sampleType->addItem(QString::fromStdString(item));
     }
-
+    //
+    ui->comboBox_inferBatchsize->clear();
+    for(int i=512;i>3;i/=2){
+        ui->comboBox_inferBatchsize->addItem(QString::number(i));
+    }
 }
 
 
@@ -102,11 +107,11 @@ void ModelEvalPage::randSample(){
                 mxArray* pMxArray = NULL;
                 pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
                 if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
-                std::string matVariable="hrrp128";//filefullpath.split(".").last().toStdString().c_str() 假设数据变量名同文件名的话
+                std::string matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
 
                 QString chartTitle="Temporary Title";
-                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]"; matVariable="hrrp128";}
-                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title"; matVariable="radio101";}
+                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}// matVariable="hrrp128";}
+                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title";}// matVariable="radio101";}
 
                 pMxArray = matGetVariable(pMatFile,matVariable.c_str());
                 if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
@@ -166,7 +171,11 @@ void  ModelEvalPage::testOneSample(){
         //classnum==(datasetInfo->selectedClassNames.size())
         //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        trtInfer->testOneSample(choicedSamplePATH, this->emIndex,choicedModelPATH,&predIdx, degrees);
+        std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
+        std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
+        bool dataProcess=true;
+        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
+        trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees);
         //onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
 //        oneinferThread.detach();
@@ -200,14 +209,21 @@ void  ModelEvalPage::testOneSample(){
 
 // TODO 待优化
 void ModelEvalPage::testAllSample(){
+    // 获取批处理量
+    int inferBatch = ui->comboBox_inferBatchsize->currentText().toInt();
+    qDebug()<<"(ModelEvalPage::testAllSample)batchsize=="<<inferBatch;
     /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
-    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty()){
-        qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
+    if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty() ){
+        //qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
         float acc = 0.6;
         std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
         //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, acc, confusion_matrix);
+        bool dataProcess=true;
+        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
+        if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, inferBatch, dataProcess, acc, confusion_matrix)){
+            return ;
+        }
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
         for(int i=0;i<6;i++){
@@ -263,4 +279,3 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     ui->horizontalLayout_degreeChart->addWidget(view);
     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
-

@@ -26,9 +26,9 @@ HEADERS += \
     core/modelTrainPage.h \
     core/sensePage.h \
     core/modelTrain.h \
-    lib/algorithm/libtorchTest.h \
+    #lib/algorithm/libtorchTest.h \
+    #lib/algorithm/onnxinfer.h \
     lib/algorithm/logging.h \
-    lib/algorithm/onnxinfer.h \#######
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
@@ -36,12 +36,12 @@ HEADERS += \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/guithreadrun.h \
-    lib/guiLogic/tools/searchFolder.h
+    lib/guiLogic/tools/searchFolder.h \
+    lib/TRANSFER/ToHRRP.h
+
 SOURCES += \
-    lib/algorithm/onnxinfer.cpp \######
-    lib/algorithm/trtinfer.cpp \
-    lib/guiLogic/tools/guithreadrun.cpp \
     main.cpp \
+    core/modeltrainpage.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \
     core/datasetsWindow/chart.cpp \
@@ -52,7 +52,10 @@ SOURCES += \
     core/modelTrain.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
-    lib/algorithm/libtorchTest.cpp \
+    #lib/algorithm/libtorchTest.cpp \
+    #lib/algorithm/onnxinfer.cpp \
+    lib/algorithm/trtinfer.cpp \
+    lib/guiLogic/tools/guithreadrun.cpp \
     lib/guiLogic/bashTerminal.cpp \
     lib/guiLogic/datasetInfo.cpp \
     lib/guiLogic/modelInfo.cpp \
@@ -83,3 +86,10 @@ RESOURCES += \
 include("./conf/libtorch.pri")
 
 RC_ICONS = "./sources/LOGO.ico"
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/TRANSFER/ -lToHRRP
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/TRANSFER/ -lToHRRPd
+#else:unix: LIBS += -L$$PWD/lib/TRANSFER/ -lToHRRP
+
+#INCLUDEPATH += $$PWD/lib/TRANSFER
+#DEPENDPATH += $$PWD/lib/TRANSFER

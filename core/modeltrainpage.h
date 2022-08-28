@@ -19,11 +19,16 @@ public:
     BashTerminal *train_terminal;
 
     ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo);
+    int getDataLen(std::string dataPath);
+    int getDataClassNum(std::string dataPath, std::string specialDir);
 
 public slots:
     void chooseDataDir();
     void startTrain();
     void stopTrain();
+    void changeTrainType();
+    void editModelFile();
+    void chooseOldClass();
 
 signals:
 
