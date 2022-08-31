@@ -114,16 +114,26 @@ def read_mat_128_new(raw_data_path):
     g = os.walk(raw_data_path)
     data_list = []
     label_list = []
+    label=0
     for path,dir_list,file_list in g:
-        for label, dir_name in enumerate(dir_list):
-            g2 = os.walk(os.path.join(path, dir_name))
+        for dir_name in dir_list:
+            if(dir_name=="model_saving"):
+                continue
+            tempn=os.path.join(path, dir_name)
+            print(tempn)
+            g2 = os.walk(tempn)
             for path2,dir_list2,file_list2 in g2:
                 for file_name in file_list2:
-                    temp = sio.loadmat(os.path.join(path2, file_name))[file_name[0:-4]]
-                    data_list.append(temp)
-                    label_list.append(label)
-                    print(os.path.join(path2, file_name))
-                    print("label:"+str(label))
+                    if file_name[-4:]==".mat":
+                        try:
+                            temp = sio.loadmat(os.path.join(path2, file_name))[file_name[0:-4]]
+                            data_list.append(temp)
+                            label_list.append(label)
+                            print(os.path.join(path2, file_name))
+                            print("label:"+str(label))
+                        except KeyError:
+                            print("Warn: read_mat_128_new视图读入"+os.path.join(path2, file_name)+",但是其不包含同名变量")
+            label+=1
     # print(bigball_hrrp.shape, DT_hrrp.shape, Moxiu_hrrp.shape, smallball_hrrp.shape, taper_hrrp.shape, WD_19_hrrp.shape)
     
 
@@ -158,6 +168,8 @@ def read_mat_128_new(raw_data_path):
     np.save(data_path + "train/label.npy", train_label)
     np.save(data_path + "test/data.npy", test_data)
     np.save(data_path + "test/label.npy", test_label)
+
+
 # "/media/hp/新加卷/data/DD_data/tohrrp/hrrp_data/"  # (128, 1)
 # def read_mat_128():
 #     bigball1_hrrp = sio.loadmat(os.path.join(raw_data_path, "bigball1_hrrp.mat"))["x_dB"]
@@ -368,8 +380,8 @@ def prepare_increment_data(task_class):
     np.save(data_path + "test/observed/label.npy", observed_test_label)
 
 
-# 新类训练样本降低80%
-def prepare_increment_data_reduce(task_class):
+# 新类训练样本保留reduce_sample%
+def prepare_increment_data_reduce(task_class,reduce_sample):
     print("prepare_increment_data...")
     observed_test_data = np.load(data_path + "test/observed/data.npy")
     observed_test_label = np.load(data_path + "test/observed/label.npy")
@@ -383,7 +395,7 @@ def prepare_increment_data_reduce(task_class):
     current_task_label_test = []
     for cls in task_class:
         data_tmp = new_train_data[new_train_label == cls]
-        reduce_len = len(data_tmp) - int(len(data_tmp)*0.8)
+        reduce_len = int(len(data_tmp)*reduce_sample)
         current_task_data_train.append(data_tmp[:reduce_len, ...])
         current_task_label_train.append(new_train_label[new_train_label == cls][:reduce_len, ...])
         current_task_data_test.append(new_test_data[new_test_label == cls])

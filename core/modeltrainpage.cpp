@@ -73,9 +73,9 @@ void ModelTrainPage::startTrain(){
         QString bathSize=ui->batchsizeBox->currentText();
         QString maxEpoch=ui->maxepochBox->currentText();
         switch(modelType){
-            case 0:cmd = "activate TF && python ../../db/bashs/hrrp/train.py"
+            case 0:cmd = "python ../../db/bashs/hrrp/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-            case 1:cmd = "activate TF && python ../../db/bashs/afs/train.py"
+            case 1:cmd = "python ../../db/bashs/afs/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
         }
     }
@@ -84,16 +84,18 @@ void ModelTrainPage::startTrain(){
         int allclassNum=getDataClassNum(dataDir.toStdString(), "model_saving");
         int data_dimension=getDataLen(dataDir.toStdString());
         QString oldclassNum=ui->oldClassBox->currentText();
-        QString sampleRatio=ui->sampleRatioBox->currentText();
+        QString sampleRatio=ui->sampleRatioBox->currentText();//新类别训练样本比例
         QString bathSize=ui->batchSizeBox2->currentText();
         QString preEpoch=ui->pretrainEpochBox->currentText();
         QString addEpoch=ui->increseEpochBox->currentText();
 
-        cmd="activate PT && python ../../db/bashs/incremental/main.py --all_class="+QString::number(allclassNum)+
-                " --batch_size="+bathSize+" --bound="+sampleRatio+" --increment_epoch="+addEpoch+
+        cmd="python ../../db/bashs/incremental/main.py --all_class="+QString::number(allclassNum)+
+                " --batch_size="+bathSize+" --bound=0.3 --increment_epoch="+addEpoch+" --reduce_sample="+sampleRatio+
                 " --learning_rate=0.001 --memory_size=200 --old_class="+oldclassNum+" --pretrain_epoch="+
                 preEpoch+" --random_seed=2022 --snr=2 --task_size=1 --test_ratio=0.5 --data_dimension="+
                 QString::number(data_dimension)+" --raw_data_path="+dataDir;
+
+        //test_ratio\task_size
     }
     processTrain->startTrain(cmd);
 }
@@ -119,7 +121,8 @@ void ModelTrainPage::editModelFile(){
         case 2:modelFilePath="../../db/bashs/incremental/model.py";break;
     }
     QString commd="gvim " + modelFilePath;
-    WinExec(commd.toStdString().c_str(), SW_HIDE);
+    //WinExec(commd.toStdString().c_str(), SW_HIDE);
+    system(commd.toStdString().c_str());
 }
 
 int ModelTrainPage::getDataClassNum(std::string dataPath, std::string specialDir){

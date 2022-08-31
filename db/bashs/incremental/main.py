@@ -19,7 +19,7 @@ argparser.add_argument('--memory_size', type=int, help='memory size', default=20
 argparser.add_argument('--batch_size', type=int, help='batch size', default=32)
 argparser.add_argument('--bound', type=float, help='up bound of new class weights', default=0.3)
 argparser.add_argument('--random_seed', type=int, help='numpy random seed', default=2022)
-argparser.add_argument('--reduce_sample', type=bool, help='reduce the number of sample to 80%', default=False)
+argparser.add_argument('--reduce_sample', type=float, help='reduce the number of sample to n%', default=1.0)
 argparser.add_argument('--data_dimension', type=int,  help='[39, 128, 256]', default=128)
 argparser.add_argument('--test_ratio', type=float, help='the ratio of test dataset', default=0.5)
 
@@ -33,14 +33,14 @@ if __name__ == '__main__':
     os.chdir(current_path)
 
 
-    create_dir()
+    # create_dir()
 
-    if args.data_dimension == 39:
-        read_mat_39(args.raw_data_path)
-    if args.data_dimension == 128:
-        read_mat_128_new(args.raw_data_path)
-    if args.data_dimension == 256:
-        read_mat_256(args.raw_data_path)
+    # if args.data_dimension == 39:
+    #     read_mat_39(args.raw_data_path)
+    # if args.data_dimension == 128:
+    #     read_mat_128_new(args.raw_data_path)
+    # if args.data_dimension == 256:
+    #     read_mat_256_new(args.raw_data_path)
 
     # txt文件转为npy文件
     # read_txt(args.raw_data_path, args.class_name, args.snr)
