@@ -149,10 +149,11 @@ void SenseSetPage::drawClassImage(){
     dirTools->getDirs(subDirNames, rootPath);
     datasetInfo->selectedClassNames = subDirNames; // 保存下，之后不用重复遍历
 
-    for(int i = 0; i<subDirNames.size(); i++){
-        imgInfoGroup[i]->setText(QString::fromStdString(subDirNames[i]));
-        QString imgPath = QString::fromStdString(rootPath +"/"+ subDirNames[i] +".png");
-        imgGroup[i]->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+    for(int i = 0,j=0; i<subDirNames.size(); i++,j++){
+        if(subDirNames[i]=="model_saving") j--;
+        imgInfoGroup[j]->setText(QString::fromStdString(subDirNames[j]));
+        QString imgPath = QString::fromStdString(rootPath +"/"+ subDirNames[j] +".png");
+        imgGroup[j]->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
     }
 }
 
