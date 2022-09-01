@@ -1,6 +1,9 @@
 # encoding: utf-8
-from gc import callbacks
+
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import sys
+from gc import callbacks
 import argparse
 import numpy as np
 import scipy.io as sio
@@ -10,7 +13,6 @@ from matplotlib import rcParams
 from datetime import datetime
 from sklearn.metrics import classification_report
 
-import sys, os
 sys.path.append("..")
 # from model_convert.hdf52trt import convert_hdf5_to_trt
 sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") for name in dirs])
