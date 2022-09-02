@@ -73,8 +73,10 @@ void ModelTrainPage::startTrain(){
         QString bathSize=ui->batchsizeBox->currentText();
         QString maxEpoch=ui->maxepochBox->currentText();
         switch(modelType){
-            case 0:cmd = "python ../../db/bashs/hrrp/train.py"
+            case 0:cmd = "conda activate base && python ../../db/bashs/hrrp/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
+            //case 0:cmd = "python D:/lyh/GUI207_V2.0/db/bashs/hrrp/train.py --data_dir D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128 --batch_size 32 --max_epochs 1";break;
+            //case 0:cmd = "pip list";break;
             case 1:cmd = "python ../../db/bashs/afs/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
         }

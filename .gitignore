@@ -3,6 +3,7 @@
 /db/datasets/*
 /db/models/*
 /db/bashs/incremental/data/*
+db/bashs/incremental/__pycache__/*
 /build/*
 GUI_V1.0.pro.user
 /.qt_for_python/*
@@ -13,8 +14,8 @@ GUI_V2.0.pro.user
 #!/db/datasets/feature_extraction.py
 #!/db/datasets/TRANSFER
 
-conf/datasetInfoCache.xml
-conf/modelInfoCache.xml
+#conf/datasetInfoCache.xml
+#conf/modelInfoCache.xml
 
 !/lib\algorithm\code_here
 !/lib\guiLogic\code_here

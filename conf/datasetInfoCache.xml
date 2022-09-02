@@ -3,7 +3,7 @@
     <FEATURE typeID="1" />
     <HRRP typeID="2">
         <falseHRRPmat_1x128 nameID="1">
-            <PATH>E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
             <datasetName>未定义</datasetName>
@@ -15,23 +15,13 @@
             <targetNumEachCla>未定义001</targetNumEachCla>
         </falseHRRPmat_1x128>
         <radiomat_1x101_HRRP nameID="2">
-            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
         </radiomat_1x101_HRRP>
     </HRRP>
     <IMAGE typeID="3" />
     <RADIO typeID="4">
         <radiomat_1x101 nameID="3">
-            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>6</claNum>
-            <dataFileFormat>mat</dataFileFormat>
-            <datasetName>radiomat_1x101</datasetName>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>数据为MatLab随机生成</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>101</samplingNum>
-            <targetNumEachCla>5901</targetNumEachCla>
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
         </radiomat_1x101>
     </RADIO>
     <RCS typeID="5" />

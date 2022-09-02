@@ -89,6 +89,19 @@ void ModelTrain::startTrain(QString cmd){
     process_train->setProcessChannelMode(QProcess::MergedChannels);
     process_train->start("cmd.exe");
     process_train->write(cmd.toLocal8Bit() + '\n');
+
+    // QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    // //QProcessEnvironment env; //有时候要用这个空环境变量才行，否则可能会出现一些污染的问题
+    // env.insert("PYTHONPATH", "D:/win_anaconda/Lib/site-packages");
+    // process_train->setProcessEnvironment(env);
+    // QStringList params;
+    // QString pythonPath = "D:/win_anaconda/python.exe";
+    // // 要执行的文件
+    // QString pythonScript = "D:/lyh/GUI207_V2.0/db/bashs/hrrp/hrrpTrainTest.py";
+    // //params << pythonScript <<" --data_dir D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128 --batch_size 32 --max_epochs 3";
+    // // 设置工作目录
+    // process_train->setWorkingDirectory("D:/lyh/GUI207_V2.0/db/bashs/hrrp");
+    // process_train->start(pythonPath, params);
 }
 
 void ModelTrain::showTrianResult(){
