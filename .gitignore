@@ -3,6 +3,7 @@
 /db/datasets/*
 /db/models/*
 /db/bashs/incremental/data/*
+/lib/TRANSFER/ToHrrp_mcr/*
 /build/*
 GUI_V1.0.pro.user
 /.qt_for_python/*

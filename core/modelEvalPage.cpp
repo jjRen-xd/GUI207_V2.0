@@ -150,8 +150,6 @@ void  ModelEvalPage::testOneSample(){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
         //classnum==(datasetInfo->selectedClassNames.size())
-        //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
         std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
         bool dataProcess=true;

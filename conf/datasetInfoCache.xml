@@ -14,10 +14,13 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
         </falseHRRPmat_1x128>
+        <radiomat_1x101_HRRP nameID="2">
+            <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
+        </radiomat_1x101_HRRP>
     </HRRP>
     <IMAGE typeID="3" />
     <RADIO typeID="4">
-        <radiomat_1x101 nameID="2">
+        <radiomat_1x101 nameID="3">
             <PATH>E:/207Project/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>6</claNum>

@@ -17,6 +17,7 @@
 #include <QThread>
 //#include "libtorchTest.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
+#include "lib/guiLogic/tools/realtimeinferencebuffer.h"
 #include <mat.h>
 
 class TrtInfer
@@ -28,6 +29,7 @@ public slots:
 
     void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees);
     bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, bool dataProcess, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+    void realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath, bool dataProcess);
 
 private:
     nvinfer1::IBuilder* builder{ nullptr };

@@ -192,7 +192,8 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
 
 void TrtInfer::testOneSample(
         std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
-        int *predIdx,std::vector<float> &degrees){
+        int *predIdx,std::vector<float> &degrees)
+{
     //qDebug() << "(OnnxInfer::testOneSample)子线程id：" << QThread::currentThreadId();
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
@@ -365,6 +366,57 @@ bool TrtInfer::testAllSample(
 
     Acc=test_dataset_size==0?0:static_cast<float> (correct) / (test_dataset_size);
     return 1;
+}
+
+void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath, bool dataProcess){
+    /*
+    if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
+    else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
+    context = engine->createExecutionContext();
+    assert(context != nullptr);
+
+    //根据模型确认输入输出的数据尺度
+    inputLen=1;outputLen=1;
+    nvinfer1::Dims indims = engine->getBindingDimensions(0);
+    for (int i = 0; i < indims.nbDims; i++){
+        if(i!=0) inputLen*=indims.d[i];
+        inputdims.push_back(indims.d[i]);
+    }
+    nvinfer1::Dims oudims = engine->getBindingDimensions(1);
+    for (int i = 0; i < oudims.nbDims; i++){
+        if(i!=0) outputLen*=oudims.d[i];
+        outputdims.push_back(oudims.d[i]);
+    }
+    if(inputdims[0]==outputdims[0]&&inputdims[0]==-1) isDynamic=true;
+    else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
+    else {qDebug()<<"模型输入输出批数不一致！";return;}
+    INFERENCE_BATCH=1;
+    //define the dims if necessary
+    if(isDynamic){
+        nvinfer1::Dims dims4;   dims4.d[0]=INFERENCE_BATCH;
+        for(int i=1;i<indims.nbDims;i++) dims4.d[i]=inputdims[i];
+        dims4.nbDims = indims.nbDims;
+        context->setBindingDimensions(0, dims4);
+    }
+    */
+    int inputLen=2;int outputLen=6;
+    //ready to send data to context
+    float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
+    float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
+
+    while(true){
+        std::vector<float> data_vec=que->get();
+        qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
+        float *indata = new float[data_vec.size()];
+        if (!data_vec.empty()){
+            memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
+        }
+        //doInference(*context, indata, outdata, 1);
+        std::cout<<"Inference result:";
+        for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";
+        std::cout<<std::endl;
+    }
+
 }
 
 void TrtInfer::setBatchSize(int batchSize){
