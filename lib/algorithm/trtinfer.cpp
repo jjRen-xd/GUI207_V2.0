@@ -6,7 +6,7 @@
 using namespace nvinfer1;
 static Logger gLogger;
 
-TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2label){
+TrtInfer::TrtInfer(Ui_MainWindow *main_ui,std::map<std::string, int> class2label):ui(main_ui),class2label(class2label){
 
 }
 
@@ -399,6 +399,7 @@ void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath,
         context->setBindingDimensions(0, dims4);
     }
     */
+    //ui->onetemplabel->setText("Hello, World!");
     int inputLen=2;int outputLen=6;
     //ready to send data to context
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
@@ -422,3 +423,4 @@ void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath,
 void TrtInfer::setBatchSize(int batchSize){
     INFERENCE_BATCH=batchSize;
 }
+

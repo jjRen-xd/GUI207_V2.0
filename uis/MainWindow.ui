@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>308</width>
-               <height>491</height>
+               <width>341</width>
+               <height>551</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3498,7 +3498,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-54</y>
                <width>390</width>
                <height>591</height>
               </rect>
@@ -5143,6 +5143,13 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QLabel" name="onetemplabel">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QLabel" name="label_136">
                    <property name="enabled">
                     <bool>false</bool>
@@ -5167,19 +5174,6 @@
                    </property>
                    <property name="text">
                     <string/>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QProgressBar" name="trainProgressBar_2">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="value">
-                    <number>0</number>
                    </property>
                   </widget>
                  </item>
@@ -5260,112 +5254,23 @@
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>训练结果</string>
+                      <string>实时监测结果</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QTabWidget" name="tabWidget_2">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::LeftToRight</enum>
-                     </property>
-                     <property name="currentIndex">
-                      <number>0</number>
-                     </property>
-                     <widget class="QWidget" name="tab_4">
-                      <attribute name="title">
-                       <string>训练集准确率</string>
-                      </attribute>
-                      <layout class="QHBoxLayout" name="horizontalLayout_90">
-                       <item>
-                        <widget class="QLabel" name="train_img_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="layoutDirection">
-                          <enum>Qt::LeftToRight</enum>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="scaledContents">
-                          <bool>true</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="textInteractionFlags">
-                          <set>Qt::NoTextInteraction</set>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="tab_5">
-                      <attribute name="title">
-                       <string>验证集准确率</string>
-                      </attribute>
-                      <layout class="QVBoxLayout" name="verticalLayout_69">
-                       <item>
-                        <widget class="QLabel" name="val_img_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="scaledContents">
-                          <bool>true</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="wordWrap">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="tab_6">
-                      <attribute name="title">
-                       <string>混淆矩阵</string>
-                      </attribute>
-                      <layout class="QVBoxLayout" name="verticalLayout_70">
-                       <item>
-                        <widget class="QLabel" name="confusion_mat_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="scaledContents">
-                          <bool>true</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </widget>
+                    <layout class="QHBoxLayout" name="horizontalLayout_80">
+                     <item>
+                      <widget class="QLabel" name="label_97">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_degreeChart2"/>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>

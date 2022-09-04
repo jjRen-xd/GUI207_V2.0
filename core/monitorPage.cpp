@@ -42,7 +42,7 @@ void MonitorPage::StartListen(){
 
 void MonitorPage::refresh(){
     if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
-        trtInfer = new TrtInfer(class2label);
+        trtInfer = new TrtInfer(ui,class2label);
         this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
 }

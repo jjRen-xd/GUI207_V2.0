@@ -4,6 +4,9 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QBarSeries>
+#include <QBarSet>
+#include <QBarCategoryAxis>
 #include <mat.h>
 
 Chart::Chart(QWidget* parent, QString _chartname, QString _filefullpath){
@@ -206,7 +209,48 @@ void Chart::readHRRPtxt(){
     else{
     }
 }
+//下面这个函数本来想调用于trtInfer::realTimeInfer里，画图用，但是没成功，画不出来   可以删了
+QWidget* Chart::drawDisDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
+    QChart *chart = new QChart;
+    //qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
+    std::map<QString, std::vector<float>> mapnum;
+    mapnum.insert(std::pair<QString, std::vector<float>>(classGT, degrees));  //后续可拓展
+    QBarSeries *series = new QBarSeries();
+    std::map<QString, std::vector<float>>::iterator it = mapnum.begin();
+    //std::cout<<"(ModelEvalPage::disDegreeChart): H22222222222"<<std::endl;
+    //将数据读入
+    while (it != mapnum.end()){
+        QString tit = it->first;
+        QBarSet *set = new QBarSet(tit);
+        std::vector<float> vecnum = it->second;
+        for (auto &a : vecnum){
+            *set << a;
+        }
+        series->append(set);
+        it++;
+    }
+    series->setVisible(true);
+    series->setLabelsVisible(true);
+    // 横坐标参数
+    QBarCategoryAxis *axis = new QBarCategoryAxis;
+    for(int i = 0; i<classNames.size(); i++){
+        axis->append(QString::fromStdString(classNames[i]));
+    }
+    QValueAxis *axisy = new QValueAxis;
+    axisy->setTitleText("隶属度");
+    chart->addSeries(series);
+    chart->setTitle("识别目标对各类别隶属度分析图");
+    //std::cout<<"(ModelEvalPage::disDegreeChart): H444444444444"<<std::endl;
+    chart->setAxisX(axis, series);
+    chart->setAxisY(axisy, series);
+    chart->legend()->setVisible(true);
 
+    QChartView* view = new QChartView(chart);
+    view->setRenderHint(QPainter::Antialiasing);
+    //removeLayout(ui->horizontalLayout_degreeChart);
+    //ui->horizontalLayout_degreeChart->addWidget(view);
+    return view;
+}
 
 
 void Chart::setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, \

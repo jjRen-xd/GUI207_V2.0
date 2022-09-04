@@ -31,7 +31,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
 //    predIdx_future=predIdx_promise.get_future();
 //    degrees_future=degrees_promise.get_future();
 
-    trtInfer = new TrtInfer(class2label);
+    trtInfer = new TrtInfer(ui,class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
@@ -52,7 +52,7 @@ void ModelEvalPage::refreshGlobalInfo(){
     //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
-        trtInfer = new TrtInfer(class2label);
+        trtInfer = new TrtInfer(ui,class2label);
         this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
     // 单样本测试下拉框刷新
@@ -178,6 +178,11 @@ void  ModelEvalPage::testOneSample(){
 
         // 绘制隶属度柱状图
         disDegreeChart(predClass, degrees, label2class);
+//        Chart *forDegreeChart = new Chart(ui->label_mE_chartGT,"","");//这里传的参没啥用，只是想在下面调用一下它的方法
+//        removeLayout(ui->horizontalLayout_degreeChart2);
+//        QWidget* view=forDegreeChart->drawDisDegreeChart(predClass, degrees, label2class);
+//        ui->horizontalLayout_degreeChart2->addWidget(view);
+//        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 
     }
     else{

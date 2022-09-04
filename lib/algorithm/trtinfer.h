@@ -6,6 +6,7 @@
 #include "NvInfer.h"
 #include "NvOnnxParser.h"
 #include "cuda_runtime_api.h"
+#include "ui_MainWindow.h"
 #include "logging.h"
 #include <fstream>
 #include <cstddef>
@@ -23,8 +24,9 @@
 class TrtInfer
 {
 public:
-    TrtInfer(std::map<std::string, int> class2label);
+    TrtInfer(Ui_MainWindow *main_ui,std::map<std::string, int> class2label);
     void setBatchSize(int batchSize);//留出来的接口
+    Ui_MainWindow *ui;
 public slots:
 
     void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees);
