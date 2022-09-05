@@ -86,9 +86,13 @@ void SocketServer::Start(RealTimeInferenceBuffer* que){
             }
             qDebug() << "客户端信息:" << QString::number(num_float) ;
             terminal->print("Receive:"+QString::number(num_float));
-            if(dataFrame.size()==1){//之后要和选择的模型匹配起来！！TODO
-                //dataFrame to dataFrame_vec
-                std::vector<float> dataFrame_vec={1,2};
+            if(dataFrame.size()==128){//之后要和选择的模型匹配起来！！TODO
+                std::queue<float> queIntB(dataFrame);
+                std::vector<float> dataFrame_vec;
+                for(int i=0;i<dataFrame.size();i++){
+                    dataFrame_vec.push_back(queIntB.front());
+                    queIntB.pop();
+                }
                 que->put(dataFrame_vec);
                 dataFrame.pop();
                 dataFrame.push(num_float);

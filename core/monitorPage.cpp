@@ -26,7 +26,7 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
 
 }
 void MonitorPage::StartListen(){
-    if(modelInfo->selectedType!=""){
+    if(modelInfo->selectedType==""){
         QMessageBox::warning(NULL, "实时监测", "监听失败，请先指定HRRP模型。");
         qDebug()<<"modelInfo->selectedType=="<<QString::fromStdString(modelInfo->selectedType);
         return;

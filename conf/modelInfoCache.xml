@@ -2,9 +2,13 @@
 <globalModelInfo datasetTypeNum="4">
     <FEA_OPTI typeID="1" />
     <FEA_RELE typeID="2" />
-    <INCRE typeID="3" />
+    <INCRE typeID="3">
+        <increment_6_128_save_reduce_512.trt nameID="1">
+            <PATH>E:/207Project/GUI207_V2.0/db/models/increment_6_128_save_reduce_512.trt</PATH>
+        </increment_6_128_save_reduce_512.trt>
+    </INCRE>
     <TRA_DL typeID="4">
-        <DenseNet121_500.trt nameID="1">
+        <DenseNet121_500.trt nameID="2">
             <PATH>E:/207Project/GUI207_V2.0/db/models/DenseNet121_500.trt</PATH>
             <accuracy>99.99%</accuracy>
             <algorithm>xml载入测试</algorithm>

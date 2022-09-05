@@ -369,7 +369,7 @@ bool TrtInfer::testAllSample(
 }
 
 void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath, bool dataProcess){
-    /*
+
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -398,9 +398,9 @@ void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath,
         dims4.nbDims = indims.nbDims;
         context->setBindingDimensions(0, dims4);
     }
-    */
-    //ui->onetemplabel->setText("Hello, World!");
-    int inputLen=2;int outputLen=6;
+
+
+    //int inputLen=2;int outputLen=6;
     //ready to send data to context
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
@@ -412,7 +412,7 @@ void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath,
         if (!data_vec.empty()){
             memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
         }
-        //doInference(*context, indata, outdata, 1);
+        doInference(*context, indata, outdata, 1);
         std::cout<<"Inference result:";
         for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";
         std::cout<<std::endl;

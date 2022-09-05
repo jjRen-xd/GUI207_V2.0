@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>341</width>
-               <height>551</height>
+               <width>308</width>
+               <height>491</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3498,7 +3498,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-54</y>
+               <y>0</y>
                <width>390</width>
                <height>591</height>
               </rect>
@@ -3789,7 +3789,7 @@
              <x>0</x>
              <y>0</y>
              <width>787</width>
-             <height>575</height>
+             <height>367</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -5087,7 +5087,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_15">
               <property name="title">
-               <string>回显</string>
+               <string>功能</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_66">
                <item>
@@ -5104,41 +5104,7 @@
                     </sizepolicy>
                    </property>
                    <property name="text">
-                    <string>预计剩余时间：</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QTextEdit" name="timeRestEdit_2">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>150</width>
-                     <height>27</height>
-                    </size>
-                   </property>
-                   <property name="acceptDrops">
-                    <bool>true</bool>
-                   </property>
-                   <property name="verticalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
-                   </property>
-                   <property name="horizontalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                    <string>Label</string>
                    </property>
                   </widget>
                  </item>
@@ -5208,7 +5174,7 @@
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>训练日志</string>
+                      <string>接收回显</string>
                      </property>
                     </widget>
                    </item>
