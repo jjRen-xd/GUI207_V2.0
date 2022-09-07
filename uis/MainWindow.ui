@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>494</width>
-             <height>1097</height>
+             <width>449</width>
+             <height>999</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1415,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>622</width>
-             <height>574</height>
+             <width>489</width>
+             <height>496</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>308</width>
-               <height>491</height>
+               <width>375</width>
+               <height>575</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3499,8 +3499,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>390</width>
-               <height>591</height>
+               <width>375</width>
+               <height>575</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3788,8 +3788,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>787</width>
-             <height>367</height>
+             <width>761</width>
+             <height>614</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -5022,8 +5022,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>743</width>
-             <height>589</height>
+             <width>761</width>
+             <height>614</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -5951,7 +5951,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
    <property name="minimumSize">

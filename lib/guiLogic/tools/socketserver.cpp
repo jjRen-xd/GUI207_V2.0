@@ -1,11 +1,10 @@
 #include "socketserver.h"
-#include <QDebug>
-
 
 #pragma comment(lib,"ws2_32.lib")   // 库文件
 #define PORT 2287
 #define RECEIVE_BUF_SIZ 512
-SocketServer::SocketServer(BashTerminal *bash_terminal):terminal(bash_terminal)
+SocketServer::SocketServer(QSemaphore *s,std::queue<std::vector<float>>* sharedQ,QMutex *l,BashTerminal *bash_terminal):
+    sem(s),sharedQue(sharedQ),lock(l),terminal(bash_terminal)
 {
 
 }
@@ -55,7 +54,7 @@ SOCKET SocketServer::createServeSocket(const char* ip){
     return s_server;
 }
 
-void SocketServer::Start(RealTimeInferenceBuffer* que){
+void SocketServer::run(){           //Producer
     //qDebug()<<"start temp=="<<temp;
     //定义发送缓冲区和接受缓冲区长度
     char send_buf[5]={'o','k','a','y'};
@@ -72,7 +71,7 @@ void SocketServer::Start(RealTimeInferenceBuffer* que){
         return ;
     }
     // 可以和客户端进行通信了
-    std::queue<float> dataFrame;//里面放大小为模型输入数据长度个浮点数，用以送进网络。
+    std::vector<float> dataFrame;//里面放大小为模型输入数据长度个浮点数，用以送进网络。
     while (true) {
         // recv从指定的socket接受消息
         int getCharNum=recv(s_accept, recv_buf, RECEIVE_BUF_SIZ, 0);
@@ -82,22 +81,19 @@ void SocketServer::Start(RealTimeInferenceBuffer* que){
             QT_TRY{
                 num_float= std::stof(temp);//针对于接受的数据只有 "一个" "浮点数"TODO
             }QT_CATCH(...){
-                qDebug()<<"data errrr";continue;
+                qDebug()<<"(SocketServer::run)data errrr";continue;
             }
-            qDebug() << "客户端信息:" << QString::number(num_float) ;
+            //qDebug() << "客户端信息:" << QString::number(num_float) ;
             terminal->print("Receive:"+QString::number(num_float));
+
             if(dataFrame.size()==128){//之后要和选择的模型匹配起来！！TODO
-                std::queue<float> queIntB(dataFrame);
-                std::vector<float> dataFrame_vec;
-                for(int i=0;i<dataFrame.size();i++){
-                    dataFrame_vec.push_back(queIntB.front());
-                    queIntB.pop();
-                }
-                que->put(dataFrame_vec);
-                dataFrame.pop();
-                dataFrame.push(num_float);
+                QMutexLocker x(lock);//智能锁人,在栈区使用结束会自动释放
+                sharedQue->push(dataFrame);
+                sem->release(1);
+                qDebug()<<"(SocketServer::run) sem->release()";
+                dataFrame.clear();
             }
-            else dataFrame.push(num_float);
+            else dataFrame.push_back(num_float);
         }
         else {qDebug() << "接收失败！" ;break;}
         if (send(s_accept, send_buf, 5, 0) < 0) {qDebug() << "发送失败！" ;break;}

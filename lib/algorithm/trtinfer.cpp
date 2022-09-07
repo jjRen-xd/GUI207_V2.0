@@ -6,7 +6,7 @@
 using namespace nvinfer1;
 static Logger gLogger;
 
-TrtInfer::TrtInfer(Ui_MainWindow *main_ui,std::map<std::string, int> class2label):ui(main_ui),class2label(class2label){
+TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2label){
 
 }
 
@@ -145,7 +145,7 @@ void getDataFromMat(std::string targetMatFile,int emIdx,bool dataProcess,float *
 
 bool readTrtFile(const std::string& engineFile, IHostMemory*& trtModelStream, ICudaEngine*& engine){
     std::fstream file;
-    std::cout << "(TrtInfer:read_TRT_File)loading filename from:" << engineFile << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)loading filename from:" << engineFile << std::endl;
     nvinfer1::IRuntime* trtRuntime;
     //nvonnxparser::IPluginFactory* onnxPlugin = createPluginFactory(gLogger.getTRTLogger());
     file.open(engineFile, std::ios::binary | std::ios::in);
@@ -156,14 +156,14 @@ bool readTrtFile(const std::string& engineFile, IHostMemory*& trtModelStream, IC
     std::unique_ptr<char[]> data(new char[length]);
     file.read(data.get(), length);
     file.close();
-    std::cout << "(TrtInfer:read_TRT_File)load engine done" << std::endl;
-    std::cout << "(TrtInfer:read_TRT_File)deserializing" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)load engine done" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)deserializing" << std::endl;
     trtRuntime = createInferRuntime(gLogger.getTRTLogger());
     //ICudaEngine* engine = trtRuntime->deserializeCudaEngine(data.get(), length, onnxPlugin);
     engine = trtRuntime->deserializeCudaEngine(data.get(), length, nullptr);
-    std::cout << "(TrtInfer:read_TRT_File)deserialize done" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)deserialize done" << std::endl;
     assert(engine != nullptr);
-    std::cout << "(TrtInfer:read_TRT_File)Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
     trtModelStream = engine->serialize();
     return true;
 }
@@ -368,10 +368,10 @@ bool TrtInfer::testAllSample(
     return 1;
 }
 
-void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath, bool dataProcess){
+void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess){
 
-    if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
-    else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
+    if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created successfully." ;
+    else qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
     assert(context != nullptr);
 
@@ -402,21 +402,18 @@ void TrtInfer::realTimeInfer(RealTimeInferenceBuffer* que,std::string modelPath,
 
     //int inputLen=2;int outputLen=6;
     //ready to send data to context
-    float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
+
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
 
-    while(true){
-        std::vector<float> data_vec=que->get();
-        qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
-        float *indata = new float[data_vec.size()];
-        if (!data_vec.empty()){
-            memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
-        }
-        doInference(*context, indata, outdata, 1);
-        std::cout<<"Inference result:";
-        for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";
-        std::cout<<std::endl;
+    qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
+    float *indata = new float[data_vec.size()];
+    if (!data_vec.empty()){
+        memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
     }
+    doInference(*context, indata, outdata, 1);
+    std::cout<<"(TrtInfer::realTimeInfer) Inference result:  ";
+    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";
+    std::cout<<std::endl;
 
 }
 

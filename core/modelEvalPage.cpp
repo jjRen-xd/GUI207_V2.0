@@ -28,10 +28,8 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
-//    predIdx_future=predIdx_promise.get_future();
-//    degrees_future=degrees_promise.get_future();
 
-    trtInfer = new TrtInfer(ui,class2label);
+    trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
@@ -52,7 +50,7 @@ void ModelEvalPage::refreshGlobalInfo(){
     //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
-        trtInfer = new TrtInfer(ui,class2label);
+        trtInfer = new TrtInfer(class2label);
         this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
     // 单样本测试下拉框刷新

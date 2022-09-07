@@ -29,6 +29,7 @@ HEADERS += \
     core/modelTrain.h \
     #lib/algorithm/libtorchTest.h \
     #lib/algorithm/onnxinfer.h \
+    lib/algorithm/inferthread.h \
     lib/algorithm/logging.h \
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
@@ -44,6 +45,7 @@ HEADERS += \
 
 SOURCES += \
     core/monitorPage.cpp \
+    lib/algorithm/inferthread.cpp \
     lib/guiLogic/tools/realtimeinferencebuffer.cpp \
     lib/guiLogic/tools/socketserver.cpp \
     main.cpp \
