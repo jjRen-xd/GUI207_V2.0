@@ -14,7 +14,7 @@ InferThread::InferThread(QSemaphore *s,std::queue<std::vector<float>>* sharedQ,Q
     }
 
     trtInfer = new TrtInfer(class2label);
-
+    qRegisterMetaType<QVariant>("QVariant");
 }
 
 void InferThread::run(){
@@ -24,8 +24,11 @@ void InferThread::run(){
             QMutexLocker x(lock);
             std::vector<float> temp(sharedQue->front());
             qDebug()<<"(InferThread::run) acquire得到的temp.size()= "<<temp.size();
-            trtInfer->realTimeInfer(temp, modelPath, dataProcess);
-            emit sigInferResult("init emit");
+            int preIdx;
+            std::vector<float> degrees;
+            trtInfer->realTimeInfer(temp, modelPath, dataProcess, &preIdx, degrees);
+            QVariant qv; qv.setValue(degrees);
+            emit sigInferResult(preIdx,qv);
             //qDebug()<<"InferThread::run  emit's  is "<<asdf;
             sharedQue->pop();
         }

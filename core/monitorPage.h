@@ -30,7 +30,7 @@ public:
 
 
 public slots:
-    void showInferResult(QString);
+    void showInferResult(int,QVariant);
 
 private:
     Ui_MainWindow *ui;

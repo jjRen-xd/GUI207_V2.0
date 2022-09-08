@@ -4,8 +4,9 @@
 #include <QSemaphore>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QVariant>
 #include "./lib/algorithm/trtinfer.h"
-
+Q_DECLARE_METATYPE(std::vector<float>);
 class InferThread:public QThread
 {
     Q_OBJECT   //申明需要信号与槽机制支持
@@ -22,7 +23,7 @@ public:
     std::queue<std::vector<float>>* sharedQue;
     QMutex *lock;
 signals:
-    void sigInferResult(QString);
+    void sigInferResult(int,QVariant);
 
 private:
     std::map<int, std::string> label2class;

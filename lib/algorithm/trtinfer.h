@@ -31,7 +31,7 @@ public slots:
 
     void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees);
     bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, bool dataProcess, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
-    void realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess);
+    void realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess, int *predIdx, std::vector<float> &degrees);
 
 private:
     nvinfer1::IBuilder* builder{ nullptr };
