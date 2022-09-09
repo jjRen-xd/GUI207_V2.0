@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>375</width>
-               <height>575</height>
+               <width>278</width>
+               <height>422</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3499,8 +3499,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>375</width>
-               <height>575</height>
+               <width>338</width>
+               <height>547</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3788,8 +3788,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
-             <height>614</height>
+             <width>694</width>
+             <height>298</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -5061,6 +5061,13 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="simulateSignal">
+                   <property name="text">
+                    <string>模拟发送</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="stopListen">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -5179,16 +5186,35 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QTextBrowser" name="textBrowser_2">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                    <widget class="QScrollArea" name="scrollArea_7">
+                     <property name="horizontalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOn</enum>
                      </property>
-                     <property name="lineWrapMode">
-                      <enum>QTextEdit::NoWrap</enum>
+                     <property name="widgetResizable">
+                      <bool>true</bool>
                      </property>
+                     <widget class="QWidget" name="asdfasdfasdf">
+                      <property name="geometry">
+                       <rect>
+                        <x>0</x>
+                        <y>0</y>
+                        <width>355</width>
+                        <height>461</height>
+                       </rect>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_78">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_HotCol">
+                         <property name="spacing">
+                          <number>0</number>
+                         </property>
+                        </layout>
+                       </item>
+                      </layout>
+                     </widget>
                     </widget>
                    </item>
                   </layout>

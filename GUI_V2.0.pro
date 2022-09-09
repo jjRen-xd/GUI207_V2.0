@@ -41,12 +41,14 @@ HEADERS += \
     lib/guiLogic/tools/realtimeinferencebuffer.h \
     lib/guiLogic/tools/searchFolder.h \
     lib/TRANSFER/ToHRRP.h \
+    lib/guiLogic/tools/socketclient.h \
     lib/guiLogic/tools/socketserver.h
 
 SOURCES += \
     core/monitorPage.cpp \
     lib/algorithm/inferthread.cpp \
     lib/guiLogic/tools/realtimeinferencebuffer.cpp \
+    lib/guiLogic/tools/socketclient.cpp \
     lib/guiLogic/tools/socketserver.cpp \
     main.cpp \
     core/modeltrainpage.cpp \

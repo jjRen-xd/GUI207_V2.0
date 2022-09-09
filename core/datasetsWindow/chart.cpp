@@ -247,8 +247,6 @@ QWidget* Chart::drawDisDegreeChart(QString &classGT, std::vector<float> &degrees
 
     QChartView* view = new QChartView(chart);
     view->setRenderHint(QPainter::Antialiasing);
-    //removeLayout(ui->horizontalLayout_degreeChart);
-    //ui->horizontalLayout_degreeChart->addWidget(view);
     return view;
 }
 

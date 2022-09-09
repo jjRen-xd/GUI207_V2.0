@@ -20,7 +20,6 @@ public:
     SOCKET createServeSocket(const char* ip);
     void run();
 
-
     //定义服务端套接字，接受请求套接字
     SOCKET s_server;
     SOCKET s_accept;

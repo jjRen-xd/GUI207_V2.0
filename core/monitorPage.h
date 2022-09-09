@@ -8,6 +8,7 @@
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/modelInfo.h"
 #include "./lib/guiLogic/tools/socketserver.h"
+#include "./lib/guiLogic/tools/socketclient.h"
 #include "lib/algorithm/inferthread.h"
 
 #include "./lib/algorithm/trtinfer.h"
@@ -19,9 +20,10 @@ class MonitorPage : public QObject
 public:
     MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo);
     void StartListen();
+    void simulateSend();
     SocketServer* server;
     InferThread* inferThread=nullptr;
-    RealTimeInferenceBuffer* que;
+
     std::queue<std::vector<float>> sharedQue;
     TrtInfer* trtInfer;
     void refresh();
