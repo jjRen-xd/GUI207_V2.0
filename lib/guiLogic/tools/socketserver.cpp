@@ -83,12 +83,12 @@ void SocketServer::run(){           //Producer
             }QT_CATCH(...){
                 qDebug()<<"(SocketServer::run)data errrr";continue;
             }
-            qDebug() << "客户端信息:" << QString::number(num_float) ;
-            //terminal->print("Receive:"+QString::number(num_float));
+            //qDebug() << "客户端信息:" << QString::number(num_float) ;
+            terminal->print("Receive:"+QString::number(num_float));
 
             if(dataFrame.size()==127){//之后要和选择的模型匹配起来！！TODO
                 dataFrame.push_back(num_float);
-                QMutexLocker x(lock);//智能锁人,在栈区使用结束会自动释放
+                //QMutexLocker x(lock);//智能锁人,在栈区使用结束会自动释放
                 sharedQue->push(dataFrame);
                 sem->release(1);
                 qDebug()<<"(SocketServer::run) sem->release()";

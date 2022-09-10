@@ -21,7 +21,7 @@ void InferThread::run(){
     if(inferMode=="real_time_infer"){
         while(true){
             sem->acquire(1);
-            QMutexLocker x(lock);
+            //QMutexLocker x(lock);
             std::vector<float> temp(sharedQue->front());
             qDebug()<<"(InferThread::run) acquire得到的temp.size()= "<<temp.size();
             int preIdx;

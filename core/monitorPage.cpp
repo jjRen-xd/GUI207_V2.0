@@ -26,7 +26,7 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
     server = new SocketServer(&sem,&sharedQue,&lock,terminal);//监听线程
 
     connect(ui->startListen, &QPushButton::clicked, this, &MonitorPage::StartListen);
-    //connect(ui->simulateSignal, &QPushButton::clicked, this, &MonitorPage::simulateSend);
+    connect(ui->simulateSignal, &QPushButton::clicked, this, &MonitorPage::simulateSend);
     connect(ui->stopListen, &QPushButton::clicked,[this]() { delete server; });
 
 }
