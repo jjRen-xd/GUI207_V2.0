@@ -44,8 +44,8 @@ void MonitorPage::StartListen(){
 }
 
 void MonitorPage::simulateSend(){
-    //SocketClient* client = new SocketClient();
-    //client->start();
+    SocketClient* client = new SocketClient();
+    client->start();
 }
 
 void MonitorPage::refresh(){
