@@ -138,7 +138,7 @@ def show_confusion_matrix(classes, confusion_matrix, path):
     # plt.show()
 
 
-# 绘制
+# 绘制features_Accuracy
 def show_feature_selection(ac_score_list, feature_start, feature_end, feature_interval, path):
     plt.figure(figsize=(11, 5))
     x_interval = [i for i in range(feature_start, feature_end+1, feature_interval)]

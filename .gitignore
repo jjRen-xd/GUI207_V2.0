@@ -4,6 +4,8 @@
 /db/models/*
 /db/bashs/incremental/data/*
 db/bashs/incremental/__pycache__/*
+db/bashs/afs/__pycache__/*
+lib/TRANSFER/ToHrrp_mcr/*
 /build/*
 GUI_V1.0.pro.user
 /.qt_for_python/*

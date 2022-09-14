@@ -89,33 +89,20 @@ void ModelTrain::startTrain(QString cmd){
     process_train->setProcessChannelMode(QProcess::MergedChannels);
     process_train->start("cmd.exe");
     process_train->write(cmd.toLocal8Bit() + '\n');
-
-    // QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    // //QProcessEnvironment env; //有时候要用这个空环境变量才行，否则可能会出现一些污染的问题
-    // env.insert("PYTHONPATH", "D:/win_anaconda/Lib/site-packages");
-    // process_train->setProcessEnvironment(env);
-    // QStringList params;
-    // QString pythonPath = "D:/win_anaconda/python.exe";
-    // // 要执行的文件
-    // QString pythonScript = "D:/lyh/GUI207_V2.0/db/bashs/hrrp/hrrpTrainTest.py";
-    // //params << pythonScript <<" --data_dir D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128 --batch_size 32 --max_epochs 3";
-    // // 设置工作目录
-    // process_train->setWorkingDirectory("D:/lyh/GUI207_V2.0/db/bashs/hrrp");
-    // process_train->start(pythonPath, params);
 }
 
 void ModelTrain::showTrianResult(){
     timeRestEdit->setText("训练完毕");
     trainProgressBar->setValue(100);
-    if(modelTypeId==0){
-        trainImg->setPixmap(QPixmap(dataRoot+"/training_accuracy.jpg"));
-        valImg->setPixmap(QPixmap(dataRoot+"/verification_accuracy.jpg"));
-        confusionMat->setPixmap(QPixmap(dataRoot+"/confusion_matrix.jpg"));
+    if(model_type==0){
+        trainImg->setPixmap(QPixmap(saved_model_dir+"/training_accuracy.jpg"));
+        valImg->setPixmap(QPixmap(saved_model_dir+"/verification_accuracy.jpg"));
+        confusionMat->setPixmap(QPixmap(saved_model_dir+"/confusion_matrix.jpg"));
     }
-    else if(modelTypeId==1){
-        trainImg->setPixmap(QPixmap(dataRoot+"/training_accuracy.jpg"));
-        valImg->setPixmap(QPixmap(dataRoot+"/features_Accuracy.jpg"));
-        confusionMat->setPixmap(QPixmap(dataRoot+"/confusion_matrix.jpg"));
+    else if(model_type==1){
+        trainImg->setPixmap(QPixmap(saved_model_dir+"/training_accuracy.jpg"));
+        valImg->setPixmap(QPixmap(saved_model_dir+"/features_Accuracy.jpg"));
+        confusionMat->setPixmap(QPixmap(saved_model_dir+"/confusion_matrix.jpg"));
     }
 }
 
