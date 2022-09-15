@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import sys
 from gc import callbacks
 import argparse
@@ -13,6 +13,8 @@ from matplotlib import rcParams
 from datetime import datetime
 from sklearn.metrics import classification_report
 
+datasetName="./"
+savedPath="./"
 sys.path.append("..")
 # from model_convert.hdf52trt import convert_hdf5_to_trt
 sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") for name in dirs])
@@ -155,7 +157,7 @@ def show_confusion_matrix(classes, confusion_matrix):
     plt.ylabel('True label', fontsize=16)
     plt.xlabel('Predict label', fontsize=16)
     plt.tight_layout()
-    plt.savefig(args.data_dir+'/confusion_matrix.jpg', dpi=300)
+    plt.savefig(savedPath+'/confusion_matrix.jpg', dpi=300)
     # plt.show()
 
 
@@ -170,7 +172,7 @@ def train_acc(epoch, acc):
     plt.ylabel('Accuracy', fontsize=16)
     plt.xlabel('Epoch', fontsize=16)
     plt.tight_layout()
-    plt.savefig(args.data_dir+'/training_accuracy.jpg', dpi=300)
+    plt.savefig(savedPath+'/training_accuracy.jpg', dpi=300)
 
 
 # 验证准确率曲线
@@ -184,7 +186,7 @@ def val_acc(v_acc):
     plt.ylabel('Accuracy', fontsize=16)
     plt.xlabel('Times', fontsize=16)
     plt.tight_layout()
-    plt.savefig(args.data_dir+'/verification_accuracy.jpg', dpi=300)
+    plt.savefig(savedPath+'/verification_accuracy.jpg', dpi=300)
 
 
 
@@ -217,7 +219,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
     learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,
                                                                    factor=0.5, min_lr=0.00001)
     # 保存最优模型
-    checkpoint = tf.keras.callbacks.ModelCheckpoint(args.data_dir+'/model_saving.hdf5', monitor='val_accuracy',
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(savedPath+'/model_saving.hdf5', monitor='val_accuracy',
                                                     verbose=1, save_best_only=True, mode='max')
     callbacks_list = [checkpoint, learning_rate_reduction, timecallback()]
     # model.summary()
@@ -226,7 +228,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
     h_parameter = h.history
     train_acc(int(args.max_epochs), h_parameter['accuracy'])
     val_acc(h_parameter['accuracy'])
-    save_model = tf.keras.models.load_model(args.data_dir+'/model_saving.hdf5')
+    save_model = tf.keras.models.load_model(savedPath+'/model_saving.hdf5')
     Y_test = np.argmax(y_test, axis=1)
     #y_pred = save_model.predict_classes(x_test)   
     y_pred = np.argmax(save_model.predict(x_test), axis=1)
@@ -237,8 +239,18 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
 
 
 if __name__ == '__main__':
-    # print("Train Starting")
+    print("Train Starting")
     x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
+    
+    if(args.data_dir.rfind("/")+1==len(args.data_dir)):#如果给的路径参数最后一个字符是/
+        datasetName=args.data_dir[args.data_dir[:-1].rfind("/")+1:-1]
+        savedPath=args.data_dir[:args.data_dir[:-1].rfind("/")+1]+"Model_"+datasetName
+    else:
+        datasetName=args.data_dir[args.data_dir.rfind("/")+1:]
+        savedPath=args.data_dir[:args.data_dir.rfind("/")+1]+"Model_"+datasetName
+    if not os.path.exists(savedPath):
+        os.makedirs(savedPath)
+
     run_main(x_train, y_train, x_test, y_test, class_num, folder_name)
     print("Train Ending")
     # convert_hdf5_to_trt(args.data_dir+'/model_saving.hdf5')

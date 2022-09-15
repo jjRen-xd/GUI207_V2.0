@@ -26,6 +26,7 @@ void InferThread::run(){
             qDebug()<<"(InferThread::run) acquire得到的temp.size()= "<<temp.size();
             int preIdx;
             std::vector<float> degrees;
+            //degrees={0.1,0.2,0.3,0.1,0.2,0.1};preIdx=2;
             trtInfer->realTimeInfer(temp, modelPath, dataProcess, &preIdx, degrees);
             QVariant qv; qv.setValue(degrees);
             emit sigInferResult(preIdx,qv);

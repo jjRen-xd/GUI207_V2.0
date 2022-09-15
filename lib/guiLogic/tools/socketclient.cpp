@@ -108,9 +108,9 @@ void SocketClient::run(){
                 break;
             }
             //qDebug() << "发送了"<<floatVariable ;
-            if (i > 0) _sleep(30);
+            if (i > 0) _sleep(2);
             std::string tem = send_buf;  //qDebug() << "send " << tem ;
-        }if (i == 0) _sleep(1000);
+        }if (i == 0) _sleep(2500);
         //std::cout << std::endl << "==================Send 128===============" << std::endl;
     }
 }

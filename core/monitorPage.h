@@ -10,8 +10,9 @@
 #include "./lib/guiLogic/tools/socketserver.h"
 #include "./lib/guiLogic/tools/socketclient.h"
 #include "lib/algorithm/inferthread.h"
-
+#include "lib/guiLogic/thermalcolumnlabel.h"
 #include "./lib/algorithm/trtinfer.h"
+
 
 
 class MonitorPage : public QObject
@@ -19,20 +20,22 @@ class MonitorPage : public QObject
     Q_OBJECT
 public:
     MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo);
-    void StartListen();
+    void startListen();
     void simulateSend();
     SocketServer* server;
     InferThread* inferThread=nullptr;
-
+    void paintLabel();
     std::queue<std::vector<float>> sharedQue;
     TrtInfer* trtInfer;
     void refresh();
+    //bool eventFilter(QObject *watched, QEvent *event);
     ~MonitorPage();
 
 
 
 public slots:
     void showInferResult(int,QVariant);
+    void showColorMap();
 
 private:
     Ui_MainWindow *ui;

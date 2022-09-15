@@ -3,9 +3,22 @@
 #pragma comment(lib,"ws2_32.lib")   // 库文件
 #define PORT 2287
 #define RECEIVE_BUF_SIZ 512
+#define ColorMapColumnNUM 128
+
 SocketServer::SocketServer(QSemaphore *s,std::queue<std::vector<float>>* sharedQ,QMutex *l,BashTerminal *bash_terminal):
     sem(s),sharedQue(sharedQ),lock(l),terminal(bash_terminal)
 {
+    for(int i=0;i<ColorMapColumnNUM;i++){
+        std::vector<float> temp(128,-1);
+        colorMapMatrix.push_back(temp);
+    }
+    Py_Initialize();
+    _import_array();
+    PyRun_SimpleString("import sys");
+    //PyRun_SimpleString("sys.path.append('./')");
+    PyRun_SimpleString("sys.path.append('../../lib/guiLogic/tools/')");
+    pModule = PyImport_ImportModule("hrrp2colormap");
+    pFunc = PyObject_GetAttrString(pModule, "ff");
 
 }
 void SocketServer::initialization() {
@@ -85,13 +98,18 @@ void SocketServer::run(){           //Producer
             }
             //qDebug() << "客户端信息:" << QString::number(num_float) ;
             terminal->print("Receive:"+QString::number(num_float));
-
             if(dataFrame.size()==127){//之后要和选择的模型匹配起来！！TODO
+                while(sharedQue->size()>0){}
                 dataFrame.push_back(num_float);
-                //QMutexLocker x(lock);//智能锁人,在栈区使用结束会自动释放
+                //QMutexLocker x(lock);//智能锁,在栈区使用结束会自动释放
                 sharedQue->push(dataFrame);
                 sem->release(1);
                 qDebug()<<"(SocketServer::run) sem->release()";
+                //colorMapMatrix更新
+                colorMapMatrix.pop_back();
+                colorMapMatrix.push_front(dataFrame);
+                dataVisualization();
+
                 dataFrame.clear();
             }
             else dataFrame.push_back(num_float);
@@ -105,4 +123,41 @@ void SocketServer::run(){           //Producer
     //释放DLL资源
     WSACleanup();
     return;
+}
+
+void SocketServer::dataVisualization(){
+    //数据准备
+    float numpyptr[128*ColorMapColumnNUM];
+    std::deque<std::vector<float>> colorMapMatrix_copy=colorMapMatrix;
+    qDebug()<<"colorMapMatrix.size()="<<colorMapMatrix.size();
+    qDebug()<<"colorMapMatrix_copy.size()="<<colorMapMatrix_copy.size();
+    for(int i=0;i<ColorMapColumnNUM;i++){
+        std::vector<float> asdf=colorMapMatrix_copy.front();
+        for(int j=0;j<128;j++){
+            numpyptr[i*128+j]=asdf[j];
+            //std::cout<<asdf[j]<<" ";
+        }
+        //::cout<<std::endl;
+        colorMapMatrix_copy.pop_front();
+    }
+    npy_intp dims[2] = {ColorMapColumnNUM,128};//矩阵维度
+    PyArray = PyArray_SimpleNewFromData(2, dims, NPY_FLOAT, numpyptr);//将数据变为numpy
+    //用tuple装起来传入python
+    args = PyTuple_New(1);
+    PyTuple_SetItem(args, 0, PyArray);
+    //函数调用(有返回值也是numpy
+    pRet = (PyArrayObject*)PyEval_CallObject(pFunc, args);
+    emit sigColorMap();
+    qDebug()<<"emited signal!";
+    return;
+}
+
+SocketServer::~SocketServer(){
+    //释放内存
+    Py_CLEAR(pModule);
+    Py_CLEAR(pFunc);
+    Py_CLEAR(PyArray);
+    Py_CLEAR(args);
+    Py_CLEAR(pRet);
+    Py_Finalize();      // 释放资源
 }

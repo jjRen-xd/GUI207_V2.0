@@ -1,9 +1,9 @@
 #include "monitorPage.h"
 #include "lib/algorithm/trtinfer.h"
+#include "qimagereader.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QMutex>
-
 
 MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
     ui(main_ui),
@@ -24,23 +24,24 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
     inferThread->setInferMode("real_time_infer");
 
     server = new SocketServer(&sem,&sharedQue,&lock,terminal);//监听线程
+    connect(server, SIGNAL(sigColorMap()),this,SLOT(showColorMap()));
 
-    connect(ui->startListen, &QPushButton::clicked, this, &MonitorPage::StartListen);
+    connect(ui->startListen, &QPushButton::clicked, this, &MonitorPage::startListen);
     connect(ui->simulateSignal, &QPushButton::clicked, this, &MonitorPage::simulateSend);
     connect(ui->stopListen, &QPushButton::clicked,[this]() { delete server; });
 
 }
-void MonitorPage::StartListen(){
+void MonitorPage::startListen(){
     if(modelInfo->selectedType==""){
         QMessageBox::warning(NULL, "实时监测", "监听失败，请先指定HRRP模型。");
         qDebug()<<"modelInfo->selectedType=="<<QString::fromStdString(modelInfo->selectedType);
         return;
     }
-
     inferThread->setParmOfRTI(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH"),true);
     server->start();
     terminal->print("开始监听");
     inferThread->start();
+
 }
 
 void MonitorPage::simulateSend(){
@@ -67,10 +68,8 @@ void removeLayout2(QLayout *layout){
             delete widget;
             widget = nullptr;
         }
-
         else if (QLayout* childLayout = child->layout())
             removeLayout2(childLayout);
-
         delete child;
         child = nullptr;
     }
@@ -83,11 +82,37 @@ void MonitorPage::showInferResult(int predIdx,QVariant qv){
     QString predClass = QString::fromStdString(label2class[predIdx]);
     terminal->print("Real-time classification results:"+predClass);
     QWidget *tempWidget=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
-    QWidget *tempWidget2=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
+    //QWidget *tempWidget2=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
     removeLayout2(ui->horizontalLayout_degreeChart2);
     ui->horizontalLayout_degreeChart2->addWidget(tempWidget);
-    ui->horizontalLayout_HotCol->addWidget(tempWidget2);
 }
+
+void MonitorPage::showColorMap(){
+    /*=================draw thermal column==============*/
+    QLabel *imageLabel=new QLabel;
+    imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel->setScaledContents(true);
+    imageLabel->setStyleSheet("border:2px solid red;");
+    QImage image;
+    QImageReader reader("E:/asdfqwer.png");
+    reader.setAutoTransform(true);
+    const QImage newImage = reader.read();
+    if (newImage.isNull()) {
+        qDebug()<<"errrrrrrrrrror";
+    }
+    image = newImage;
+    imageLabel->setPixmap(QPixmap::fromImage(image));
+    removeLayout2(ui->horizontalLayout_HotCol);
+    ui->horizontalLayout_HotCol->addWidget(imageLabel);
+}
+
+
+void MonitorPage::paintLabel(){//0引用 已淘汰
+    ThermalColumnLabel *mylabel = new ThermalColumnLabel(ui->asdfasdfasdf);
+    ui->horizontalLayout_HotCol->addWidget(mylabel);
+}
+
 MonitorPage::~MonitorPage(){
 
 }

@@ -35,6 +35,7 @@ HEADERS += \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
+    lib/guiLogic/thermalcolumnlabel.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/guithreadrun.h \
@@ -47,6 +48,7 @@ HEADERS += \
 SOURCES += \
     core/monitorPage.cpp \
     lib/algorithm/inferthread.cpp \
+    lib/guiLogic/thermalcolumnlabel.cpp \
     lib/guiLogic/tools/realtimeinferencebuffer.cpp \
     lib/guiLogic/tools/socketclient.cpp \
     lib/guiLogic/tools/socketserver.cpp \

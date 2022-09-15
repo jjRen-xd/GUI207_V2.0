@@ -5103,19 +5103,6 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_135">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Label</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QLabel" name="onetemplabel">
                    <property name="text">
                     <string/>
@@ -5188,7 +5175,7 @@
                    <item>
                     <widget class="QScrollArea" name="scrollArea_7">
                      <property name="horizontalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOn</enum>
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
                      </property>
                      <property name="widgetResizable">
                       <bool>true</bool>
@@ -5199,7 +5186,7 @@
                         <x>0</x>
                         <y>0</y>
                         <width>355</width>
-                        <height>461</height>
+                        <height>472</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
