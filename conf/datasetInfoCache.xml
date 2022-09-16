@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="6">
-    < typeID="1">
-        < nameID="1">
-            <PATH></PATH>
-        </>
-    </>
+
     <FEATURE typeID="2" />
     <HRRP typeID="3">
         <falseHRRPmat_1x128_real nameID="2">
