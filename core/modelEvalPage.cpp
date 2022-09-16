@@ -28,8 +28,6 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
-//    predIdx_future=predIdx_promise.get_future();
-//    degrees_future=degrees_promise.get_future();
 
     trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
@@ -150,8 +148,6 @@ void  ModelEvalPage::testOneSample(){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
         //classnum==(datasetInfo->selectedClassNames.size())
-        //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
         std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
         bool dataProcess=true;
@@ -180,6 +176,11 @@ void  ModelEvalPage::testOneSample(){
 
         // 绘制隶属度柱状图
         disDegreeChart(predClass, degrees, label2class);
+//        Chart *forDegreeChart = new Chart(ui->label_mE_chartGT,"","");//这里传的参没啥用，只是想在下面调用一下它的方法
+//        removeLayout(ui->horizontalLayout_degreeChart2);
+//        QWidget* view=forDegreeChart->drawDisDegreeChart(predClass, degrees, label2class);
+//        ui->horizontalLayout_degreeChart2->addWidget(view);
+//        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 
     }
     else{

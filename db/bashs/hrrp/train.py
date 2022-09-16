@@ -81,7 +81,7 @@ parser.add_argument('--maxBatch', '-maxBatch', help='the maxBatch of engine.',de
 args = parser.parse_args()
 
 
-# æ•°æ®å½’ä¸€åŒ–
+# Êı¾İ¹éÒ»»¯
 def data_normalization(data):
     DATA = []
     for i in range(0, len(data)):
@@ -96,29 +96,29 @@ def data_normalization(data):
     return DATA
 
 
-# ä».matæ–‡ä»¶è¯»å–æ•°æ®å¹¶é¢„å¤„ç†
+# ´Ó.matÎÄ¼ş¶ÁÈ¡Êı¾İ²¢Ô¤´¦Àí
 def read_mat(read_path):
-    # è¯»å–è·¯å¾„ä¸‹æ‰€æœ‰æ–‡ä»¶å¤¹çš„åç§°å¹¶ä¿å­˜
-    folder_path = read_path  # æ‰€æœ‰æ–‡ä»¶å¤¹æ‰€åœ¨è·¯å¾„
-    file_name = os.listdir(folder_path)  # è¯»å–æ‰€æœ‰æ–‡ä»¶å¤¹ï¼Œå°†æ–‡ä»¶å¤¹åå­˜åœ¨åˆ—è¡¨ä¸­
+    # ¶ÁÈ¡Â·¾¶ÏÂËùÓĞÎÄ¼ş¼ĞµÄÃû³Æ²¢±£´æ
+    folder_path = read_path  # ËùÓĞÎÄ¼ş¼ĞËùÔÚÂ·¾¶
+    file_name = os.listdir(folder_path)  # ¶ÁÈ¡ËùÓĞÎÄ¼ş¼Ğ£¬½«ÎÄ¼ş¼ĞÃû´æÔÚÁĞ±íÖĞ
     folder_name = []
     for i in range(0, len(file_name)):
-        # åˆ¤æ–­æ–‡ä»¶å¤¹ä¸æ–‡ä»¶
+        # ÅĞ¶ÏÎÄ¼ş¼ĞÓëÎÄ¼ş
         if os.path.isdir(folder_path+'/'+file_name[i]):
             folder_name.append(file_name[i])
-    folder_name.sort()  # æŒ‰æ–‡ä»¶å¤¹åè¿›è¡Œæ’åº
+    folder_name.sort()  # °´ÎÄ¼ş¼ĞÃû½øĞĞÅÅĞò
 
-    # è¯»å–å•ä¸ªæ–‡ä»¶å¤¹ä¸‹çš„å†…å®¹
+    # ¶ÁÈ¡µ¥¸öÎÄ¼ş¼ĞÏÂµÄÄÚÈİ
     for i in range(0, len(folder_name)):
-        class_mat_name = os.listdir(folder_path + '/' + folder_name[i])  # è·å–ç±»åˆ«æ–‡ä»¶å¤¹ä¸‹çš„.matæ–‡ä»¶åç§°
-        class_path = folder_path + '/' + folder_name[i] + '/' + class_mat_name[0]  # ç±»åˆ«çš„.matæ–‡ä»¶è·¯å¾„
+        class_mat_name = os.listdir(folder_path + '/' + folder_name[i])  # »ñÈ¡Àà±ğÎÄ¼ş¼ĞÏÂµÄ.matÎÄ¼şÃû³Æ
+        class_path = folder_path + '/' + folder_name[i] + '/' + class_mat_name[0]  # Àà±ğµÄ.matÎÄ¼şÂ·¾¶
         matrix_base = os.path.basename(class_path)
-        matrix_name = os.path.splitext(matrix_base)[0]  # è·å–å»é™¤æ‰©å±•åçš„.matæ–‡ä»¶åç§°
-        class_data = sio.loadmat(class_path)[matrix_name].T  # è¯»å…¥.matæ–‡ä»¶ï¼Œå¹¶è½¬ç½®
+        matrix_name = os.path.splitext(matrix_base)[0]  # »ñÈ¡È¥³ıÀ©Õ¹ÃûµÄ.matÎÄ¼şÃû³Æ
+        class_data = sio.loadmat(class_path)[matrix_name].T  # ¶ÁÈë.matÎÄ¼ş£¬²¢×ªÖÃ
 
-        class_data_normalization = data_normalization(class_data)  # å½’ä¸€åŒ–å¤„ç†
+        class_data_normalization = data_normalization(class_data)  # ¹éÒ»»¯´¦Àí
 
-        # æ•°æ®å¤åˆ¶64æ¬¡
+        # Êı¾İ¸´ÖÆ64´Î
         class_data_picture = []
         for j in range(0, len(class_data_normalization)):
             class_data_one = class_data_normalization[j]
@@ -126,13 +126,13 @@ def read_mat(read_path):
             for k in range(0, len(class_data_one)):
                 empty[k, :] = class_data_one[k]
             class_data_picture.append(empty)
-        class_data_picture = np.array(class_data_picture)  # åˆ—è¡¨è½¬æ¢ä¸ºæ•°ç»„
+        class_data_picture = np.array(class_data_picture)  # ÁĞ±í×ª»»ÎªÊı×é
 
-        # è®¾ç½®æ ‡ç­¾
+        # ÉèÖÃ±êÇ©
         label = np.zeros((len(class_data_normalization), len(folder_name)))
         label[:, i] = 1
 
-        # åˆ’åˆ†è®­ç»ƒæ•°æ®é›†å’Œæµ‹è¯•æ•°æ®é›†
+        # »®·ÖÑµÁ·Êı¾İ¼¯ºÍ²âÊÔÊı¾İ¼¯
         x_train = class_data_picture[:int(len(class_data_picture)/2), :]
         x_test = class_data_picture[int(len(class_data_picture)/2):, :]
         y_train = label[:int(len(class_data_picture)/2), :]
@@ -156,7 +156,7 @@ def read_mat(read_path):
     return train_X, train_Y, test_X, test_Y, len(folder_name), folder_name
 
 
-# ç‰¹å¾çŸ©é˜µå­˜å‚¨
+# ÌØÕ÷¾ØÕó´æ´¢
 def storage_characteristic_matrix(result, test_Y, output_size):
     characteristic_matrix = np.zeros((output_size, output_size))
     for i in range(0, len(result)):
@@ -170,7 +170,7 @@ def storage_characteristic_matrix(result, test_Y, output_size):
     return characteristic_matrix, accuracy_every_class
 
 
-# ç»˜åˆ¶æ··æ·†çŸ©é˜µ
+# »æÖÆ»ìÏı¾ØÕó
 def show_confusion_matrix(classes, confusion_matrix):
     plt.figure()
     proportion = []
@@ -180,15 +180,15 @@ def show_confusion_matrix(classes, confusion_matrix):
             temp = j / (np.sum(i))
             proportion.append(temp)
 
-    pshow = []  #ç™¾åˆ†æ¯”(è¡Œéå†)
+    pshow = []  #°Ù·Ö±È(ĞĞ±éÀú)
     for i in proportion:
         pt = "%.2f%%" % (i * 100)
         pshow.append(pt)
-    proportion = np.array(proportion).reshape(length, length)  # reshape(åˆ—çš„é•¿åº¦ï¼Œè¡Œçš„é•¿åº¦)
+    proportion = np.array(proportion).reshape(length, length)  # reshape(ÁĞµÄ³¤¶È£¬ĞĞµÄ³¤¶È)
     pshow = np.array(pshow).reshape(length, length)
-    config = {"font.family": 'Times New Roman'}  # è®¾ç½®å­—ä½“ç±»å‹
+    config = {"font.family": 'Times New Roman'}  # ÉèÖÃ×ÖÌåÀàĞÍ
     rcParams.update(config)
-    plt.imshow(proportion, interpolation='nearest', cmap=plt.cm.Blues)  # æŒ‰ç…§åƒç´ æ˜¾ç¤ºå‡ºçŸ©é˜µ
+    plt.imshow(proportion, interpolation='nearest', cmap=plt.cm.Blues)  # °´ÕÕÏñËØÏÔÊ¾³ö¾ØÕó
     plt.colorbar()
     tick_marks = np.arange(len(classes))
     plt.xticks(tick_marks, classes, fontsize=12)
@@ -200,10 +200,10 @@ def show_confusion_matrix(classes, confusion_matrix):
     for i, j in iters:
         if i == j:
             plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10, color='white',
-                     weight=5)  # æ˜¾ç¤ºå¯¹åº”çš„æ•°å­—
+                     weight=5)  # ÏÔÊ¾¶ÔÓ¦µÄÊı×Ö
             plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10, color='white')
         else:
-            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10)  # æ˜¾ç¤ºå¯¹åº”çš„æ•°å­—
+            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10)  # ÏÔÊ¾¶ÔÓ¦µÄÊı×Ö
             plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10)
 
     plt.ylabel('True label', fontsize=16)
@@ -213,7 +213,7 @@ def show_confusion_matrix(classes, confusion_matrix):
     # plt.show()
 
 
-# è®­ç»ƒè¿‡ç¨‹ä¸­å‡†ç¡®ç‡æ›²çº¿
+# ÑµÁ·¹ı³ÌÖĞ×¼È·ÂÊÇúÏß
 def train_acc(epoch, acc):
     x = np.arange(epoch+1)[1:]
     plt.figure()
@@ -227,7 +227,7 @@ def train_acc(epoch, acc):
     plt.savefig(savedPath+'/training_accuracy.jpg', dpi=300)
 
 
-# éªŒè¯å‡†ç¡®ç‡æ›²çº¿
+# ÑéÖ¤×¼È·ÂÊÇúÏß
 def val_acc(v_acc):
     x = np.arange(len(v_acc)+1)[1:]
     plt.figure()
@@ -267,7 +267,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
     model.add(tf.keras.applications.densenet.DenseNet121(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
     model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
     learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,factor=0.5, min_lr=0.00001)
-    # ä¿å­˜æœ€ä¼˜æ¨¡å‹
+    # ±£´æ×îÓÅÄ£ĞÍ
     checkpoint = tf.keras.callbacks.ModelCheckpoint(savedPath+'/TriModel.hdf5', monitor='val_accuracy',verbose=1, save_best_only=True, mode='max')
     callbacks_list = [checkpoint, learning_rate_reduction, timecallback()]
     # model.summary()
@@ -280,7 +280,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
     Y_test = np.argmax(y_test, axis=1)
     #y_pred = save_model.predict_classes(x_test)   
     y_pred = np.argmax(save_model.predict(x_test), axis=1)
-    labels = folder_name  # æ ‡ç­¾æ˜¾ç¤º
+    labels = folder_name  # ±êÇ©ÏÔÊ¾
     characteristic_matrix, accuracy_every_class = storage_characteristic_matrix(y_pred, Y_test, class_num)
     show_confusion_matrix(labels, characteristic_matrix)
     print(classification_report(Y_test, y_pred))
@@ -289,7 +289,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
 if __name__ == '__main__':
     # print("Train Starting")
     x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
-    if(args.data_dir.rfind("/")+1==len(args.data_dir)):#å¦‚æœç»™çš„è·¯å¾„å‚æ•°æœ€åä¸€ä¸ªå­—ç¬¦æ˜¯/
+    if(args.data_dir.rfind("/")+1==len(args.data_dir)):#Èç¹û¸øµÄÂ·¾¶²ÎÊı×îºóÒ»¸ö×Ö·ûÊÇ/
         datasetName=args.data_dir[args.data_dir[:-1].rfind("/")+1:-1]
         savedPath=args.data_dir[:args.data_dir[:-1].rfind("/")+1]+"TriModel_"+datasetName
     else:

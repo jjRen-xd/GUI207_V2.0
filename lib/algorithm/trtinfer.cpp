@@ -145,7 +145,7 @@ void getDataFromMat(std::string targetMatFile,int emIdx,bool dataProcess,float *
 
 bool readTrtFile(const std::string& engineFile, IHostMemory*& trtModelStream, ICudaEngine*& engine){
     std::fstream file;
-    std::cout << "(TrtInfer:read_TRT_File)loading filename from:" << engineFile << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)loading filename from:" << engineFile << std::endl;
     nvinfer1::IRuntime* trtRuntime;
     //nvonnxparser::IPluginFactory* onnxPlugin = createPluginFactory(gLogger.getTRTLogger());
     file.open(engineFile, std::ios::binary | std::ios::in);
@@ -156,14 +156,14 @@ bool readTrtFile(const std::string& engineFile, IHostMemory*& trtModelStream, IC
     std::unique_ptr<char[]> data(new char[length]);
     file.read(data.get(), length);
     file.close();
-    std::cout << "(TrtInfer:read_TRT_File)load engine done" << std::endl;
-    std::cout << "(TrtInfer:read_TRT_File)deserializing" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)load engine done" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)deserializing" << std::endl;
     trtRuntime = createInferRuntime(gLogger.getTRTLogger());
     //ICudaEngine* engine = trtRuntime->deserializeCudaEngine(data.get(), length, onnxPlugin);
     engine = trtRuntime->deserializeCudaEngine(data.get(), length, nullptr);
-    std::cout << "(TrtInfer:read_TRT_File)deserialize done" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)deserialize done" << std::endl;
     assert(engine != nullptr);
-    std::cout << "(TrtInfer:read_TRT_File)Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
+    //std::cout << "(TrtInfer:read_TRT_File)Great. The engine in TensorRT.cpp is not nullptr" << std::endl;
     trtModelStream = engine->serialize();
     return true;
 }
@@ -192,7 +192,8 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
 
 void TrtInfer::testOneSample(
         std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
-        int *predIdx,std::vector<float> &degrees){
+        int *predIdx,std::vector<float> &degrees)
+{
     //qDebug() << "(OnnxInfer::testOneSample)子线程id：" << QThread::currentThreadId();
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
@@ -367,6 +368,69 @@ bool TrtInfer::testAllSample(
     return 1;
 }
 
+void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess,int *predIdx, std::vector<float> &degrees){
+
+    if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created successfully." ;
+    else qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created failed." ;
+    context = engine->createExecutionContext();
+    assert(context != nullptr);
+
+    //根据模型确认输入输出的数据尺度
+    inputLen=1;outputLen=1;
+    nvinfer1::Dims indims = engine->getBindingDimensions(0);
+    for (int i = 0; i < indims.nbDims; i++){
+        if(i!=0) inputLen*=indims.d[i];
+        inputdims.push_back(indims.d[i]);
+    }
+    nvinfer1::Dims oudims = engine->getBindingDimensions(1);
+    for (int i = 0; i < oudims.nbDims; i++){
+        if(i!=0) outputLen*=oudims.d[i];
+        outputdims.push_back(oudims.d[i]);
+    }
+    if(inputdims[0]==outputdims[0]&&inputdims[0]==-1) isDynamic=true;
+    else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
+    else {qDebug()<<"模型输入输出批数不一致！";return;}
+    INFERENCE_BATCH=1;
+    //define the dims if necessary
+    if(isDynamic){
+        nvinfer1::Dims dims4;   dims4.d[0]=INFERENCE_BATCH;
+        for(int i=1;i<indims.nbDims;i++) dims4.d[i]=inputdims[i];
+        dims4.nbDims = indims.nbDims;
+        context->setBindingDimensions(0, dims4);
+    }
+
+
+    //int inputLen=2;int outputLen=6;
+    //ready to send data to context
+
+    float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
+
+    qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
+    float *indata = new float[data_vec.size()];
+    if (!data_vec.empty()){
+        memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
+    }
+    doInference(*context, indata, outdata, 1);
+    std::vector<float> output_vec;
+    //std::cout << "(TrtInfer::testOneSample)outdata:  ";
+    float outdatasum=0.0;
+    for (unsigned int i = 0; i < outputLen; i++){
+        //std::cout << outdata[i] << ", ";
+        outdatasum+=outdata[i];
+        output_vec.push_back(outdata[i]);
+    }std::cout<<std::endl;
+
+    //和不为1说明网络模型最后一层不是softmax，就主动做一下softmax
+    if(abs(outdatasum-1.0)>1e-8) softmax(output_vec);
+
+    int pred = std::distance(output_vec.begin(),std::max_element(output_vec.begin(),output_vec.end()));
+    qDebug()<< "(TrtInfer::realTimeInfer)predicted label:"<<QString::number(pred);
+    degrees=output_vec;
+    *predIdx=pred;
+
+}
+
 void TrtInfer::setBatchSize(int batchSize){
     INFERENCE_BATCH=batchSize;
 }
+
