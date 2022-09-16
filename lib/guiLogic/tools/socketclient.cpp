@@ -94,7 +94,7 @@ void SocketClient::run(){
     SOCKET s_server;
     initSocketClient();
     s_server = createClientSocket("127.0.0.1");
-    std::string targetPath = "E:/207Project/GUI207_V2.0/db/datasets/falseHRRPmat_1x128/DT/hrrp128.mat";
+    std::string targetPath = "D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real/bigball/Big_ball.mat";
     int inputLen = 128;
     float* indata = new float[inputLen]; std::fill_n(indata, inputLen, 0);
     for (int i = 0; i < 99; i++) {

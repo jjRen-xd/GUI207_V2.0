@@ -95,7 +95,7 @@ void MonitorPage::showColorMap(){
     imageLabel->setScaledContents(true);
     imageLabel->setStyleSheet("border:2px solid red;");
     QImage image;
-    QImageReader reader("E:/asdfqwer.png");
+    QImageReader reader("D:/asdfqwer.png");
     reader.setAutoTransform(true);
     const QImage newImage = reader.read();
     if (newImage.isNull()) {

@@ -12,6 +12,7 @@ SocketServer::SocketServer(QSemaphore *s,std::queue<std::vector<float>>* sharedQ
         std::vector<float> temp(128,-1);
         colorMapMatrix.push_back(temp);
     }
+    Py_SetPythonHome(L"D:/win_anaconda");
     Py_Initialize();
     _import_array();
     PyRun_SimpleString("import sys");
@@ -97,7 +98,7 @@ void SocketServer::run(){           //Producer
                 qDebug()<<"(SocketServer::run)data errrr";continue;
             }
             //qDebug() << "客户端信息:" << QString::number(num_float) ;
-            terminal->print("Receive:"+QString::number(num_float));
+            //terminal->print("Receive:"+QString::number(num_float));
             if(dataFrame.size()==127){//之后要和选择的模型匹配起来！！TODO
                 while(sharedQue->size()>0){}
                 dataFrame.push_back(num_float);
@@ -105,6 +106,7 @@ void SocketServer::run(){           //Producer
                 sharedQue->push(dataFrame);
                 sem->release(1);
                 qDebug()<<"(SocketServer::run) sem->release()";
+                terminal->print("One Sample was received ");
                 //colorMapMatrix更新
                 colorMapMatrix.pop_back();
                 colorMapMatrix.push_front(dataFrame);
@@ -135,9 +137,7 @@ void SocketServer::dataVisualization(){
         std::vector<float> asdf=colorMapMatrix_copy.front();
         for(int j=0;j<128;j++){
             numpyptr[i*128+j]=asdf[j];
-            //std::cout<<asdf[j]<<" ";
         }
-        //::cout<<std::endl;
         colorMapMatrix_copy.pop_front();
     }
     npy_intp dims[2] = {ColorMapColumnNUM,128};//矩阵维度
@@ -145,7 +145,7 @@ void SocketServer::dataVisualization(){
     //用tuple装起来传入python
     args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, PyArray);
-    //函数调用(有返回值也是numpy
+    //函数调用
     pRet = (PyArrayObject*)PyEval_CallObject(pFunc, args);
     emit sigColorMap();
     qDebug()<<"emited signal!";

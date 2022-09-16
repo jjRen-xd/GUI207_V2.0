@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalModelInfo datasetTypeNum="5">
-
-    <FEA_OPTI typeID="2" />
-    <FEA_RELE typeID="3" />
-    <INCRE typeID="4">
+    <FEA_OPTI typeID="1" />
+    <FEA_RELE typeID="2" />
+    <INCRE typeID="3">
+        <increment_6.pt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/increment_6.pt</PATH>
+        </increment_6.pt>
         <increment_6_128_save_reduce_512.trt nameID="2">
             <PATH>D:/lyh/GUI207_V2.0/db/models/increment_6_128_save_reduce_512.trt</PATH>
         </increment_6_128_save_reduce_512.trt>
     </INCRE>
-    <TRA_DL typeID="5">
+    <TRA_DL typeID="4">
         <DenseNet121_500.trt nameID="3">
             <PATH>D:/lyh/GUI207_V2.0/db/models/DenseNet121_500.trt</PATH>
             <accuracy>99.99%</accuracy>

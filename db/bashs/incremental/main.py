@@ -78,5 +78,6 @@ if __name__ == '__main__':
                   "Old_OA:" + str(old_oa) + "\n" +
                   "New_OA:" + str(new_oa) + "\n" +
                   "All_OA:" + str(all_oa) + "\n\n" + str(metric))
+    print("Train Ending")
 
 

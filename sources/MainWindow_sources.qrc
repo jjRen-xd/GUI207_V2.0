@@ -20,5 +20,6 @@
         <file>icon/sense.png</file>
         <file>icon/share.png</file>
         <file>icon/train.png</file>
+        <file>icon/monitor.png</file>
     </qresource>
 </RCC>
