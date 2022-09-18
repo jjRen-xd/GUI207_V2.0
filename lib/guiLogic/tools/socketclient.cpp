@@ -26,7 +26,7 @@ void getDataFromMat_copy(std::string targetMatFile,int emIdx,bool dataProcess,fl
     std::string matVariable=targetMatFile.substr(
                 targetMatFile.find_last_of('/')+1,
                 targetMatFile.find_last_of('.')-targetMatFile.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
-    qDebug()<<"(SocketClient:getDataFromMat_copy)matVariable=="<<QString::fromStdString(matVariable);
+    //qDebug()<<"(SocketClient:getDataFromMat_copy)matVariable=="<<QString::fromStdString(matVariable);
     pMxArray = matGetVariable(pMatFile,matVariable.c_str());
     if(!pMxArray){
         qDebug()<<"(SocketClient:getDataFromMat_copy)pMxArray变量没找到！！！！！！";
@@ -107,12 +107,13 @@ void SocketClient::run(){
                 qDebug() << "发送失败！" ;
                 break;
             }
-            //qDebug() << "发送了"<<floatVariable ;
+            //qDebug() << "发送了"<<floatVariable<<"  第"<<j<<"个" ;
             if (i > 0) _sleep(2);
             std::string tem = send_buf;  //qDebug() << "send " << tem ;
         }if (i == 0) _sleep(2500);
-        //std::cout << std::endl << "==================Send 128===============" << std::endl;
+        qDebug()<< "==================Send 128===============";
     }
+    qDebug()<< "99个发送完毕";
 }
 
 

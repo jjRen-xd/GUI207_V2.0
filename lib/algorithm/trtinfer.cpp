@@ -370,6 +370,36 @@ bool TrtInfer::testAllSample(
 
 void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess,int *predIdx, std::vector<float> &degrees){
 
+    //int inputLen=2;int outputLen=6;
+    //ready to send data to context
+
+    float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
+
+    qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
+    float *indata = new float[data_vec.size()];
+    if (!data_vec.empty()){
+        memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
+    }
+    doInference(*context, indata, outdata, 1);
+    std::vector<float> output_vec;
+    //std::cout << "(TrtInfer::testOneSample)outdata:  ";
+    float outdatasum=0.0;
+    for (unsigned int i = 0; i < outputLen; i++){
+        //std::cout << outdata[i] << ", ";
+        outdatasum+=outdata[i];
+        output_vec.push_back(outdata[i]);
+    }//std::cout<<std::endl;
+
+    //和不为1说明网络模型最后一层不是softmax，就主动做一下softmax
+    if(abs(outdatasum-1.0)>1e-8) softmax(output_vec);
+
+    int pred = std::distance(output_vec.begin(),std::max_element(output_vec.begin(),output_vec.end()));
+    qDebug()<< "(TrtInfer::realTimeInfer)predicted label:"<<QString::number(pred);
+    degrees=output_vec;
+    *predIdx=pred;
+
+}
+void TrtInfer::createEngine(std::string modelPath){
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -398,38 +428,7 @@ void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, 
         dims4.nbDims = indims.nbDims;
         context->setBindingDimensions(0, dims4);
     }
-
-
-    //int inputLen=2;int outputLen=6;
-    //ready to send data to context
-
-    float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
-
-    qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
-    float *indata = new float[data_vec.size()];
-    if (!data_vec.empty()){
-        memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
-    }
-    doInference(*context, indata, outdata, 1);
-    std::vector<float> output_vec;
-    //std::cout << "(TrtInfer::testOneSample)outdata:  ";
-    float outdatasum=0.0;
-    for (unsigned int i = 0; i < outputLen; i++){
-        //std::cout << outdata[i] << ", ";
-        outdatasum+=outdata[i];
-        output_vec.push_back(outdata[i]);
-    }std::cout<<std::endl;
-
-    //和不为1说明网络模型最后一层不是softmax，就主动做一下softmax
-    if(abs(outdatasum-1.0)>1e-8) softmax(output_vec);
-
-    int pred = std::distance(output_vec.begin(),std::max_element(output_vec.begin(),output_vec.end()));
-    qDebug()<< "(TrtInfer::realTimeInfer)predicted label:"<<QString::number(pred);
-    degrees=output_vec;
-    *predIdx=pred;
-
 }
-
 void TrtInfer::setBatchSize(int batchSize){
     INFERENCE_BATCH=batchSize;
 }
