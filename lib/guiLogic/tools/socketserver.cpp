@@ -100,7 +100,7 @@ void SocketServer::run(){           //Producer
             //qDebug() << "客户端信息:" << QString::number(num_float) ;
             //terminal->print("Receive:"+QString::number(num_float));
             if(dataFrame.size()==127){//之后要和选择的模型匹配起来！！TODO
-                while(sharedQue->size()>0){}
+                //while(sharedQue->size()>0){}
                 dataFrame.push_back(num_float);
                 //QMutexLocker x(lock);//智能锁,在栈区使用结束会自动释放
                 sharedQue->push(dataFrame);
@@ -110,11 +110,15 @@ void SocketServer::run(){           //Producer
                 //colorMapMatrix更新
                 colorMapMatrix.pop_back();
                 colorMapMatrix.push_front(dataFrame);
-                dataVisualization();
-
+                //dataVisualization();
+                emit sigColorMap();
+                qDebug()<<"emited signal!";
                 dataFrame.clear();
             }
-            else dataFrame.push_back(num_float);
+            else{
+                dataFrame.push_back(num_float);
+                //qDebug()<<"接收到第"<<dataFrame.size()<<"个";
+            }
         }
         else {qDebug() << "接收失败！" ;break;}
         if (send(s_accept, send_buf, 5, 0) < 0) {qDebug() << "发送失败！" ;break;}
