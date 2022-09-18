@@ -21,7 +21,6 @@ void InferThread::run(){
     if(inferMode=="real_time_infer"){
         trtInfer->createEngine(modelPath);
         while(true){
-            qDebug()<<"我在acquire前";
             sem->acquire(1);
             //QMutexLocker x(lock);
             std::vector<float> temp(sharedQue->front());

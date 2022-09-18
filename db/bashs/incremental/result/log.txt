@@ -649,3 +649,24 @@ All_OA:tensor(17.0667)
     accuracy                           0.17      3000
    macro avg       0.18      0.17      0.11      3000
 weighted avg       0.18      0.17      0.11      3000
+
+2022-09-18 20:45:14
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=1, learning_rate=0.001, memory_size=200, old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=0.8, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 9.52607798576355
+increment_consume_time: 3.5490288734436035
+Old_OA:tensor(5.2800)
+New_OA:tensor(76.)
+All_OA:tensor(17.0667)
+
+              precision    recall  f1-score   support
+
+           0       0.18      0.07      0.10       500
+           1       0.19      0.05      0.08       500
+           2       0.12      0.03      0.05       500
+           3       0.20      0.05      0.08       500
+           4       0.21      0.05      0.09       500
+           5       0.17      0.76      0.28       500
+
+    accuracy                           0.17      3000
+   macro avg       0.18      0.17      0.11      3000
+weighted avg       0.18      0.17      0.11      3000

@@ -110,9 +110,7 @@ void SocketServer::run(){           //Producer
                 //colorMapMatrix更新
                 colorMapMatrix.pop_back();
                 colorMapMatrix.push_front(dataFrame);
-                //dataVisualization();
-                emit sigColorMap();
-                qDebug()<<"emited signal!";
+                dataVisualization();
                 dataFrame.clear();
             }
             else{
