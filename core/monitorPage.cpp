@@ -80,7 +80,7 @@ void MonitorPage::showInferResult(int predIdx,QVariant qv){
     //std::vector<float> degrees={0.1,0.1,0.1,0.1,0.2,0.4};
     std::vector<float> degrees=qv.value<std::vector<float>>();
     QString predClass = QString::fromStdString(label2class[predIdx]);
-    terminal->print("Real-time classification results:"+predClass);
+    //terminal->print("Real-time classification results:"+predClass);//连续调用恐怕会有问题
     QWidget *tempWidget=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
     //QWidget *tempWidget2=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
     removeLayout2(ui->horizontalLayout_degreeChart2);

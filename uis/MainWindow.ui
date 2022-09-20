@@ -3841,7 +3841,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>AFS特征识别模型</string>
+                     <string>特征关联模型</string>
                     </property>
                    </item>
                    <item>
@@ -5188,8 +5188,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>109</width>
-                        <height>69</height>
+                        <width>98</width>
+                        <height>28</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">

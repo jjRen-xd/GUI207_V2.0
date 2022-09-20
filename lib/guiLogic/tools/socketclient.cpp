@@ -35,7 +35,7 @@ void getDataFromMat_copy(std::string targetMatFile,int emIdx,bool dataProcess,fl
     matdata = (double*)mxGetData(pMxArray);
     int M = mxGetM(pMxArray);  //M行数
     int N = mxGetN(pMxArray);  //N 列数
-    if(emIdx>N) emIdx=N-1; //说明是随机数
+    if(emIdx>=N) emIdx=N-1; //说明是随机数
 
     std::vector<float> onesmp;//存当前样本
     for(int i=0;i<M;i++){
@@ -97,7 +97,7 @@ void SocketClient::run(){
     std::string targetPath = "D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real/bigball/Big_ball.mat";
     int inputLen = 128;
     float* indata = new float[inputLen]; std::fill_n(indata, inputLen, 0);
-    for (int i = 0; i < 99; i++) {
+    for (int i = 0; i < 600; i++) {
         getDataFromMat_copy(targetPath,i,false, indata, inputLen);
         for (int j = 0; j < inputLen; j++) {
             float floatVariable = indata[j];
@@ -107,13 +107,13 @@ void SocketClient::run(){
                 qDebug() << "发送失败！" ;
                 break;
             }
-            //qDebug() << "发送了"<<floatVariable<<"  第"<<j<<"个" ;
-            if (i > 0) _sleep(2);
+            //if(i==100)qDebug() << "100发送了"<<floatVariable<<"  第"<<j+1<<"个" ;
+            if (i > 0) _sleep(1);
             std::string tem = send_buf;  //qDebug() << "send " << tem ;
         }if (i == 0) _sleep(2500);
-        qDebug()<< "==================Send 128===============";
+        qDebug()<< "==================Send 128==============="<< QString::number(i);
     }
-    qDebug()<< "99个发送完毕";
+    qDebug()<< "600个发送完毕";
 }
 
 

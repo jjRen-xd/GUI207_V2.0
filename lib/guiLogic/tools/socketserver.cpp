@@ -105,8 +105,8 @@ void SocketServer::run(){           //Producer
                 //QMutexLocker x(lock);//智能锁,在栈区使用结束会自动释放
                 sharedQue->push(dataFrame);
                 sem->release(1);
-                qDebug()<<"(SocketServer::run) sem->release()";
-                terminal->print("One Sample was received ");
+                qDebug()<<"(SocketServer::run) sem->release()"<<QString::number(num_float);
+                //terminal->print("One Sample was received ");
                 //colorMapMatrix更新
                 colorMapMatrix.pop_back();
                 colorMapMatrix.push_front(dataFrame);
