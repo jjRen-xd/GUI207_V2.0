@@ -5,6 +5,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QVariant>
+#include <queue>
 #include "./lib/algorithm/trtinfer.h"
 Q_DECLARE_METATYPE(std::vector<float>);
 class InferThread:public QThread

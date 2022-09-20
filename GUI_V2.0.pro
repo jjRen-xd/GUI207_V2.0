@@ -30,16 +30,16 @@ HEADERS += \
     #lib/algorithm/libtorchTest.h \
     #lib/algorithm/onnxinfer.h \
     lib/algorithm/inferthread.h \
+    lib/algorithm/matdataprocess.h \
+    lib/algorithm/customdataset.h \
     lib/algorithm/logging.h \
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
-    lib/guiLogic/thermalcolumnlabel.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/guithreadrun.h \
-    lib/guiLogic/tools/realtimeinferencebuffer.h \
     lib/guiLogic/tools/searchFolder.h \
     lib/TRANSFER/ToHRRP.h \
     lib/guiLogic/tools/socketclient.h \
@@ -48,8 +48,7 @@ HEADERS += \
 SOURCES += \
     core/monitorPage.cpp \
     lib/algorithm/inferthread.cpp \
-    lib/guiLogic/thermalcolumnlabel.cpp \
-    lib/guiLogic/tools/realtimeinferencebuffer.cpp \
+    lib/algorithm/matdataprocess.cpp \
     lib/guiLogic/tools/socketclient.cpp \
     lib/guiLogic/tools/socketserver.cpp \
     main.cpp \

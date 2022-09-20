@@ -3,50 +3,6 @@
 #define PORT 2287
 #define RECEIVE_BUF_SIZ 512
 
-void oneNormalization_copy(std::vector<float> &list){
-    //特征归一化
-    float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
-    float dMinValue = *min_element(list.begin(),list.end());  //求最小值
-    for (int f = 0; f < list.size(); ++f) {
-        list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
-    }
-}
-
-void getDataFromMat_copy(std::string targetMatFile,int emIdx,bool dataProcess,float *data,int inputLen){
-    MATFile* pMatFile = NULL;
-    mxArray* pMxArray = NULL;
-    // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
-    double* matdata;
-    pMatFile = matOpen(targetMatFile.c_str(), "r");
-    if(!pMatFile){
-        qDebug()<<"(SocketClient:getDataFromMat_copy)文件指针空！！！！！！";
-        return;
-    }
-
-    std::string matVariable=targetMatFile.substr(
-                targetMatFile.find_last_of('/')+1,
-                targetMatFile.find_last_of('.')-targetMatFile.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
-    //qDebug()<<"(SocketClient:getDataFromMat_copy)matVariable=="<<QString::fromStdString(matVariable);
-    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-    if(!pMxArray){
-        qDebug()<<"(SocketClient:getDataFromMat_copy)pMxArray变量没找到！！！！！！";
-        return;
-    }
-    matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M行数
-    int N = mxGetN(pMxArray);  //N 列数
-    if(emIdx>=N) emIdx=N-1; //说明是随机数
-
-    std::vector<float> onesmp;//存当前样本
-    for(int i=0;i<M;i++){
-        onesmp.push_back(matdata[emIdx*M+i]);
-    }
-    if(dataProcess) oneNormalization_copy(onesmp);//归一化
-    for(int i=0;i<inputLen;i++){
-        data[i]=onesmp[i%M];//matlab按列存储
-    }
-}
-
 SocketClient::SocketClient(){
 
 }
@@ -94,26 +50,43 @@ void SocketClient::run(){
     SOCKET s_server;
     initSocketClient();
     s_server = createClientSocket("127.0.0.1");
-    std::string targetPath = "D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real/bigball/Big_ball.mat";
-    int inputLen = 128;
-    float* indata = new float[inputLen]; std::fill_n(indata, inputLen, 0);
-    for (int i = 0; i < 600; i++) {
-        getDataFromMat_copy(targetPath,i,false, indata, inputLen);
-        for (int j = 0; j < inputLen; j++) {
-            float floatVariable = indata[j];
+
+    std::map<int, std::string> label2class;
+    std::map<std::string, int> class2label;
+    label2class[0] ="bigball";label2class[1] ="DT"; label2class[2] ="Moxiu";
+    label2class[3] ="sallball"; label2class[4] ="taper"; label2class[5] ="WD";
+    for(auto &item: label2class){
+        class2label[item.second] = item.first;
+    }
+    std::string dataset_path="D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
+    bool dataProcess=false;int inputLen=128;
+
+    auto mydataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label,inputLen);
+    int mydataset_size=mydataset.labels.size();
+    int classIdx_rightnow=mydataset.labels[0];
+    for(int i=0;i<mydataset_size;i++){
+        for(int j=0;j<inputLen;j++){
+            float floatVariable = mydataset.data[i][j];
             std::string str = std::to_string(floatVariable);
             strcpy(send_buf, str.c_str());
             if (send(s_server, send_buf, BUFSIZ, 0) < 0) {
                 qDebug() << "发送失败！" ;
                 break;
             }
-            //if(i==100)qDebug() << "100发送了"<<floatVariable<<"  第"<<j+1<<"个" ;
             if (i > 0) _sleep(1);
-            std::string tem = send_buf;  //qDebug() << "send " << tem ;
-        }if (i == 0) _sleep(2500);
-        qDebug()<< "==================Send 128==============="<< QString::number(i);
+        }
+        if(mydataset.labels[i]!=classIdx_rightnow){//如果发送的类别变了的话，发送新的类别信号
+            classIdx_rightnow=mydataset.labels[i];
+            emit sigClassName(classIdx_rightnow);
+        }
+        if (i == 0){
+            _sleep(2500);
+            emit sigClassName(classIdx_rightnow);
+            //qDebug()<<"gonnnnnnnnnnnnnnnnnnnnnna  toooooooooooooooo  emit  "<<classIdx_rightnow;
+        }
+        qDebug()<< "==================Send "<<QString::number(inputLen)<<"==============="<< QString::number(i);
     }
-    qDebug()<< "600个发送完毕";
+    qDebug()<< "600个发送完毕";  
 }
 
 

@@ -1,12 +1,12 @@
 #ifndef SOCKETSERVER_H
 #define SOCKETSERVER_H
 #include <winsock.h>   // windows平台的网络库头文件
+#include <queue>
 #include <QThread>
 #include <QDebug>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QSemaphore>
-#include "lib/guiLogic/tools/realtimeinferencebuffer.h"
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 #undef slots

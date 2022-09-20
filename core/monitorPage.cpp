@@ -19,12 +19,16 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
     QSemaphore sem;
     QMutex lock;
     inferThread =new InferThread(&sem,&sharedQue,&lock);//推理线程
+    inferThread->setInferMode("real_time_infer");
     //connect(inferThread, &InferThread::sigInferResult,this,&MonitorPage::showInferResult);
     connect(inferThread, SIGNAL(sigInferResult(int,QVariant)),this,SLOT(showInferResult(int,QVariant)));
-    inferThread->setInferMode("real_time_infer");
+    
 
     server = new SocketServer(&sem,&sharedQue,&lock,terminal);//监听线程
     connect(server, SIGNAL(sigColorMap()),this,SLOT(showColorMap()));
+
+    client = new SocketClient();
+    connect(client, SIGNAL(sigClassName(int)),this,SLOT(showRealClass(int)));
 
     connect(ui->startListen, &QPushButton::clicked, this, &MonitorPage::startListen);
     connect(ui->simulateSignal, &QPushButton::clicked, this, &MonitorPage::simulateSend);
@@ -33,7 +37,7 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
 }
 void MonitorPage::startListen(){
     if(modelInfo->selectedType==""){
-        QMessageBox::warning(NULL, "实时监测", "监听失败，请先指定HRRP模型。");
+        QMessageBox::warning(NULL, "实时监测", "监听失败,请先指定HRRP模型");
         qDebug()<<"modelInfo->selectedType=="<<QString::fromStdString(modelInfo->selectedType);
         return;
     }
@@ -45,7 +49,6 @@ void MonitorPage::startListen(){
 }
 
 void MonitorPage::simulateSend(){
-    SocketClient* client = new SocketClient();
     client->start();
 }
 
@@ -85,6 +88,7 @@ void MonitorPage::showInferResult(int predIdx,QVariant qv){
     //QWidget *tempWidget2=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
     removeLayout2(ui->horizontalLayout_degreeChart2);
     ui->horizontalLayout_degreeChart2->addWidget(tempWidget);
+    ui->jcLabel->setText(QString::fromStdString(label2class[predIdx]));
 }
 
 void MonitorPage::showColorMap(){
@@ -107,10 +111,8 @@ void MonitorPage::showColorMap(){
     ui->horizontalLayout_HotCol->addWidget(imageLabel);
 }
 
-
-void MonitorPage::paintLabel(){//0引用 已淘汰
-    ThermalColumnLabel *mylabel = new ThermalColumnLabel(ui->asdfasdfasdf);
-    ui->horizontalLayout_HotCol->addWidget(mylabel);
+void MonitorPage::showRealClass(int realLabel){//client触发
+    ui->xlLabel->setText(QString::fromStdString(label2class[realLabel]));
 }
 
 MonitorPage::~MonitorPage(){

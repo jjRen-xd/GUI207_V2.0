@@ -10,7 +10,6 @@
 #include "./lib/guiLogic/tools/socketserver.h"
 #include "./lib/guiLogic/tools/socketclient.h"
 #include "lib/algorithm/inferthread.h"
-#include "lib/guiLogic/thermalcolumnlabel.h"
 #include "./lib/algorithm/trtinfer.h"
 
 
@@ -24,6 +23,7 @@ public:
     void simulateSend();
     SocketServer* server;
     InferThread* inferThread=nullptr;
+    SocketClient* client;
     void paintLabel();
     std::queue<std::vector<float>> sharedQue;
     TrtInfer* trtInfer;
@@ -36,7 +36,7 @@ public:
 public slots:
     void showInferResult(int,QVariant);
     void showColorMap();
-
+    void showRealClass(int);
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;

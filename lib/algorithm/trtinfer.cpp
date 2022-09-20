@@ -10,17 +10,6 @@ TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2lab
 
 }
 
-void oneNormalization(std::vector<float> &list){
-    //特征归一化
-    float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
-    //std::cout<<"maxdata"<<dMaxValue<<'\n';
-    float dMinValue = *min_element(list.begin(),list.end());  //求最小值
-    //std::cout<<"mindata"<<dMinValue<<'\n';
-    for (int f = 0; f < list.size(); ++f) {
-        list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
-    }
-}
-
 void softmax(std::vector<float> &input){
     float maxn = 0.0;
     float sum= 0.0;
@@ -31,116 +20,6 @@ void softmax(std::vector<float> &input){
     std::for_each(input.begin(), input.end(), [sum](float& d) { d=d/sum;});
 
     return ;
-}
-
-void getAllDataFromMat(std::string matPath,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
-
-    MATFile* pMatFile = NULL;
-    mxArray* pMxArray = NULL;
-    // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
-    double* matdata;
-    pMatFile = matOpen(matPath.c_str(), "r");
-    if(!pMatFile){
-        qDebug()<<"(trtInfer:getAllDataFromMat)文件指针空！！！！！！";
-        return;
-    }
-    std::string matVariable=matPath.substr(
-                matPath.find_last_of('/')+1,
-                matPath.find_last_of('.')-matPath.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
-    //qDebug()<<"(trtInfer:getAllDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
-    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-    if(!pMxArray){
-        qDebug()<<"(trtInfer:getAllDataFromMat)pMxArray变量没找到！！！！！！";
-        return;
-    }
-    matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //行数
-    int N = mxGetN(pMxArray);  //列数
-
-    for(int i=0;i<N;i++){
-        std::vector<float> onesmp;//存当前遍历的一个样本
-        for(int j=0;j<M;j++){
-            onesmp.push_back(matdata[i*M+j]);
-        }
-        if(dataProcess) oneNormalization(onesmp);//归一化
-        std::vector<float> temp;
-        for(int j=0;j<inputLen;j++){
-            temp.push_back(onesmp[j%M]);//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
-        }
-        //std::cout<<&temp<<std::endl;
-        data.push_back(temp);
-        labels.push_back(label);
-    }
-}
-
-void loadAllDataFromFolder(std::string datasetPath,std::string type,bool dataProcess,std::vector<std::vector<float>> &data,
-                           std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen){
-    SearchFolder *dirTools = new SearchFolder();
-    // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
-    std::vector<std::string> subDirs;
-    dirTools->getDirs(subDirs, datasetPath);
-    for(auto &subDir: subDirs){
-        // 寻找每个子文件夹下的样本文件
-        std::vector<std::string> fileNames;
-        std::string subDirPath = datasetPath+"/"+subDir;
-        dirTools->getFiles(fileNames, type, subDirPath);
-        for(auto &fileName: fileNames){
-            //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
-            getAllDataFromMat(subDirPath+"/"+fileName,dataProcess,data,labels,class2label[subDir],inputLen);
-        }
-    }
-    return;
-}
-
-class CustomDataset{
-public:
-    std::vector<std::vector<float>> data;
-    std::vector<int> labels;
-    std::map<std::string, int> class2label;
-    CustomDataset(std::string dataSetPath, bool dataProcess, std::string type, std::map<std::string, int> class2label,int inputLen)
-        :class2label(class2label){
-        loadAllDataFromFolder(dataSetPath, type,dataProcess, data, labels, class2label,inputLen);
-    }
-    int size(){
-        return labels.size();
-    };
-};
-
-void getDataFromMat(std::string targetMatFile,int emIdx,bool dataProcess,float *data,int inputLen){
-    MATFile* pMatFile = NULL;
-    mxArray* pMxArray = NULL;
-    // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
-    double* matdata;
-    pMatFile = matOpen(targetMatFile.c_str(), "r");
-    if(!pMatFile){
-        qDebug()<<"(trtInfer:getDataFromMat)文件指针空！！！！！！";
-        return;
-    }
-
-    std::string matVariable=targetMatFile.substr(
-                targetMatFile.find_last_of('/')+1,
-                targetMatFile.find_last_of('.')-targetMatFile.find_last_of('/')-1).c_str();//假设数据变量名同文件名的话
-    qDebug()<<"(trtInfer:getDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
-    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-    if(!pMxArray){
-        qDebug()<<"(trtInfer:getDataFromMat)pMxArray变量没找到！！！！！！";
-        return;
-    }
-    matdata = (double*)mxGetData(pMxArray);
-    int M = mxGetM(pMxArray);  //M行数
-    int N = mxGetN(pMxArray);  //N 列数
-    if(emIdx>N) emIdx=N-1; //说明是随机数
-
-    std::vector<float> onesmp;//存当前样本
-    for(int i=0;i<M;i++){
-        onesmp.push_back(matdata[emIdx*M+i]);
-    }
-    if(dataProcess) oneNormalization(onesmp);//归一化
-    for(int i=0;i<inputLen;i++){
-        data[i]=onesmp[i%M];//matlab按列存储
-    }
-//    mxFree(pMxArray);
-//    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
 }
 
 bool readTrtFile(const std::string& engineFile, IHostMemory*& trtModelStream, ICudaEngine*& engine){
@@ -194,7 +73,6 @@ void TrtInfer::testOneSample(
         std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
         int *predIdx,std::vector<float> &degrees)
 {
-    //qDebug() << "(OnnxInfer::testOneSample)子线程id：" << QThread::currentThreadId();
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -234,15 +112,12 @@ void TrtInfer::testOneSample(
     //ready to send data to context
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
-    getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
+    MatDataProcess matDataPrcs;
+    matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
     //for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
-//    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
-    qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
-    doInference(*context, indata, outdata, 1);
-    std::cout<<"======================================================"<<std::endl;
-//    for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
-//    for(int i=0;i<outputLen;i++) std::cout<<outdata[i]<<" ";std::cout<<std::endl;
 
+    //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
+    doInference(*context, indata, outdata, 1);
     std::vector<float> output_vec;
     //std::cout << "(TrtInfer::testOneSample)outdata:  ";
     float outdatasum=0.0;
@@ -301,8 +176,6 @@ bool TrtInfer::testAllSample(
             return 0;
         }
     }
-
-
     qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
     qDebug()<<"(TrtInfer::testAllSample) inputLen==="<<inputLen;
 
