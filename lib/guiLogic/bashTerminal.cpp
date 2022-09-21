@@ -1,4 +1,6 @@
 #include "bashTerminal.h"
+#include <ctime>
+#include <chrono>
 
 BashTerminal::BashTerminal(QLineEdit *inWidget, QTextEdit *outWidget):
     bashInEdit(inWidget),
@@ -21,7 +23,14 @@ BashTerminal::~BashTerminal(){
 
 
 void BashTerminal::print(QString msg){
-    bashOutShow->append(msg);
+    auto now = std::chrono::system_clock::now();
+    std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+    tm* tm_time = localtime(&nowTime);
+    char timefn[128] = { 0 };
+    strftime(timefn,128,"%a,%d %b %Y %X   ",tm_time);
+    QString timef=timefn;
+
+    bashOutShow->append(timef+msg);
     bashOutShow->update();
 }
 

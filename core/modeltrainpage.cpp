@@ -68,36 +68,52 @@ void ModelTrainPage::startTrain(){
         QMessageBox::warning(NULL, "配置出错", "请指定待训练数据的根目录!");
         return;
     }
-    QString cmd;
+    QString cmd,datasetName;
+    QString falseRootPath="";//习惯是路径最后没有/
+    if(dataDir.lastIndexOf("/")+1==dataDir.size()){
+        datasetName=dataDir.left(dataDir.lastIndexOf("/"));
+        falseRootPath=datasetName.left(datasetName.lastIndexOf("/"));
+        datasetName=datasetName.right(datasetName.size() - (datasetName.lastIndexOf("/")+1));
+    }else{
+        datasetName=dataDir.right(dataDir.size() - (dataDir.lastIndexOf("/")+1));
+        falseRootPath=dataDir.left(dataDir.lastIndexOf("/"));
+    }
+
     if(modelType<2){
         //TODO 此处判断模型类型和数据是否匹配
         QString bathSize=ui->batchsizeBox->currentText();
         QString maxEpoch=ui->maxepochBox->currentText();
         switch(modelType){
-            case 0:cmd = "activate TF2 && python ../../db/bashs/hrrp/train.py"
+            case 0:cmd ="conda activate tf23 && python ../../db/bashs/hrrp/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-            case 1:cmd = "activate TF2 && python ../../db/bashs/afs/train.py"
+            case 1:cmd = "conda activate tf23 && python ../../db/bashs/afs/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
         }
+        if(modelType==0)
+            processTrain->saved_model_dir=falseRootPath+"/TriModel_"+datasetName;
+        else if(modelType==1)
+            processTrain->saved_model_dir=falseRootPath+"/AfsModel_"+datasetName;
     }
     else if(modelType==2){
         //TODO 此处判断模型类型和数据是否匹配
         int allclassNum=getDataClassNum(dataDir.toStdString(), "model_saving");
         int data_dimension=getDataLen(dataDir.toStdString());
         QString oldclassNum=ui->oldClassBox->currentText();
-        QString sampleRatio=ui->sampleRatioBox->currentText();
+        QString sampleRatio=ui->sampleRatioBox->currentText();//新类别训练样本比例
         QString bathSize=ui->batchSizeBox2->currentText();
         QString preEpoch=ui->pretrainEpochBox->currentText();
         QString addEpoch=ui->increseEpochBox->currentText();
 
-        cmd="activate PT && python ../../db/bashs/incremental/main.py --all_class="+QString::number(allclassNum)+
-                " --batch_size="+bathSize+" --bound="+sampleRatio+" --increment_epoch="+addEpoch+
+        cmd="conda activate PT && python ../../db/bashs/incremental/main.py --all_class="+QString::number(allclassNum)+
+                " --batch_size="+bathSize+" --bound=0.3 --increment_epoch="+addEpoch+" --reduce_sample="+sampleRatio+
                 " --learning_rate=0.001 --memory_size=200 --old_class="+oldclassNum+" --pretrain_epoch="+
                 preEpoch+" --random_seed=2022 --snr=2 --task_size=1 --test_ratio=0.5 --data_dimension="+
                 QString::number(data_dimension)+" --raw_data_path="+dataDir;
+        processTrain->saved_model_dir=falseRootPath+"/CILModel_"+datasetName;
+        //test_ratio\task_size
     }
-    qDebug() << cmd;
-    processTrain->startTrain(modelType, cmd);
+    processTrain->model_type=modelType;
+    processTrain->startTrain(cmd);
 }
 
 void ModelTrainPage::stopTrain(){
@@ -120,8 +136,12 @@ void ModelTrainPage::editModelFile(){
         case 1:modelFilePath="../../db/bashs/afs/afs_model.py";break;
         case 2:modelFilePath="../../db/bashs/incremental/model.py";break;
     }
+
+
+    
     QString commd="gvim " + modelFilePath;
-    WinExec(commd.toStdString().c_str(), SW_HIDE);
+    //WinExec(commd.toStdString().c_str(), SW_HIDE);
+    system(commd.toStdString().c_str());
 }
 
 int ModelTrainPage::getDataClassNum(std::string dataPath, std::string specialDir){

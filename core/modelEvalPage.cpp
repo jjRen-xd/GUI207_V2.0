@@ -28,8 +28,6 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
-//    predIdx_future=predIdx_promise.get_future();
-//    degrees_future=degrees_promise.get_future();
 
     trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
@@ -78,59 +76,40 @@ void ModelEvalPage::randSample(){
         string datafileFormat =datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "dataFileFormat");
         srand((unsigned)time(NULL));
         Chart *previewChart;
-        if(datafileFormat=="txt"){//可以被淘汰的
-            vector<string> sampleNames;
-            if(dirTools->getFiles(sampleNames,".txt",classPath)){
-                string choicedFile = sampleNames[(rand())%sampleNames.size()];
-                QString txtFilePath = QString::fromStdString(classPath + "/" + choicedFile);
-                this->choicedSamplePATH = txtFilePath.toStdString();
 
-                // 可视化所选样本
-                ui->label_mE_choicedSample->setText(QString::fromStdString(choicedFile).split(".").first());
+        vector<string> allMatFile;
+        if(dirTools->getFiles(allMatFile, ".mat", classPath)){
+            QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
+            this->choicedSamplePATH = matFilePath.toStdString();
 
-                QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
-                ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
+            QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
+            //下面这部分代码都是为了让randomIdx在合理的范围内（
+            MATFile* pMatFile = NULL;
+            mxArray* pMxArray = NULL;
+            pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
+            if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
+            std::string matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
 
-                previewChart = new Chart(ui->label_mE_chartGT,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
-                previewChart->drawImage(ui->label_mE_chartGT,"HRRP",0);
-            }
+            QString chartTitle="Temporary Title";
+            if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}// matVariable="hrrp128";}
+            else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title";}// matVariable="radio101";}
+
+            pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+            if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
+            int N = mxGetN(pMxArray);  //N 列数
+            int randomIdx = N-(rand())%N;
+
+            this->emIndex=randomIdx;
+            // 可视化所选样本
+            ui->label_mE_choicedSample->setText("Index:"+QString::number(randomIdx));
+            ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
+            //绘图
+            previewChart = new Chart(ui->label_mE_chartGT,chartTitle,matFilePath);
+            previewChart->drawImage(ui->label_mE_chartGT,datasetInfo->selectedType,randomIdx);
         }
-        else if(datafileFormat=="mat"){
-            vector<string> allMatFile;
-            if(dirTools->getFiles(allMatFile, ".mat", classPath)){
-                QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
-                this->choicedSamplePATH = matFilePath.toStdString();
-
-                QString imgPath = QString::fromStdString(choicedDatasetPATH +"/"+ selectedClass +".png");
-                //下面这部分代码都是为了让randomIdx在合理的范围内（
-                MATFile* pMatFile = NULL;
-                mxArray* pMxArray = NULL;
-                pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
-                if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空！！！！！！";return;}
-                std::string matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
-
-                QString chartTitle="Temporary Title";
-                if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}// matVariable="hrrp128";}
-                else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title";}// matVariable="radio101";}
-
-                pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-                if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
-                int N = mxGetN(pMxArray);  //N 列数
-                int randomIdx = N-(rand())%N;
-
-                this->emIndex=randomIdx;
-                // 可视化所选样本
-                ui->label_mE_choicedSample->setText("Index:"+QString::number(randomIdx));
-                ui->label_mE_imgGT->setPixmap(QPixmap(imgPath).scaled(QSize(100,100), Qt::KeepAspectRatio));
-                //绘图
-                previewChart = new Chart(ui->label_mE_chartGT,chartTitle,matFilePath);
-                previewChart->drawImage(ui->label_mE_chartGT,datasetInfo->selectedType,randomIdx);
-            }
-        }
-
     }
     else{
-        QMessageBox::warning(NULL, "数据取样", "数据取样失败，请指定数据集类型!");
+    QMessageBox::warning(NULL, "数据取样", "数据取样失败，请指定数据集类型!");
     }
 
 
@@ -169,8 +148,6 @@ void  ModelEvalPage::testOneSample(){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
         //classnum==(datasetInfo->selectedClassNames.size())
-        //int predIdx = libtorchTest->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
-        //int predIdx = onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, degrees);
         std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
         std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
         bool dataProcess=true;
@@ -199,6 +176,11 @@ void  ModelEvalPage::testOneSample(){
 
         // 绘制隶属度柱状图
         disDegreeChart(predClass, degrees, label2class);
+//        Chart *forDegreeChart = new Chart(ui->label_mE_chartGT,"","");//这里传的参没啥用，只是想在下面调用一下它的方法
+//        removeLayout(ui->horizontalLayout_degreeChart2);
+//        QWidget* view=forDegreeChart->drawDisDegreeChart(predClass, degrees, label2class);
+//        ui->horizontalLayout_degreeChart2->addWidget(view);
+//        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 
     }
     else{

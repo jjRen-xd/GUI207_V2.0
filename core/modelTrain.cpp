@@ -76,15 +76,15 @@ void ModelTrain::showTrianResult(){
     showLog=false;
     trainProgressBar->setMaximum(100);
     trainProgressBar->setValue(100);
-    if(modelTypeId==0){
-        trainImg->setPixmap(QPixmap(dataRoot+"/training_accuracy.jpg"));
-        valImg->setPixmap(QPixmap(dataRoot+"/verification_accuracy.jpg"));
-        confusionMat->setPixmap(QPixmap(dataRoot+"/confusion_matrix.jpg"));
+    if(model_type==0){
+        trainImg->setPixmap(QPixmap(saved_model_dir+"/training_accuracy.jpg"));
+        valImg->setPixmap(QPixmap(saved_model_dir+"/verification_accuracy.jpg"));
+        confusionMat->setPixmap(QPixmap(saved_model_dir+"/confusion_matrix.jpg"));
     }
-    else if(modelTypeId==1){
-        trainImg->setPixmap(QPixmap(dataRoot+"/training_accuracy.jpg"));
-        valImg->setPixmap(QPixmap(dataRoot+"/features_Accuracy.jpg"));
-        confusionMat->setPixmap(QPixmap(dataRoot+"/confusion_matrix.jpg"));
+    else if(model_type==1){
+        trainImg->setPixmap(QPixmap(saved_model_dir+"/training_accuracy.jpg"));
+        valImg->setPixmap(QPixmap(saved_model_dir+"/features_Accuracy.jpg"));
+        confusionMat->setPixmap(QPixmap(saved_model_dir+"/confusion_matrix.jpg"));
     }
 }
 

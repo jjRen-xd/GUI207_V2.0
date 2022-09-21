@@ -143,8 +143,7 @@ class Pretrain:
 
 
 class IncrementTrain:
-    def __init__(self, memorySize, allClassNumber, newClassNumber, taskSize, incrementEpoch, batchSize, learningRate,
-                 bound, reduce_sample):
+    def __init__(self, memorySize, allClassNumber, newClassNumber, taskSize, incrementEpoch, batchSize, learningRate, bound, reduce_sample):
         super().__init__()
         self.memorySize = memorySize
         self.newClassNumber = newClassNumber
@@ -279,13 +278,13 @@ class IncrementTrain:
             num_class = task[-1] + 1
             old_class = num_class - len(task)
             self.old_model = copy.deepcopy(self.model)
-            
-            if self.reduce_sample:
-                # 新类样本量降低80%
-                prepare_increment_data_reduce(task)
-            else:
-                # 原始样本量
-                prepare_increment_data(task)
+            prepare_increment_data_reduce(task,self.reduce_sample)
+            # if self.reduce_sample:
+            #     # 新类样本量降低80%
+            #     prepare_increment_data_reduce(task)
+            # else:
+            #     # 原始样本量
+            #     prepare_increment_data(task)
 
             train_dataset = IncrementSignalDataset(data_type="train")
             # test_dataset = IncrementSignalDataset(snr=self.snr, data_type="test", dataset=self.dataset)

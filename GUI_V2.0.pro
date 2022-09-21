@@ -3,13 +3,13 @@ QT       += core gui charts
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
-
+CONFIG += exceptions #open try catch
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
+DEFINES += _CRT_SECURE_NO_WARNINGS #avoid monitorPage.cpp's localtime waring
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -24,10 +24,14 @@ HEADERS += \
     core/modelEvalPage.h \
     core/modelsWindow/modelDock.h \
     core/modelTrainPage.h \
+    core/monitorPage.h \
     core/sensePage.h \
     core/modelTrain.h \
     #lib/algorithm/libtorchTest.h \
     #lib/algorithm/onnxinfer.h \
+    lib/algorithm/inferthread.h \
+    lib/algorithm/matdataprocess.h \
+    lib/algorithm/customdataset.h \
     lib/algorithm/logging.h \
     lib/algorithm/trtinfer.h \
     lib/guiLogic/bashTerminal.h \
@@ -37,9 +41,16 @@ HEADERS += \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/guithreadrun.h \
     lib/guiLogic/tools/searchFolder.h \
-    lib/TRANSFER/ToHRRP.h
+    lib/TRANSFER/ToHRRP.h \
+    lib/guiLogic/tools/socketclient.h \
+    lib/guiLogic/tools/socketserver.h
 
 SOURCES += \
+    core/monitorPage.cpp \
+    lib/algorithm/inferthread.cpp \
+    lib/algorithm/matdataprocess.cpp \
+    lib/guiLogic/tools/socketclient.cpp \
+    lib/guiLogic/tools/socketserver.cpp \
     main.cpp \
     core/modeltrainpage.cpp \
     conf/QRibbon/QRibbon.cpp \

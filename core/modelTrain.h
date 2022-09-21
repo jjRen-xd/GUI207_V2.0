@@ -20,7 +20,8 @@ class ModelTrain: public QObject{
         QString dataRoot;
         int modelTypeId;
         bool showLog=true;
-
+        QString saved_model_dir="";
+        int model_type=0;
     private:
         QTextBrowser *OutShow;
         QLabel* trainImg;

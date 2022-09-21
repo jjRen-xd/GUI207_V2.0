@@ -6,6 +6,7 @@
 #include "NvInfer.h"
 #include "NvOnnxParser.h"
 #include "cuda_runtime_api.h"
+#include "ui_MainWindow.h"
 #include "logging.h"
 #include <fstream>
 #include <cstddef>
@@ -14,20 +15,27 @@
 #include <string>
 #include <vector>
 #include <stdio.h>
-#include <QThread>
-//#include "libtorchTest.h"
-#include "./lib/guiLogic/tools/searchFolder.h"
+#include <QDebug>
 #include <mat.h>
+#include "./lib/algorithm/matdataprocess.h"
+#include "./lib/guiLogic/tools/searchFolder.h"
+#include "./lib/algorithm/customdataset.h"
 
 class TrtInfer
 {
 public:
     TrtInfer(std::map<std::string, int> class2label);
     void setBatchSize(int batchSize);//留出来的接口
+    void createEngine(std::string modelPath);
+    MatDataProcess *matDataPrcs;
+
 public slots:
 
     void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees);
+
     bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, bool dataProcess, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+
+    void realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess, int *predIdx, std::vector<float> &degrees);
 
 private:
     nvinfer1::IBuilder* builder{ nullptr };

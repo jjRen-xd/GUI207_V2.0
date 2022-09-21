@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>507</width>
-             <height>1131</height>
+             <width>480</width>
+             <height>1056</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1415,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>635</width>
-             <height>602</height>
+             <width>605</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>345</width>
-               <height>539</height>
+               <width>304</width>
+               <height>484</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -3499,8 +3499,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>404</width>
-               <height>606</height>
+               <width>373</width>
+               <height>584</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3788,8 +3788,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>808</width>
-             <height>565</height>
+             <width>771</width>
+             <height>350</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3874,7 +3874,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>AFS特征识别模型</string>
+                     <string>特征关联模型</string>
                     </property>
                    </item>
                    <item>
@@ -4250,66 +4250,72 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="label_96">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
+                        <widget class="QComboBox" name="sampleRatioBox">
+                         <item>
+                          <property name="text">
+                           <string>0.1</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.2</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.3</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.4</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.5</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.6</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.7</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.8</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>0.9</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>1.0</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
-                       <item>
-                        <widget class="QLabel" name="label_15">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string> 增量训练样本比例：</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="lineEdit_4">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_97">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_77">
+                       <property name="spacing">
+                        <number>7</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>3</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item>
                         <widget class="QLabel" name="label_93">
                          <property name="sizePolicy">
@@ -4331,43 +4337,42 @@
                           </size>
                          </property>
                          <property name="text">
-                          <string>训练批量：</string>
+                          <string>训练批量大小：</string>
                          </property>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_5">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_98">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
+                        <widget class="QComboBox" name="batchSizeBox2">
+                         <item>
+                          <property name="text">
+                           <string>1</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>2</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>4</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>8</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>16</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>32</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                        <item>
@@ -4384,25 +4389,122 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_7">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
+                        <widget class="QComboBox" name="pretrainEpochBox">
+                         <item>
+                          <property name="text">
+                           <string>1</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>2</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>4</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>6</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>8</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>10</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>12</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>14</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>16</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>18</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>20</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>25</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>30</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>35</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>40</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>45</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>50</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>55</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>60</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>72</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>84</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>96</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>100</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                        <item>
@@ -4419,25 +4521,122 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="lineEdit_6">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>50</width>
-                           <height>22</height>
-                          </size>
-                         </property>
+                        <widget class="QComboBox" name="increseEpochBox">
+                         <item>
+                          <property name="text">
+                           <string>1</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>2</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>4</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>6</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>8</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>10</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>12</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>14</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>16</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>18</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>20</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>25</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>30</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>35</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>40</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>45</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>50</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>55</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>60</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>72</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>84</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>96</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>100</string>
+                          </property>
+                         </item>
                         </widget>
                        </item>
                       </layout>
@@ -4450,21 +4649,44 @@
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_81">
-                 <property name="spacing">
-                  <number>5</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>5</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>5</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>5</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>5</number>
-                 </property>
+                 <item>
+                  <widget class="QPushButton" name="starttrianButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>开始训练</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="stoptrainButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>中断训练</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
               </layout>
@@ -4482,15 +4704,87 @@
                   <number>0</number>
                  </property>
                  <item>
+                  <widget class="QLabel" name="label_26">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>预计剩余时间：</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextEdit" name="timeRestEdit">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>150</width>
+                     <height>27</height>
+                    </size>
+                   </property>
+                   <property name="acceptDrops">
+                    <bool>true</bool>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_73">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QProgressBar" name="trainProgressBar">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
-                   </property>
-                   <property name="maximum">
-                    <number>100</number>
                    </property>
                    <property name="value">
                     <number>0</number>
@@ -4500,19 +4794,19 @@
                 </layout>
                </item>
                <item>
-                <widget class="Line" name="line_22">
+                <widget class="Line" name="line_26">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_83">
+                <layout class="QHBoxLayout" name="horizontalLayout_89">
                  <property name="spacing">
                   <number>0</number>
                  </property>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_55">
+                  <layout class="QVBoxLayout" name="verticalLayout_67">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -4520,7 +4814,7 @@
                     <number>5</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_30">
+                    <widget class="QLabel" name="label_138">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -4528,7 +4822,7 @@
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>训练日志</string>
+                      <string>接收回显</string>
                      </property>
                     </widget>
                    </item>
@@ -4540,22 +4834,29 @@
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="tabChangesFocus">
+                      <bool>false</bool>
+                     </property>
                      <property name="lineWrapMode">
                       <enum>QTextEdit::NoWrap</enum>
                      </property>
+                        </layout>
+                       </item>
+                      </layout>
+                     </widget>
                     </widget>
                    </item>
                   </layout>
                  </item>
                  <item>
-                  <widget class="Line" name="line_23">
+                  <widget class="Line" name="line_27">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_60">
+                  <layout class="QVBoxLayout" name="verticalLayout_68">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -4566,7 +4867,7 @@
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="label_70">
+                    <widget class="QLabel" name="label_139">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
@@ -4574,112 +4875,358 @@
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>训练结果</string>
+                      <string>实时监测结果</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QTabWidget" name="tabWidget">
+                    <layout class="QHBoxLayout" name="horizontalLayout_80">
+                     <item>
+                      <widget class="QLabel" name="label_97">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_degreeChart2"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_monitor">
+       <layout class="QVBoxLayout" name="verticalLayout_71">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_76" stretch="0,0">
+          <item>
+           <widget class="Line" name="line_24">
+            <property name="midLineWidth">
+             <number>6</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_96">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100000</width>
+              <height>80</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt; font-weight:700;&quot;&gt;V. 实时监测分类&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_25">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QScrollArea" name="scrollArea_6">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_6">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>743</width>
+             <height>589</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_57">
+            <item>
+             <widget class="QGroupBox" name="groupBox_14">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>195</height>
+               </size>
+              </property>
+              <property name="title">
+               <string>控制</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_63">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_87">
+                 <item>
+                  <widget class="QPushButton" name="startListen">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>开始监听</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="simulateSignal">
+                   <property name="text">
+                    <string>模拟发送</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="stopListen">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>停止监听</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_15">
+              <property name="title">
+               <string>功能</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_66">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_88">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_98">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>实时标签：</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="xlLabel">
+                   <property name="font">
+                    <font>
+                     <pointsize>13</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_136">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>分类结果：</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="jcLabel">
+                   <property name="font">
+                    <font>
+                     <pointsize>15</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::AutoText</enum>
+                   </property>
+                   <property name="scaledContents">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="Line" name="line_26">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_89">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_67">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_138">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::LeftToRight</enum>
+                     <property name="text">
+                      <string>接收回显</string>
                      </property>
-                     <property name="currentIndex">
-                      <number>0</number>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QScrollArea" name="scrollArea_7">
+                     <property name="horizontalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
                      </property>
-                     <widget class="QWidget" name="tab">
-                      <attribute name="title">
-                       <string>训练集准确率</string>
-                      </attribute>
-                      <layout class="QHBoxLayout" name="horizontalLayout_71">
+                     <property name="widgetResizable">
+                      <bool>true</bool>
+                     </property>
+                     <widget class="QWidget" name="asdfasdfasdf">
+                      <property name="geometry">
+                       <rect>
+                        <x>0</x>
+                        <y>0</y>
+                        <width>342</width>
+                        <height>414</height>
+                       </rect>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_78">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
                        <item>
-                        <widget class="QLabel" name="train_img">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
+                        <layout class="QHBoxLayout" name="horizontalLayout_HotCol">
+                         <property name="spacing">
+                          <number>0</number>
                          </property>
-                         <property name="layoutDirection">
-                          <enum>Qt::LeftToRight</enum>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="scaledContents">
-                          <bool>true</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="textInteractionFlags">
-                          <set>Qt::NoTextInteraction</set>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="tab_2">
-                      <attribute name="title">
-                       <string>验证集准确率</string>
-                      </attribute>
-                      <layout class="QVBoxLayout" name="verticalLayout_53">
-                       <item>
-                        <widget class="QLabel" name="val_img">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="scaledContents">
-                          <bool>true</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                         <property name="wordWrap">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="tab_3">
-                      <attribute name="title">
-                       <string>混淆矩阵</string>
-                      </attribute>
-                      <layout class="QVBoxLayout" name="verticalLayout_56">
-                       <item>
-                        <widget class="QLabel" name="confusion_mat">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="scaledContents">
-                          <bool>true</bool>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                        </widget>
+                        </layout>
                        </item>
                       </layout>
                      </widget>
                     </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line_27">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_68">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_139">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>实时监测结果</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_80">
+                     <item>
+                      <widget class="QLabel" name="label_97">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_degreeChart2"/>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>
@@ -5394,7 +5941,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -5421,6 +5968,7 @@
     <addaction name="separator"/>
     <addaction name="action_ModelTrain"/>
     <addaction name="separator"/>
+    <addaction name="action_Monitor"/>
    </widget>
    <widget class="QMenu" name="menu_dataset">
     <property name="title">
@@ -5784,6 +6332,27 @@
    </property>
    <property name="toolTip">
     <string>导入特征数据</string>
+   </property>
+  </action>
+  <action name="action_Monitor">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/monitor.png</normaloff>:/icon/monitor.png</iconset>
+   </property>
+   <property name="text">
+    <string>实时监测</string>
+   </property>
+   <property name="toolTip">
+    <string>实时监测分类</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

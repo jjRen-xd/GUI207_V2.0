@@ -1,16 +1,26 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="5">
-    < typeID="1" />
-    <FEA_OPTI typeID="2" />
-    <FEA_RELE typeID="3" />
-    <INCRE typeID="4" />
-    <TRA_DL typeID="5">
-        <dense121_6class.trt nameID="1">
-            <PATH>E:/GitHub/dev_zyx/db/models/dense121_6class.trt</PATH>
-        </dense121_6class.trt>
-        <onnxmodel.trt nameID="2">
-            <PATH>E:/GitHub/dev_zyx/db/models/onnxmodel.trt</PATH>
-        </onnxmodel.trt>
+<globalModelInfo datasetTypeNum="4">
+    <FEA_OPTI typeID="1" />
+    <FEA_RELE typeID="2" />
+    <INCRE typeID="3">
+        <increment_6_128_save_reduce_512.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/increment_6_128_save_reduce_512.trt</PATH>
+        </increment_6_128_save_reduce_512.trt>
+    </INCRE>
+    <TRA_DL typeID="4">
+        <DenseNet121_500.trt nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/DenseNet121_500.trt</PATH>
+            <accuracy>99.99%</accuracy>
+            <algorithm>xml载入测试</algorithm>
+            <framework>0</framework>
+            <name>DenseNet121_500.trt</name>
+            <note>备注测试</note>
+            <trainDataset>HRRP_0508</trainDataset>
+            <trainEpoch>100轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </DenseNet121_500.trt>
+        <TriModel.trt nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/TriModel_falseHRRPmat_1x128_real/TriModel.trt</PATH>
+        </TriModel.trt>
     </TRA_DL>
 </globalModelInfo>
