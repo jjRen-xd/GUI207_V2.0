@@ -8,18 +8,19 @@
 ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo):
     ui(main_ui),terminal(bash_terminal),datasetInfo(globalDatasetInfo),modelInfo(globalModelInfo){
 
-    processTrain = new ModelTrain(ui->textBrowser, ui->train_img, ui->val_img, ui->confusion_mat, ui->timeRestEdit, ui->trainProgressBar);
+    processTrain = new ModelTrain(ui->textBrowser, ui->train_img, ui->val_img, ui->confusion_mat, ui->trainProgressBar);
 
-    connect(ui->datadirButton, &QPushButton::clicked, this, &ModelTrainPage::chooseDataDir);
-    connect(ui->starttrianButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
-    connect(ui->stoptrainButton, &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
+//    connect(ui->datadirButton, &QPushButton::clicked, this, &ModelTrainPage::chooseDataDir);
+//    connect(ui->starttrianButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
+//    connect(ui->stoptrainButton, &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
     connect(ui->editModelButton, &QPushButton::clicked, this, &ModelTrainPage::editModelFile);
     connect(ui->modeltypeBox, &QComboBox::currentIndexChanged, this, &ModelTrainPage::changeTrainType);
-    connect(ui->oldClassBox, &QComboBox::activated, this, &ModelTrainPage::chooseOldClass);
+//    connect(ui->oldClassBox, &QComboBox::activated, this, &ModelTrainPage::chooseOldClass);
 
 
+    ui->stackedWidget->setCurrentIndex(0);
 }
-
+/*
 void ModelTrainPage::chooseDataDir(){
     QString dataPath = QFileDialog::getExistingDirectory(NULL,"请选择待训练数据的根目录","./",QFileDialog::ShowDirsOnly);
     if(dataPath == ""){
@@ -73,9 +74,9 @@ void ModelTrainPage::startTrain(){
         QString bathSize=ui->batchsizeBox->currentText();
         QString maxEpoch=ui->maxepochBox->currentText();
         switch(modelType){
-            case 0:cmd = "activate TF && python ../../db/bashs/hrrp/train.py"
+            case 0:cmd = "activate TF2 && python ../../db/bashs/hrrp/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-            case 1:cmd = "activate TF && python ../../db/bashs/afs/train.py"
+            case 1:cmd = "activate TF2 && python ../../db/bashs/afs/train.py"
                         " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
         }
     }
@@ -95,7 +96,8 @@ void ModelTrainPage::startTrain(){
                 preEpoch+" --random_seed=2022 --snr=2 --task_size=1 --test_ratio=0.5 --data_dimension="+
                 QString::number(data_dimension)+" --raw_data_path="+dataDir;
     }
-    processTrain->startTrain(cmd);
+    qDebug() << cmd;
+    processTrain->startTrain(modelType, cmd);
 }
 
 void ModelTrainPage::stopTrain(){
@@ -153,4 +155,4 @@ int ModelTrainPage::getDataLen(std::string dataPath){//指定数据集地址，�
     if(!pMxArray){qDebug()<<"()pMxArray变量没找到！！！！！！";return -1;}
     dataLen = mxGetM(pMxArray);  //N 列数
     return dataLen;
-}
+}*/

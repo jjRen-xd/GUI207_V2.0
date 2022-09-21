@@ -1,12 +1,10 @@
 #include "modelTrain.h"
 
-ModelTrain::ModelTrain(QTextBrowser* Widget, QLabel* trainImg, QLabel* valImg, QLabel* confusionMat,
-                       QTextEdit* timeRestEdit, QProgressBar* trainProgressBar):
+ModelTrain::ModelTrain(QTextBrowser* Widget, QLabel* trainImg, QLabel* valImg, QLabel* confusionMat, QProgressBar* trainProgressBar):
     OutShow(Widget),
     trainImg(trainImg),
     valImg(valImg),
     confusionMat(confusionMat),
-    timeRestEdit(timeRestEdit),
     trainProgressBar(trainProgressBar),
     process_train(new QProcess(this)){
     QObject::connect(process_train, &QProcess::readyReadStandardOutput, this, &ModelTrain::readLogOutput);
@@ -26,34 +24,10 @@ void ModelTrain::readLogOutput(){
         int len=lines.length();
         for(int i=0;i<len;i++){
             QStringList Infos = lines[i].simplified().split(" ");
-            if(Infos.length()<2){
-                continue;
-            }
             if(lines[i].contains("Train Ending",Qt::CaseSensitive)){
                 OutShow->append("===========================Train Ending===========================");
                 showLog=false;
                 showTrianResult();
-            }
-            else if(Infos[0]=="RestTime:"){
-                qDebug() << Infos;
-                float m_dTotalTime = Infos[1].toFloat()+0.5;
-                if(m_dTotalTime>0){
-                    int H = m_dTotalTime / (60*60);
-                    int M = (m_dTotalTime- (H * 60 * 60)) / 60;
-                    int S = (m_dTotalTime - (H * 60 * 60)) - M * 60;
-                    QString hour = QString::number(H);
-                    if (hour.length() == 1) hour = "0" + hour;
-                    QString min = QString::number(M);
-                    if (min.length() == 1) min = "0" + min;
-                    QString sec = QString::number(S);
-                    if (sec.length() == 1) sec = "0" + sec;
-                    QString qTime = hour + ":" + min + ":" + sec;
-                    timeRestEdit->setText(qTime);
-                }
-            }
-            else if(Infos[0]=="Schedule:"){
-                qDebug() << Infos;
-                trainProgressBar->setValue(Infos[1].toInt());
             }
             else if(showLog){
                 OutShow->append(lines[i]);
@@ -66,14 +40,21 @@ void ModelTrain::readLogOutput(){
 void ModelTrain::readLogError(){
     /* 读取终端Error并显示 */
     QByteArray cmdOut = process_train->readAllStandardError();
-    timeRestEdit->setText("训练出错");
-    OutShow->append(QString::fromLocal8Bit(cmdOut));
+    if(!cmdOut.isEmpty()){
+        QString logs=QString::fromLocal8Bit(cmdOut);
+        QStringList lines = logs.split("\n");
+        int len=lines.length();
+        for(int i=0;i<len-1;i++){
+            OutShow->append(lines[i]);
+        }
+    }
     OutShow->update();
     stopTrain();
 }
 
-void ModelTrain::startTrain(QString cmd){
+void ModelTrain::startTrain(int modeltypeId,QString cmd){
   // TODO add code here
+    modelTypeId = modeltypeId;
     if(process_train->state()==QProcess::Running){
         showLog=false;
         process_train->close();
@@ -81,7 +62,7 @@ void ModelTrain::startTrain(QString cmd){
     }
     showLog=true;
     OutShow->setText("===========================Train Starting===========================");
-    timeRestEdit->setText("启动模块并计算中");
+    trainProgressBar->setMaximum(0);
     trainProgressBar->setValue(0);
     trainImg->clear();
     valImg->clear();
@@ -92,7 +73,8 @@ void ModelTrain::startTrain(QString cmd){
 }
 
 void ModelTrain::showTrianResult(){
-    timeRestEdit->setText("训练完毕");
+    showLog=false;
+    trainProgressBar->setMaximum(100);
     trainProgressBar->setValue(100);
     if(modelTypeId==0){
         trainImg->setPixmap(QPixmap(dataRoot+"/training_accuracy.jpg"));
@@ -108,7 +90,8 @@ void ModelTrain::showTrianResult(){
 
 void ModelTrain::stopTrain(){
     showLog=false;
-    timeRestEdit->setText("停止训练");
+    trainProgressBar->setMaximum(100);
+    trainProgressBar->setValue(0);
     OutShow->append("===========================Train Stoping===========================");
     if(process_train->state()==QProcess::Running){
         process_train->close();

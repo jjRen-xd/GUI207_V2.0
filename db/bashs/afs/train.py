@@ -24,26 +24,26 @@ parser.add_argument('--max_epochs', help='the number of epochs')
 args = parser.parse_args()
 
 
-class timecallback(tf.keras.callbacks.Callback):
-    def __init__(self):
-        self.total_iter_num = int(int(args.max_epochs)*int(args.len)/int(args.batch_size)+1)
-        self.currrent_iter_num = 0
-        self.timetaken = time.time()
-        self.time_per_iter = 0
-    def on_batch_begin(self,batch,logs = {}):
-        if self.currrent_iter_num == 1:
-            self.batchstarttime = time.time()
-    def on_batch_end(self,batch,logs = {}):
-        if self.currrent_iter_num == 1:
-            self.batchendtime  = time.time()
-            self.time_per_iter = (self.batchendtime - self.batchstarttime)
-        if self.currrent_iter_num >= 1:
-            print("RestTime:",max(1,(self.total_iter_num*(40-args.modelid)-self.currrent_iter_num)*self.time_per_iter))
-            print("Schedule:", min(args.schedule+int(self.currrent_iter_num/(self.total_iter_num*39)*100),99))
-        self.currrent_iter_num += 1
-    def on_train_end(self,batch,logs = {}):
-        args.modelid += 1
-        args.schedule = min(args.schedule+int(self.currrent_iter_num/(self.total_iter_num*39)*100),99)
+# class timecallback(tf.keras.callbacks.Callback):
+#     def __init__(self):
+#         self.total_iter_num = int(int(args.max_epochs)*int(args.len)/int(args.batch_size)+1)
+#         self.currrent_iter_num = 0
+#         self.timetaken = time.time()
+#         self.time_per_iter = 0
+#     def on_batch_begin(self,batch,logs = {}):
+#         if self.currrent_iter_num == 1:
+#             self.batchstarttime = time.time()
+#     def on_batch_end(self,batch,logs = {}):
+#         if self.currrent_iter_num == 1:
+#             self.batchendtime  = time.time()
+#             self.time_per_iter = (self.batchendtime - self.batchstarttime)
+#         if self.currrent_iter_num >= 1:
+#             print("RestTime:",max(1,(self.total_iter_num*(40-args.modelid)-self.currrent_iter_num)*self.time_per_iter))
+#             print("Schedule:", min(args.schedule+int(self.currrent_iter_num/(self.total_iter_num*39)*100),99))
+#         self.currrent_iter_num += 1
+#     def on_train_end(self,batch,logs = {}):
+#         args.modelid += 1
+#         args.schedule = min(args.schedule+int(self.currrent_iter_num/(self.total_iter_num*39)*100),99)
 
 
 def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num):
@@ -62,7 +62,7 @@ def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num):
                                                              verbose=0, min_lr=0.0001)
     checkpoint = keras.callbacks.ModelCheckpoint(save_model_path, monitor='val_accuracy', verbose=0,
                                                  save_best_only=True, mode='max')
-    callbacks_list = [checkpoint, learn_rate_reduction, timecallback()]
+    callbacks_list = [checkpoint, learn_rate_reduction]
     train_model.fit(train_X, train_Y, batch_size=int(args.batch_size), epochs=epoch, shuffle=True,
                    validation_data=(test_X, test_Y), callbacks=callbacks_list, verbose=0, validation_freq=1)
     test_model = keras.models.load_model(save_model_path)
@@ -108,7 +108,7 @@ def run_train(sess, train_X, train_Y, train_step, batch_size):
 
 def inference(data_path, train_step, batchsize, f_start, f_end, f_interval):
     train_X, train_Y, test_X, test_Y, class_label = read_mat(data_path)
-    args.len = Train_Size = len(train_X)
+    Train_Size = len(train_X)
     total_batch = Train_Size / batchsize
     afs_model.build(total_batch, len(train_X[0]), len(train_Y[0]))
     with tf.Session() as sess:  # 创建上下文

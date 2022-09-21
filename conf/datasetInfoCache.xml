@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalDatasetInfo datasetTypeNum="5">
-    <FEATURE typeID="1" />
+    <FEATURE typeID="1">
+        <falseHRRPmat_1x128_FEATURE nameID="1">
+            <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_FEATURE</PATH>
+        </falseHRRPmat_1x128_FEATURE>
+        <radiomat_1x101_HRRP_FEATURE nameID="2">
+            <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP_FEATURE</PATH>
+        </radiomat_1x101_HRRP_FEATURE>
+    </FEATURE>
     <HRRP typeID="2">
-        <falseHRRPmat_1x128 nameID="1">
+        <falseHRRPmat_1x128 nameID="3">
             <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
             <dataFileFormat>mat</dataFileFormat>
         </falseHRRPmat_1x128>
-        <radiomat_1x101_HRRP nameID="2">
+        <radiomat_1x101_HRRP nameID="4">
             <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/radiomat_1x101_HRRP</PATH>
         </radiomat_1x101_HRRP>
     </HRRP>
     <IMAGE typeID="3" />
     <RADIO typeID="4">
-        <radiomat_1x101 nameID="3">
+        <radiomat_1x101 nameID="5">
             <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
         </radiomat_1x101>
     </RADIO>

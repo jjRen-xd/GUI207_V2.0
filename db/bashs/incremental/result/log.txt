@@ -460,3 +460,87 @@ All_OA:tensor(16.6667)
     accuracy                           0.17      3000
    macro avg       0.17      0.17      0.12      3000
 weighted avg       0.17      0.17      0.12      3000
+
+2022-08-29 14:20:02
+Namespace(all_class=6, batch_size=1, bound=0.1, data_dimension=128, increment_epoch=1, learning_rate=0.001, memory_size=200, old_class=1, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 49.11029505729675
+increment_consume_time: 60.94104361534119
+Old_OA:tensor(48.4000)
+New_OA:tensor(10.3200)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.48      0.25       500
+           1       0.17      0.00      0.00       500
+           2       0.17      0.31      0.22       500
+           3       0.17      0.12      0.14       500
+           4       0.17      0.08      0.10       500
+           5       0.17      0.00      0.00       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.12      3000
+weighted avg       0.17      0.17      0.12      3000
+
+2022-08-29 14:25:36
+Namespace(all_class=6, batch_size=1, bound=0.1, data_dimension=128, increment_epoch=1, learning_rate=0.001, memory_size=200, old_class=1, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 9.503129005432129
+increment_consume_time: 59.65682601928711
+Old_OA:tensor(48.4000)
+New_OA:tensor(10.3200)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.48      0.25       500
+           1       0.17      0.00      0.00       500
+           2       0.17      0.31      0.22       500
+           3       0.17      0.12      0.14       500
+           4       0.17      0.08      0.10       500
+           5       0.17      0.00      0.00       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.12      3000
+weighted avg       0.17      0.17      0.12      3000
+
+2022-08-30 19:22:46
+Namespace(all_class=6, batch_size=1, bound=0.1, data_dimension=128, increment_epoch=1, learning_rate=0.001, memory_size=200, old_class=1, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 47.64254117012024
+increment_consume_time: 82.6551775932312
+Old_OA:tensor(48.4000)
+New_OA:tensor(10.3200)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.48      0.25       500
+           1       0.17      0.00      0.00       500
+           2       0.17      0.31      0.22       500
+           3       0.17      0.12      0.14       500
+           4       0.17      0.08      0.10       500
+           5       0.17      0.00      0.00       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.12      3000
+weighted avg       0.17      0.17      0.12      3000
+
+2022-09-01 20:38:21
+Namespace(all_class=6, batch_size=1, bound=0.1, data_dimension=711, increment_epoch=1, learning_rate=0.001, memory_size=200, old_class=1, pretrain_epoch=1, random_seed=2022, raw_data_path='E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_fea', reduce_sample=False, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 45.83415174484253
+increment_consume_time: 87.36031222343445
+Old_OA:tensor(48.4000)
+New_OA:tensor(10.3200)
+All_OA:tensor(16.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.17      0.48      0.25       500
+           1       0.17      0.00      0.00       500
+           2       0.17      0.31      0.22       500
+           3       0.17      0.12      0.14       500
+           4       0.17      0.08      0.10       500
+           5       0.17      0.00      0.00       500
+
+    accuracy                           0.17      3000
+   macro avg       0.17      0.17      0.12      3000
+weighted avg       0.17      0.17      0.12      3000

@@ -12,10 +12,9 @@ class ModelTrain: public QObject{
     Q_OBJECT
 
     public:
-        ModelTrain(QTextBrowser* Widget, QLabel* trainImg, QLabel* valImg, QLabel* confusionMat,
-                   QTextEdit* timeRestEdit, QProgressBar* trainProgressBar);
-        void startTrain(QString cmd);   // 开放在终端运行命令接口
-        void stopTrain();
+        ModelTrain(QTextBrowser* Widget, QLabel* trainImg, QLabel* valImg, QLabel* confusionMat, QProgressBar* trainProgressBar);
+//        void startTrain(int modeltypeId, QString cmd);   // 开放在终端运行命令接口
+//        void stopTrain();
         ~ModelTrain();
 
         QString dataRoot;
@@ -27,7 +26,6 @@ class ModelTrain: public QObject{
         QLabel* trainImg;
         QLabel* valImg;
         QLabel* confusionMat;
-        QTextEdit* timeRestEdit;
         QProgressBar* trainProgressBar;
         QProcess *process_train;    // 终端命令行输出
 
@@ -39,9 +37,9 @@ class ModelTrain: public QObject{
         #endif
 
     private slots:
-        void readLogOutput();      // 读取终端输出并显示
-        void readLogError();       // 读取终端Error并显示
-        void showTrianResult();
+//        void readLogOutput();      // 读取终端输出并显示
+//        void readLogError();       // 读取终端Error并显示
+//        void showTrianResult();
 };
 
 

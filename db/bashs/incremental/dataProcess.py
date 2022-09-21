@@ -119,11 +119,14 @@ def read_mat_128_new(raw_data_path):
             g2 = os.walk(os.path.join(path, dir_name))
             for path2,dir_list2,file_list2 in g2:
                 for file_name in file_list2:
-                    temp = sio.loadmat(os.path.join(path2, file_name))[file_name[0:-4]]
-                    data_list.append(temp)
-                    label_list.append(label)
-                    print(os.path.join(path2, file_name))
-                    print("label:"+str(label))
+                    try:
+                        temp = sio.loadmat(os.path.join(path2, file_name))[file_name[0:-4]]
+                        data_list.append(temp)
+                        label_list.append(label)
+                        print(os.path.join(path2, file_name))
+                        print("label:"+str(label))
+                    except KeyError:
+                        print("Warn: read_mat_128_new视图读入"+os.path.join(path2, file_name)+",但是其不包含同名变量")
     # print(bigball_hrrp.shape, DT_hrrp.shape, Moxiu_hrrp.shape, smallball_hrrp.shape, taper_hrrp.shape, WD_19_hrrp.shape)
     
 

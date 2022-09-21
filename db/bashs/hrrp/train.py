@@ -96,7 +96,7 @@ def read_mat(read_path):
             train_y = train_Y
             test_x = test_X
             test_y = test_Y
-    args.len = len(train_X)
+    # args.len = len(train_X)
     return train_X, train_Y, test_X, test_Y, len(folder_name), folder_name
 
 
@@ -186,23 +186,23 @@ def val_acc(v_acc):
 
 
 
-class timecallback(tf.keras.callbacks.Callback):
-    def __init__(self):
-        self.total_iter_num = int(int(args.max_epochs)*int(args.len)/int(args.batch_size)+1)
-        self.currrent_iter_num = 0
-        self.timetaken = tf.timestamp().numpy()
-        self.time_per_iter = 0
-    def on_batch_begin(self,batch,logs = {}):
-        if self.currrent_iter_num == 1:
-            self.batchstarttime = tf.timestamp().numpy()
-    def on_batch_end(self,batch,logs = {}):
-        if self.currrent_iter_num == 1:
-            self.batchendtime  = tf.timestamp().numpy()
-            self.time_per_iter = self.batchendtime - self.batchstarttime
-        if self.currrent_iter_num >= 1:
-            print("RestTime:",(self.total_iter_num-self.currrent_iter_num)*self.time_per_iter)
-            print("Schedule:", min(int(self.currrent_iter_num/self.total_iter_num*100),99))
-        self.currrent_iter_num += 1
+# class timecallback(tf.keras.callbacks.Callback):
+#     def __init__(self):
+#         self.total_iter_num = int(int(args.max_epochs)*int(args.len)/int(args.batch_size)+1)
+#         self.currrent_iter_num = 0
+#         self.timetaken = tf.timestamp().numpy()
+#         self.time_per_iter = 0
+#     def on_batch_begin(self,batch,logs = {}):
+#         if self.currrent_iter_num == 1:
+#             self.batchstarttime = tf.timestamp().numpy()
+#     def on_batch_end(self,batch,logs = {}):
+#         if self.currrent_iter_num == 1:
+#             self.batchendtime  = tf.timestamp().numpy()
+#             self.time_per_iter = self.batchendtime - self.batchstarttime
+#         if self.currrent_iter_num >= 1:
+#             print("RestTime:",(self.total_iter_num-self.currrent_iter_num)*self.time_per_iter)
+#             print("Schedule:", min(int(self.currrent_iter_num/self.total_iter_num*100),99))
+#         self.currrent_iter_num += 1
 
 
 
@@ -217,7 +217,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
     # 保存最优模型
     checkpoint = tf.keras.callbacks.ModelCheckpoint(args.data_dir+'/model_saving.hdf5', monitor='val_accuracy',
                                                     verbose=1, save_best_only=True, mode='max')
-    callbacks_list = [checkpoint, learning_rate_reduction, timecallback()]
+    callbacks_list = [checkpoint, learning_rate_reduction]
     # model.summary()
     h = model.fit(x_train, y_train, batch_size=int(args.batch_size), epochs=int(args.max_epochs), shuffle=True,
               validation_data=(x_test, y_test), callbacks=callbacks_list, verbose=2, validation_freq=1)
