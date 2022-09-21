@@ -38,10 +38,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
     // 场景选择页面
     this->senseSetPage = new SenseSetPage(this->ui, this->terminal, this->globalDatasetInfo);
+
     this->modelChoicePage = new ModelChoicePage(this->ui, this->terminal, this->globalModelInfo);
+
     this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
+
     this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
-    this->monitorPage = new MonitorPage(this->ui, this->terminal,this->globalModelInfo);
+
+    this->monitorPage = new MonitorPage(this->ui, this->terminal,this->globalDatasetInfo,this->globalModelInfo);
 }
 
 

@@ -7,18 +7,16 @@
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/modelInfo.h"
+#include "./lib/guiLogic/datasetInfo.h"
 #include "./lib/guiLogic/tools/socketserver.h"
 #include "./lib/guiLogic/tools/socketclient.h"
 #include "lib/algorithm/inferthread.h"
-#include "./lib/algorithm/trtinfer.h"
-
-
 
 class MonitorPage : public QObject
 {
     Q_OBJECT
 public:
-    MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo);
+    MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,ModelInfo *globalModelInfo);
     void startListen();
     void simulateSend();
     SocketServer* server;
@@ -40,8 +38,10 @@ public slots:
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;
-    std::string choicedModelPATH;
+    std::string choicedDatasetPATH="";
+    std::string choicedModelPATH="";
     ModelInfo *modelInfo;
+    DatasetInfo *datasetInfo;
     std::map<int, std::string> label2class;
     std::map<std::string, int> class2label;
 

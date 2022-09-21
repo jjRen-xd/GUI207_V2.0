@@ -18,18 +18,6 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     datasetInfo(globalDatasetInfo),
     modelInfo(globalModelInfo)
 {
-    // 网络输出标签对应类别名称初始化
-    label2class[0] ="bigball"; //"XQ";'bigball','DT','Moxiu','sallball','taper', 'WD'
-    label2class[1] ="DT"; //"DQ";
-    label2class[2] ="Moxiu"; //"Z";
-    label2class[3] ="sallball"; //"QDZ";
-    label2class[4] ="taper"; //"DT";
-    label2class[5] ="WD"; //"FG";
-    for(auto &item: label2class){
-        class2label[item.second] = item.first;
-    }
-
-    trtInfer = new TrtInfer(class2label);
     GuiThreadRun::inst();
     // 随机选取样本按钮
     connect(ui->pushButton_mE_randone, &QPushButton::clicked, this, &ModelEvalPage::randSample);
@@ -42,27 +30,30 @@ ModelEvalPage::~ModelEvalPage(){
 
 }
 
-
 void ModelEvalPage::refreshGlobalInfo(){
-    // 基本信息更新
-    ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
-    //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
-        trtInfer = new TrtInfer(class2label);
-        this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
-    }
     // 单样本测试下拉框刷新
     vector<string> comboBoxContents = datasetInfo->selectedClassNames;
     ui->comboBox_sampleType->clear();
     for(auto &item: comboBoxContents){
         ui->comboBox_sampleType->addItem(QString::fromStdString(item));
     }
-    //
     ui->comboBox_inferBatchsize->clear();
     for(int i=512;i>3;i/=2){
         ui->comboBox_inferBatchsize->addItem(QString::number(i));
+    }
+    // 网络输出标签对应类别名称初始化
+    if(comboBoxContents.size()>0){
+        for(int i=0;i<comboBoxContents.size();i++)   label2class[i]=comboBoxContents[i];
+        for(auto &item: label2class)   class2label[item.second] = item.first;
+    }
+    // 基本信息更新
+    ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+    ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
+    //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){//保证模型切换后trt对象重新构建
+        trtInfer = new TrtInfer(class2label);
+        this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
 }
 
@@ -129,10 +120,8 @@ void removeLayout(QLayout *layout){
             delete widget;
             widget = nullptr;
         }
-
         else if (QLayout* childLayout = child->layout())
             removeLayout(childLayout);
-
         delete child;
         child = nullptr;
     }
@@ -153,11 +142,6 @@ void  ModelEvalPage::testOneSample(){
         bool dataProcess=true;
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees);
-        //onnxInfer->testOneSample(choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
-//        std::thread oneinferThread(&OnnxInfer::testOneSample, onnxInfer, choicedSamplePATH, choicedModelPATH, &predIdx_promise, &degrees_promise);
-//        oneinferThread.detach();
-//        std::thread oneinferThread_ui2(testOneSample_ui2,this);
-//        oneinferThread_ui2.detach();
 
 /////////////////把下面都当做对UI的操作
         std::cout<<"(ModelEvalPage::testOneSample)degrees:";
@@ -196,7 +180,6 @@ void ModelEvalPage::testAllSample(){
     qDebug()<<"(ModelEvalPage::testAllSample)batchsize=="<<inferBatch;
     /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
     if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty() ){
-        //qDebug()<<"(ModelEvalPage::testAllSample) MMMMMMMMMMMMMMMMMMMM";
         float acc = 0.6;
         std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);

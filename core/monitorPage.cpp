@@ -1,21 +1,15 @@
 #include "monitorPage.h"
-#include "lib/algorithm/trtinfer.h"
 #include "qimagereader.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QMutex>
 
-MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, ModelInfo *globalModelInfo):
+MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,ModelInfo *globalModelInfo):
     ui(main_ui),
     terminal(bash_terminal),
+    datasetInfo(globalDatasetInfo),
     modelInfo(globalModelInfo)
 {
-    label2class[0] ="bigball";label2class[1] ="DT"; label2class[2] ="Moxiu";
-    label2class[3] ="sallball"; label2class[4] ="taper"; label2class[5] ="WD";
-    for(auto &item: label2class){
-        class2label[item.second] = item.first;
-    }
-
     QSemaphore sem;
     QMutex lock;
     inferThread =new InferThread(&sem,&sharedQue,&lock);//推理线程
@@ -23,7 +17,6 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
     //connect(inferThread, &InferThread::sigInferResult,this,&MonitorPage::showInferResult);
     connect(inferThread, SIGNAL(sigInferResult(int,QVariant)),this,SLOT(showInferResult(int,QVariant)));
     
-
     server = new SocketServer(&sem,&sharedQue,&lock,terminal);//监听线程
     connect(server, SIGNAL(sigColorMap()),this,SLOT(showColorMap()));
 
@@ -36,16 +29,14 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Mo
 
 }
 void MonitorPage::startListen(){
-    if(modelInfo->selectedType==""){
-        QMessageBox::warning(NULL, "实时监测", "监听失败,请先指定HRRP模型");
+    if(modelInfo->selectedType==""||this->choicedDatasetPATH==""){
+        QMessageBox::warning(NULL, "实时监测", "监听失败,请先指定HRRP模型和数据集");
         qDebug()<<"modelInfo->selectedType=="<<QString::fromStdString(modelInfo->selectedType);
         return;
     }
-    inferThread->setParmOfRTI(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH"),true);
     server->start();
     terminal->print("开始监听");
     inferThread->start();
-
 }
 
 void MonitorPage::simulateSend(){
@@ -53,9 +44,21 @@ void MonitorPage::simulateSend(){
 }
 
 void MonitorPage::refresh(){
-    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){
-        trtInfer = new TrtInfer(class2label);
+    // 网络输出标签对应类别名称初始化
+    std::vector<std::string> comboBoxContents = datasetInfo->selectedClassNames;
+    if(comboBoxContents.size()>0){
+        for(int i=0;i<comboBoxContents.size();i++)   label2class[i]=comboBoxContents[i];
+        for(auto &item: label2class)   class2label[item.second] = item.first;
+    }
+
+    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH ||
+    this->choicedDatasetPATH != datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+        //trtInfer = new TrtInfer(class2label);
         this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+        this->choicedDatasetPATH=datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+        inferThread->setClass2LabelMap(class2label);
+        qDebug()<<"(MonitorPage::refresh) class2label.size()=="<<class2label.size();
+        inferThread->setParmOfRTI(this->choicedModelPATH,true);//只有小样本是false 既不做预处理
     }
 }
 

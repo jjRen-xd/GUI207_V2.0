@@ -20,16 +20,13 @@ public:
 
     TrtInfer* trtInfer;
     void setParmOfRTI(std::string modelPath,bool dataProcess);
-
+    void setClass2LabelMap(std::map<std::string, int> class2label);
     std::queue<std::vector<float>>* sharedQue;
     QMutex *lock;
 signals:
     void sigInferResult(int,QVariant);
 
 private:
-    std::map<int, std::string> label2class;
-    std::map<std::string, int> class2label;
-
     //trtInfer需要的参数
     std::string inferMode="";
     std::string modelPath="";
