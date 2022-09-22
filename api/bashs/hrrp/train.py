@@ -6,25 +6,35 @@ import numpy as np
 import scipy.io as sio
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import argparse
+# import keras as K
+# from tensorflow import keras as K
+# import re
+# from functools import reduce
+# from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 from matplotlib import rcParams
-from datetime import datetime
+# from datetime import datetime
 from sklearn.metrics import classification_report
+import sys
 
-import sys, os
 sys.path.append("..")
-# from model_convert.hdf52trt import convert_hdf5_to_trt
 sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") for name in dirs])
 
-parser = argparse.ArgumentParser(description='Train a detector')
-parser.add_argument('--data_dir', help='the directory of the training data',default="D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128")
-parser.add_argument('--batch_size', help='the number of batch size',default=32)
-parser.add_argument('--max_epochs', help='the number of epochs',default=4)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Train a detector')
+    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128")
+    parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
+    parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
+    parser.add_argument('--model_name', help='the directory of the training data',default="model")
+    parser.add_argument('--batch_size', help='the number of batch size',default=32)
+    parser.add_argument('--max_epochs', help='the number of epochs',default=4)
+
+    args = parser.parse_args()
+    return args
 
 
-args = parser.parse_args()
-
-
-#  ˝æ›πÈ“ªªØ
+# Êï∞ÊçÆÂΩí‰∏ÄÂåñ
 def data_normalization(data):
     DATA = []
     for i in range(0, len(data)):
@@ -39,29 +49,29 @@ def data_normalization(data):
     return DATA
 
 
-# ¥”.matŒƒº˛∂¡»° ˝æ›≤¢‘§¥¶¿Ì
+# ‰ªé.matÊñá‰ª∂ËØªÂèñÊï∞ÊçÆÂπ∂È¢ÑÂ§ÑÁêÜ
 def read_mat(read_path):
-    # ∂¡»°¬∑æ∂œ¬À˘”–Œƒº˛º–µƒ√˚≥∆≤¢±£¥Ê
-    folder_path = read_path  # À˘”–Œƒº˛º–À˘‘⁄¬∑æ∂
-    file_name = os.listdir(folder_path)  # ∂¡»°À˘”–Œƒº˛º–£¨Ω´Œƒº˛º–√˚¥Ê‘⁄¡–±Ì÷–
+    # ËØªÂèñË∑ØÂæÑ‰∏ãÊâÄÊúâÊñá‰ª∂Â§πÁöÑÂêçÁß∞Âπ∂‰øùÂ≠ò
+    folder_path = read_path # ÊâÄÊúâÊñá‰ª∂Â§πÊâÄÂú®Ë∑ØÂæÑ
+    file_name = os.listdir(folder_path)  # ËØªÂèñÊâÄÊúâÊñá‰ª∂Â§πÔºåÂ∞ÜÊñá‰ª∂Â§πÂêçÂ≠òÂú®ÂàóË°®‰∏≠
     folder_name = []
     for i in range(0, len(file_name)):
-        # ≈–∂œŒƒº˛º–”ÎŒƒº˛
+        # Âà§Êñ≠Êñá‰ª∂Â§π‰∏éÊñá‰ª∂
         if os.path.isdir(folder_path+'/'+file_name[i]):
             folder_name.append(file_name[i])
-    folder_name.sort()  # ∞¥Œƒº˛º–√˚Ω¯––≈≈–Ú
+    folder_name.sort()  # ÊåâÊñá‰ª∂Â§πÂêçËøõË°åÊéíÂ∫è
 
-    # ∂¡»°µ•∏ˆŒƒº˛º–œ¬µƒƒ⁄»›
+    # ËØªÂèñÂçï‰∏™Êñá‰ª∂Â§π‰∏ãÁöÑÂÜÖÂÆπ
     for i in range(0, len(folder_name)):
-        class_mat_name = os.listdir(folder_path + '/' + folder_name[i])  # ªÒ»°¿‡±Œƒº˛º–œ¬µƒ.matŒƒº˛√˚≥∆
-        class_path = folder_path + '/' + folder_name[i] + '/' + class_mat_name[0]  # ¿‡±µƒ.matŒƒº˛¬∑æ∂
+        class_mat_name = os.listdir(folder_path + '/' + folder_name[i])  # Ëé∑ÂèñÁ±ªÂà´Êñá‰ª∂Â§π‰∏ãÁöÑ.matÊñá‰ª∂ÂêçÁß∞
+        class_path = folder_path + '/' + folder_name[i] + '/' + class_mat_name[0]   # Á±ªÂà´ÁöÑ.matÊñá‰ª∂Ë∑ØÂæÑ
         matrix_base = os.path.basename(class_path)
-        matrix_name = os.path.splitext(matrix_base)[0]  # ªÒ»°»•≥˝¿©’π√˚µƒ.matŒƒº˛√˚≥∆
-        class_data = sio.loadmat(class_path)[matrix_name].T  # ∂¡»Î.matŒƒº˛£¨≤¢◊™÷√
+        matrix_name = os.path.splitext(matrix_base)[0]  # Ëé∑ÂèñÂéªÈô§Êâ©Â±ïÂêçÁöÑ.matÊñá‰ª∂ÂêçÁß∞
+        class_data = sio.loadmat(class_path)[matrix_name].T  # ËØªÂÖ•.matÊñá‰ª∂ÔºåÂπ∂ËΩ¨ÁΩÆ
 
-        class_data_normalization = data_normalization(class_data)  # πÈ“ªªØ¥¶¿Ì
+        class_data_normalization = data_normalization(class_data)  # ÂΩí‰∏ÄÂåñÂ§ÑÁêÜ
 
-        #  ˝æ›∏¥÷∆64¥Œ
+        # Êï∞ÊçÆÂ§çÂà∂64Ê¨°
         class_data_picture = []
         for j in range(0, len(class_data_normalization)):
             class_data_one = class_data_normalization[j]
@@ -69,18 +79,17 @@ def read_mat(read_path):
             for k in range(0, len(class_data_one)):
                 empty[k, :] = class_data_one[k]
             class_data_picture.append(empty)
-        class_data_picture = np.array(class_data_picture)  # ¡–±Ì◊™ªªŒ™ ˝◊È
+        class_data_picture = np.array(class_data_picture)   # ÂàóË°®ËΩ¨Êç¢‰∏∫Êï∞ÁªÑ
 
-        # …Ë÷√±Í«©
+        # ËÆæÁΩÆÊ†áÁ≠æ
         label = np.zeros((len(class_data_normalization), len(folder_name)))
         label[:, i] = 1
 
-        # ªÆ∑÷—µ¡∑ ˝æ›ºØ∫Õ≤‚ ‘ ˝æ›ºØ
+        # ÂàíÂàÜËÆ≠ÁªÉÊï∞ÊçÆÈõÜÂíåÊµãËØïÊï∞ÊçÆÈõÜ
         x_train = class_data_picture[:int(len(class_data_picture)/2), :]
         x_test = class_data_picture[int(len(class_data_picture)/2):, :]
         y_train = label[:int(len(class_data_picture)/2), :]
         y_test = label[int(len(class_data_picture)/2):, :]
-
         if i == 0:
             train_x = x_train
             test_x = x_test
@@ -96,11 +105,11 @@ def read_mat(read_path):
             train_y = train_Y
             test_x = test_X
             test_y = test_Y
-    args.len = len(train_X)
+    # args.len = len(train_X)
     return train_X, train_Y, test_X, test_Y, len(folder_name), folder_name
 
 
-# Ãÿ’˜æÿ’Û¥Ê¥¢
+# ÁâπÂæÅÁü©ÈòµÂ≠òÂÇ®
 def storage_characteristic_matrix(result, test_Y, output_size):
     characteristic_matrix = np.zeros((output_size, output_size))
     for i in range(0, len(result)):
@@ -114,8 +123,8 @@ def storage_characteristic_matrix(result, test_Y, output_size):
     return characteristic_matrix, accuracy_every_class
 
 
-# ªÊ÷∆ªÏœ˝æÿ’Û
-def show_confusion_matrix(classes, confusion_matrix):
+# ÁªòÂà∂Ê∑∑Ê∑ÜÁü©Èòµ
+def show_confusion_matrix(classes, confusion_matrix, work_dir):
     plt.figure()
     proportion = []
     length = len(confusion_matrix)
@@ -124,15 +133,15 @@ def show_confusion_matrix(classes, confusion_matrix):
             temp = j / (np.sum(i))
             proportion.append(temp)
 
-    pshow = []
+    pshow = [] #ÁôæÂàÜÊØî(Ë°åÈÅçÂéÜ)
     for i in proportion:
         pt = "%.2f%%" % (i * 100)
         pshow.append(pt)
-    proportion = np.array(proportion).reshape(length, length)  # reshape(¡–µƒ≥§∂»£¨––µƒ≥§∂»)
+    proportion = np.array(proportion).reshape(length, length)   # reshape(ÂàóÁöÑÈïøÂ∫¶ÔºåË°åÁöÑÈïøÂ∫¶)
     pshow = np.array(pshow).reshape(length, length)
-    config = {"font.family": 'Times New Roman'}  # …Ë÷√◊÷ÃÂ¿‡–Õ
+    config = {"font.family": 'Times New Roman'} 
     rcParams.update(config)
-    plt.imshow(proportion, interpolation='nearest', cmap=plt.cm.Blues)  # ∞¥’’œÒÀÿœ‘ æ≥ˆæÿ’Û
+    plt.imshow(proportion, interpolation='nearest', cmap=plt.cm.Blues) 
     plt.colorbar()
     tick_marks = np.arange(len(classes))
     plt.xticks(tick_marks, classes, fontsize=12)
@@ -144,21 +153,21 @@ def show_confusion_matrix(classes, confusion_matrix):
     for i, j in iters:
         if i == j:
             plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10, color='white',
-                     weight=5)  # œ‘ æ∂‘”¶µƒ ˝◊÷
+                     weight=5)  
             plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10, color='white')
         else:
-            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10)  # œ‘ æ∂‘”¶µƒ ˝◊÷
+            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10)  
             plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10)
 
     plt.ylabel('True label', fontsize=16)
     plt.xlabel('Predict label', fontsize=16)
     plt.tight_layout()
-    plt.savefig(args.data_dir+'/confusion_matrix.jpg', dpi=300)
+    plt.savefig(work_dir+'/confusion_matrix.jpg', dpi=300)
     # plt.show()
 
 
-# —µ¡∑π˝≥Ã÷–◊º»∑¬ «˙œﬂ
-def train_acc(epoch, acc):
+# ËÆ≠ÁªÉËøáÁ®ã‰∏≠ÂáÜÁ°ÆÁéáÊõ≤Á∫ø
+def train_acc(epoch, acc, work_dir):
     x = np.arange(epoch+1)[1:]
     plt.figure()
     plt.plot(x, acc)
@@ -168,11 +177,11 @@ def train_acc(epoch, acc):
     plt.ylabel('Accuracy', fontsize=16)
     plt.xlabel('Epoch', fontsize=16)
     plt.tight_layout()
-    plt.savefig(args.data_dir+'/training_accuracy.jpg', dpi=300)
+    plt.savefig(work_dir+'/training_accuracy.jpg', dpi=300)
 
 
-# —È÷§◊º»∑¬ «˙œﬂ
-def val_acc(v_acc):
+# È™åËØÅÂáÜÁ°ÆÁéáÊõ≤Á∫ø
+def val_acc(v_acc, work_dir):
     x = np.arange(len(v_acc)+1)[1:]
     plt.figure()
     plt.plot(x, v_acc)
@@ -182,61 +191,46 @@ def val_acc(v_acc):
     plt.ylabel('Accuracy', fontsize=16)
     plt.xlabel('Times', fontsize=16)
     plt.tight_layout()
-    plt.savefig(args.data_dir+'/verification_accuracy.jpg', dpi=300)
+    plt.savefig(work_dir+'/verification_accuracy.jpg', dpi=300)
 
 
-
-class timecallback(tf.keras.callbacks.Callback):
-    def __init__(self):
-        self.total_iter_num = int(int(args.max_epochs)*int(args.len)/int(args.batch_size)+1)
-        self.currrent_iter_num = 0
-        self.timetaken = tf.timestamp().numpy()
-        self.time_per_iter = 0
-    def on_batch_begin(self,batch,logs = {}):
-        if self.currrent_iter_num == 1:
-            self.batchstarttime = tf.timestamp().numpy()
-    def on_batch_end(self,batch,logs = {}):
-        if self.currrent_iter_num == 1:
-            self.batchendtime  = tf.timestamp().numpy()
-            self.time_per_iter = self.batchendtime - self.batchstarttime
-        if self.currrent_iter_num >= 1:
-            print("RestTime:",(self.total_iter_num-self.currrent_iter_num)*self.time_per_iter)
-            print("Schedule:", min(int(self.currrent_iter_num/self.total_iter_num*100),99))
-        self.currrent_iter_num += 1
-
-
-
-def run_main(x_train, y_train, x_test, y_test, class_num, folder_name):
+def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir, model_name):
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.applications.densenet.DenseNet121(include_top=True, weights=None, input_tensor=None,
-                                                         input_shape=(x_train.shape[1], x_train.shape[2], 1),
-                                                         pooling=None, classes=class_num))
+    model.add(tf.keras.applications.densenet.DenseNet121(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
     model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
-    learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,
-                                                                   factor=0.5, min_lr=0.00001)
-    # ±£¥Ê◊Ó”≈ƒ£–Õ
-    checkpoint = tf.keras.callbacks.ModelCheckpoint(args.data_dir+'/model_saving.hdf5', monitor='val_accuracy',
-                                                    verbose=1, save_best_only=True, mode='max')
-    callbacks_list = [checkpoint, learning_rate_reduction, timecallback()]
+    learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,factor=0.5, min_lr=0.00001)
+    
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(work_dir+'/model/'+model_name+'.hdf5', monitor='val_accuracy',verbose=1, save_best_only=True, mode='max')
+    callbacks_list = [checkpoint, learning_rate_reduction]
     # model.summary()
     h = model.fit(x_train, y_train, batch_size=int(args.batch_size), epochs=int(args.max_epochs), shuffle=True,
               validation_data=(x_test, y_test), callbacks=callbacks_list, verbose=2, validation_freq=1)
     h_parameter = h.history
-    train_acc(int(args.max_epochs), h_parameter['accuracy'])
-    val_acc(h_parameter['accuracy'])
-    save_model = tf.keras.models.load_model(args.data_dir+'/model_saving.hdf5')
+    train_acc(int(args.max_epochs), h_parameter['accuracy'], work_dir)
+    val_acc(h_parameter['accuracy'], work_dir)
+    save_model = tf.keras.models.load_model(work_dir+'/model/'+model_name+'.hdf5')
     Y_test = np.argmax(y_test, axis=1)
-    #y_pred = save_model.predict_classes(x_test)
+    #y_pred = save_model.predict_classes(x_test)   
     y_pred = np.argmax(save_model.predict(x_test), axis=1)
-    labels = folder_name  # ±Í«©œ‘ æ
+    labels = folder_name 
     characteristic_matrix, accuracy_every_class = storage_characteristic_matrix(y_pred, Y_test, class_num)
-    show_confusion_matrix(labels, characteristic_matrix)
+    show_confusion_matrix(labels, characteristic_matrix, work_dir)
     print(classification_report(Y_test, y_pred))
 
 
 if __name__ == '__main__':
-    # print("Train Starting")
-    x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
-    run_main(x_train, y_train, x_test, y_test, class_num, folder_name)
-    print("Train Ending")
-    # convert_hdf5_to_trt(args.data_dir+'/model_saving.hdf5')
+    try:
+        args = parse_args()
+        x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
+        datasetName = args.data_dir.split("/")[-1].split("_")[0]
+        args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName
+        if not os.path.exists(args.work_dir):
+            os.makedirs(args.work_dir)
+            os.makedirs(args.work_dir + '/model')
+
+        run_main(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
+
+        # os.system("python ../../api/bashs/hdf52trt.py --model_type HRRP --work_dir "+args.work_dir+" --model_name "+args.model_name)
+        print("Train Ended:")
+    except Exception as re:
+        print("Train Failed:",re)

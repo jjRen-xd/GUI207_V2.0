@@ -12,7 +12,7 @@ SocketServer::SocketServer(QSemaphore *s,std::queue<std::vector<float>>* sharedQ
         std::vector<float> temp(128,-1);
         colorMapMatrix.push_back(temp);
     }
-    Py_SetPythonHome(L"D:/win_anaconda");
+    Py_SetPythonHome(L"E:/anacoda/anaconda");
     Py_Initialize();
     _import_array();
     PyRun_SimpleString("import sys");

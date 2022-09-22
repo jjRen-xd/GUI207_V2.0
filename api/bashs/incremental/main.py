@@ -7,7 +7,7 @@ import argparse
 
 argparser = argparse.ArgumentParser()
 
-argparser.add_argument('--raw_data_path', type=str, help='the directory where the traing dataset')
+argparser.add_argument('--qa', type=str, help='the directory where the traing dataset')
 argparser.add_argument('--snr', type=int,  help='-2 -4 ... 16 18', default=2)
 argparser.add_argument('--pretrain_epoch', type=int,  help='preTrain epoch number', default=0)
 argparser.add_argument('--increment_epoch', type=int,  help='train new model epoch number', default=50)
@@ -33,19 +33,19 @@ if __name__ == '__main__':
     os.chdir(current_path)
 
 
-    # create_dir()
+    create_dir()
 
-    # if args.data_dimension == 39:
-    #     read_mat_39(args.raw_data_path)
-    # if args.data_dimension == 128:
-    #     read_mat_128_new(args.raw_data_path)
-    # if args.data_dimension == 256:
-    #     read_mat_256_new(args.raw_data_path)
+    if args.data_dimension == 39:
+        read_mat_39(args.raw_data_path)
+    if args.data_dimension == 128:
+        read_mat_128_new(args.raw_data_path)
+    if args.data_dimension == 256:
+        read_mat_256_new(args.raw_data_path)
 
     # txt文件转为npy文件
-    # read_txt(args.raw_data_path, args.class_name, args.snr)
+    read_txt(args.raw_data_path, args.class_name, args.snr)
     # 分割训练集和测试集
-    # split_test_and_train(args.test_ratio, args.random_seed)
+    split_test_and_train(args.test_ratio, args.random_seed)
 
     # 开始旧类训练
     pretrain_start = time.time()
@@ -78,6 +78,6 @@ if __name__ == '__main__':
                   "Old_OA:" + str(old_oa) + "\n" +
                   "New_OA:" + str(new_oa) + "\n" +
                   "All_OA:" + str(all_oa) + "\n\n" + str(metric))
-    print("Train Ending")
+    print("Train Ended")
 
 

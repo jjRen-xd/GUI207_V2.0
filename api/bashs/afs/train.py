@@ -1,57 +1,35 @@
 # -*- coding: UTF-8 -*-
-from ast import arg
-import os,re
+import os
+import sys
 import argparse
-import time
 import tensorflow.compat.v1 as tfv1
 import tensorflow.keras as keras
 import numpy as np
 import afs_model
-import tensorflow as tf
-import keras as K
 from data_process import read_mat, storage_characteristic_matrix
 from data_process import show_feature_selection, show_confusion_matrix
 from utils import BatchCreate
-from sklearn.metrics import classification_report
-from matplotlib import rcParams
-from functools import reduce
-from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
+# from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 tfv1.compat.v1.disable_eager_execution()
 
-datasetName="./"
-savedPath="./"
-parser = argparse.ArgumentParser(description='Train a detector')
-parser.add_argument('--data_dir', help='the directory of the training data')
-parser.add_argument('--batch_size', help='the number of batch size')
-parser.add_argument('--max_epochs', help='the number of epochs')
+sys.path.append("..")
+sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") for name in dirs])
 
 
-args = parser.parse_args()
+def parse_args():
+    parser = argparse.ArgumentParser(description='Train a detector')
+    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128")
+    parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
+    parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
+    parser.add_argument('--model_name', help='the directory of the training data',default="model")
+    parser.add_argument('--batch_size', help='the number of batch size',default=32)
+    parser.add_argument('--max_epochs', help='the number of epochs',default=1)
+
+    args = parser.parse_args()
+    return args
 
 
-# class timecallback(tf.keras.callbacks.Callback):
-#     def __init__(self):
-#         self.total_iter_num = int(int(args.max_epochs)*int(args.len)/int(args.batch_size)+1)
-#         self.currrent_iter_num = 0
-#         self.timetaken = time.time()
-#         self.time_per_iter = 0
-#     def on_batch_begin(self,batch,logs = {}):
-#         if self.currrent_iter_num == 1:
-#             self.batchstarttime = time.time()
-#     def on_batch_end(self,batch,logs = {}):
-#         if self.currrent_iter_num == 1:
-#             self.batchendtime  = time.time()
-#             self.time_per_iter = (self.batchendtime - self.batchstarttime)
-#         if self.currrent_iter_num >= 1:
-#             print("RestTime:",max(1,(self.total_iter_num*(40-args.modelid)-self.currrent_iter_num)*self.time_per_iter))
-#             print("Schedule:", min(args.schedule+int(self.currrent_iter_num/(self.total_iter_num*39)*100),99))
-#         self.currrent_iter_num += 1
-#     def on_train_end(self,batch,logs = {}):
-#         args.modelid += 1
-#         args.schedule = min(args.schedule+int(self.currrent_iter_num/(self.total_iter_num*39)*100),99)
-
-
-def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num):
+def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num, work_dir, model_name):
     train_model = keras.models.Sequential([
         keras.layers.Conv1D(64, kernel_size=1, padding='valid', activation='relu'),
         keras.layers.Flatten(),
@@ -60,9 +38,10 @@ def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num):
     train_model.compile(loss='binary_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
 
     # 建立存储保存后的模型的文件夹
-    if not os.path.exists(savedPath):
-        os.makedirs(savedPath)
-    save_model_path = savedPath + '/' + str(fea_num) + '.hdf5'
+    if not os.path.exists(work_dir):
+        os.makedirs(work_dir)
+        os.makedirs(work_dir + '/model')
+    save_model_path = work_dir + '/model/'+model_name+'_feature_' + str(fea_num) + '.hdf5'
     learn_rate_reduction = keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy', factor=0.99, patience=3,verbose=0, min_lr=0.0001)
     checkpoint = keras.callbacks.ModelCheckpoint(save_model_path, monitor='val_accuracy', verbose=0,
                                                  save_best_only=True, mode='max')
@@ -76,7 +55,7 @@ def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num):
     return Y_test, Y_pred
 
 
-def run_test(A, train_X, train_Y, test_X, test_Y, epoch, output_size, f_start, f_end, f_interval):
+def run_test(A, train_X, train_Y, test_X, test_Y, epoch, output_size, f_start, f_end, f_interval, work_dir, model_name):
     all_characteristic_matrix = []  # 存储特征矩阵
     attention_weight = A.mean(0)  # [512,]
     AFS_wight_rank = list(np.argsort(attention_weight))[::-1]
@@ -84,7 +63,7 @@ def run_test(A, train_X, train_Y, test_X, test_Y, epoch, output_size, f_start, f
     for K in range(f_start, f_end + 1, f_interval):
         use_train_x = np.expand_dims(train_X[:, AFS_wight_rank[:K]], axis=-1)
         use_test_x = np.expand_dims(test_X[:, AFS_wight_rank[:K]], axis=-1)
-        label_class, predicted_class = test(use_train_x, train_Y, use_test_x, test_Y, epoch, output_size, K)
+        label_class, predicted_class = test(use_train_x, train_Y, use_test_x, test_Y, epoch, output_size, K, work_dir, model_name)
         characteristic_matrix, accuracy_every_class, accuracy = storage_characteristic_matrix(predicted_class, label_class, output_size)
 
         print('Using Top {} features| accuracy:{:.4f}'.format(K, accuracy))
@@ -110,7 +89,7 @@ def run_train(sess, train_X, train_Y, train_step, batch_size):
     return A
 
 
-def inference(data_path,train_step, batchsize, f_start, f_end, f_interval):
+def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_dir, model_name):
     train_X, train_Y, test_X, test_Y, class_label = read_mat(data_path)
     Train_Size = len(train_X)
     total_batch = Train_Size / batchsize
@@ -121,26 +100,29 @@ def inference(data_path,train_step, batchsize, f_start, f_end, f_interval):
         A = run_train(sess, train_X, train_Y, train_step, batchsize)
     print('==  The Evaluation of AFS ==')
     ac_score_list, characteristic_matrix_summary = run_test(A, train_X, train_Y, test_X,
-                                                            test_Y, train_step, len(train_Y[0]), f_start, f_end, f_interval)
-    show_feature_selection(ac_score_list, f_start, f_end, f_interval, savedPath)#hh
+                                            test_Y, train_step, len(train_Y[0]), f_start, f_end, f_interval, work_dir, model_name)
+    show_feature_selection(ac_score_list, f_start, f_end, f_interval, work_dir)#hh
     optimal_result = ac_score_list.index(max(ac_score_list))
-    show_confusion_matrix(class_label, characteristic_matrix_summary[optimal_result], savedPath)#hh
+    show_confusion_matrix(class_label, characteristic_matrix_summary[optimal_result], work_dir)#hh
     print(optimal_result)
     print(max(ac_score_list))
 
 
 if __name__ == '__main__':
-    path = args.data_dir
-    if(args.data_dir.rfind("/")+1==len(args.data_dir)):#如果给的路径参数最后一个字符是/
-        datasetName=args.data_dir[args.data_dir[:-1].rfind("/")+1:-1]
-        savedPath=args.data_dir[:args.data_dir[:-1].rfind("/")+1]+"AfsModel_"+datasetName
-    else:
-        datasetName=args.data_dir[args.data_dir.rfind("/")+1:]
-        savedPath=args.data_dir[:args.data_dir.rfind("/")+1]+"AfsModel_"+datasetName
-    if not os.path.exists(savedPath):
-        os.makedirs(savedPath)
+    try:
+        args = parse_args()
+        path = args.data_dir
+        datasetName = args.data_dir.split("/")[-1].split("_")[0]
+        args.work_dir = args.work_dir+"/"+args.time+'-AFS-'+datasetName
+        if not os.path.exists(args.work_dir):
+            os.makedirs(args.work_dir)
+            os.makedirs(args.work_dir + '/model')
 
-    args.modelid=1
-    args.schedule=0
-    inference(path,int(args.max_epochs), int(args.batch_size), 1, 39, 1)
-    print("Train Ending")
+        args.modelid=1
+        args.schedule=0
+        inference(path,int(args.max_epochs), int(args.batch_size), 1, 39, 1, args.work_dir, args.model_name)
+        
+        # os.system("python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name)
+        print("Train Ended:")
+    except Exception as re:
+        print("Train Failed:",re)

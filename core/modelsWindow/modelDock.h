@@ -25,6 +25,7 @@ public:
 
  public slots:
      void importModel(std::string type);
+     void importModelAfterTrain(std::string type, QString modelName);
      void deleteModel();
 
 
