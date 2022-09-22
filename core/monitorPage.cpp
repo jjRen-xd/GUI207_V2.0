@@ -10,6 +10,12 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
     datasetInfo(globalDatasetInfo),
     modelInfo(globalModelInfo)
 {
+    label2class[0] ="bigball";label2class[1] ="DT"; label2class[2] ="Moxiu";
+    label2class[3] ="sallball"; label2class[4] ="taper"; label2class[5] ="WD";
+    for(auto &item: label2class){
+        class2label[item.second] = item.first;
+    }
+
     QSemaphore sem;
     QMutex lock;
     inferThread =new InferThread(&sem,&sharedQue,&lock);//推理线程
@@ -50,7 +56,7 @@ void MonitorPage::refresh(){
         for(int i=0;i<comboBoxContents.size();i++)   label2class[i]=comboBoxContents[i];
         for(auto &item: label2class)   class2label[item.second] = item.first;
     }
-
+    //如果数据集或模型路径变了
     if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH ||
     this->choicedDatasetPATH != datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
         //trtInfer = new TrtInfer(class2label);
