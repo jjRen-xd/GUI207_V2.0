@@ -24,6 +24,16 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     // 测试按钮
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
+
+    Py_SetPythonHome(L"D:/win_anaconda");
+    Py_Initialize();
+    _import_array();
+    PyRun_SimpleString("import sys");
+    //PyRun_SimpleString("sys.path.append('./')");
+    PyRun_SimpleString("sys.path.append('../../lib/guiLogic/tools/')");
+    pModule = PyImport_ImportModule("EvalPageConfusionMatrix");
+    pFunc = PyObject_GetAttrString(pModule, "draw_confusion_matrix");
+
 }
 
 ModelEvalPage::~ModelEvalPage(){
@@ -181,14 +191,37 @@ void ModelEvalPage::testAllSample(){
     /*这里涉及到的全局变量有除了模型数据集路径，还有准确度和混淆矩阵*/
     if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty() ){
         float acc = 0.6;
-        std::vector<std::vector<int>> confusion_matrix(label2class.size(), std::vector<int>(label2class.size(), 0));
+        int classNum=label2class.size();
+        std::vector<std::vector<int>> confusion_matrix(classNum, std::vector<int>(classNum, 6));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
         //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
+
         bool dataProcess=true;
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, inferBatch, dataProcess, acc, confusion_matrix)){
             return ;
         }
+
+        /*************************Draw******************************/
+        int* numpyptr= new int[classNum*classNum];
+        for(int i=0;i<classNum;i++){
+            for(int j=0;j<classNum;j++){
+                numpyptr[i*classNum+j]=confusion_matrix[i][j];
+            }
+        }
+        npy_intp dims[2] = {classNum,classNum};//矩阵维度
+        PyArray = PyArray_SimpleNewFromData(2, dims, NPY_INT, numpyptr);//将数据变为numpy
+        //用tuple装起来传入python
+        args = PyTuple_New(2);
+        std::string stringparm="";
+        for(int i=0;i<classNum;i++) stringparm=stringparm+label2class[i]+"#";
+        PyTuple_SetItem(args, 0, Py_BuildValue("s", stringparm.c_str()));
+        PyTuple_SetItem(args, 1, PyArray);
+        //函数调用
+        pRet = (PyArrayObject*)PyEval_CallObject(pFunc, args);
+        delete [ ] numpyptr;
+        qDebug()<<"(ModelEvalPage::testAllSample) python done";
+        /*************************Draw******************************/
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
         for(int i=0;i<6;i++){
@@ -244,3 +277,4 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     ui->horizontalLayout_degreeChart->addWidget(view);
     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
+

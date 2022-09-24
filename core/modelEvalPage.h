@@ -19,6 +19,11 @@
 #include "lib/algorithm/onnxinfer.h"
 #include "lib/algorithm/trtinfer.h"
 
+#undef slots
+#include <Python.h>
+#include "arrayobject.h"
+#define slots Q_SLOTS
+
 class ModelEvalPage:public QObject{
     Q_OBJECT
 public:
@@ -71,6 +76,11 @@ private:
     OnnxInfer *onnxInfer;
     TrtInfer *trtInfer;
     QThread *qthread1;
+
+    //eval页面调用python画混淆矩阵
+    PyObject *pModule,*pFunc,*PyArray,*args;
+    PyArrayObject* pRet;
+
 };
 
 #endif // MODELEVALPAGE_H
