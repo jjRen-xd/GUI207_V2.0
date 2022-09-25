@@ -22,5 +22,8 @@
         <TriModel.trt nameID="3">
             <PATH>D:/lyh/GUI207_V2.0/db/datasets/TriModel_falseHRRPmat_1x128_real/TriModel.trt</PATH>
         </TriModel.trt>
+        <densenet121_hrrp_128.trt nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/densenet121_hrrp_128.trt</PATH>
+        </densenet121_hrrp_128.trt>
     </TRA_DL>
 </globalModelInfo>

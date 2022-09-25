@@ -65,8 +65,8 @@ private:
     ModelInfo *modelInfo;
 
 
-    std::string choicedDatasetPATH;
-    std::string choicedModelPATH=" ";
+    std::string choicedDatasetPATH="";
+    std::string choicedModelPATH="";
     std::string choicedSamplePATH;
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();

@@ -90,6 +90,7 @@ def data_normalization(data):
         data_norm = []
         for j in range(0, len(data[i])):
             data_one = (data[i][j] - data_min) / (data_max - data_min)
+            #data_one = data[i][j]
             data_norm.append(data_one)
         DATA.append(data_norm)
     DATA = np.array(DATA)
@@ -117,7 +118,7 @@ def read_mat(read_path):
         class_data = sio.loadmat(class_path)[matrix_name].T  # 读入.mat文件，并转置
 
         class_data_normalization = data_normalization(class_data)  # 归一化处理
-
+        print("len(class_data_normalization)==",len(class_data_normalization))
         # 数据复制64次
         class_data_picture = []
         for j in range(0, len(class_data_normalization)):
@@ -128,15 +129,20 @@ def read_mat(read_path):
             class_data_picture.append(empty)
         class_data_picture = np.array(class_data_picture)  # 列表转换为数组
 
+        print("len(class_data_picture)==",len(class_data_picture))
         # 设置标签
         label = np.zeros((len(class_data_normalization), len(folder_name)))
         label[:, i] = 1
 
         # 划分训练数据集和测试数据集
-        x_train = class_data_picture[:int(len(class_data_picture)/2), :]
-        x_test = class_data_picture[int(len(class_data_picture)/2):, :]
-        y_train = label[:int(len(class_data_picture)/2), :]
-        y_test = label[int(len(class_data_picture)/2):, :]
+        # x_train = class_data_picture[:int(len(class_data_picture)/2), :]
+        # x_test = class_data_picture[int(len(class_data_picture)/2):, :]
+        # y_train = label[:int(len(class_data_picture)/2), :]
+        # y_test = label[int(len(class_data_picture)/2):, :]
+        x_train = class_data_picture[:int(len(class_data_picture)), :]
+        x_test = class_data_picture[:int(len(class_data_picture)), :]
+        y_train = label[:int(len(class_data_picture)), :]
+        y_test = label[:int(len(class_data_picture)), :]
         if i == 0:
             train_x = x_train
             test_x = x_test

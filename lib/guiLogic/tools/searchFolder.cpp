@@ -2,6 +2,7 @@
 #include <string.h>
 #include <string>
 #include <io.h>
+#include<algorithm>
 using namespace std;
 
 // 为了兼容win与linux双平台
@@ -52,6 +53,7 @@ bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
     else{
         return false;
     }
+    std::sort(dirs.begin(),dirs.end());
     return true;
 }
 

@@ -60,10 +60,10 @@ void ModelEvalPage::refreshGlobalInfo(){
     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
     //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-    this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH){//保证模型切换后trt对象重新构建
+    choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=choicedModelPATH){//保证模型切换后trt对象重新构建
         trtInfer = new TrtInfer(class2label);
-        this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+        choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
 }
 
@@ -139,10 +139,7 @@ void removeLayout(QLayout *layout){
 
 
 void  ModelEvalPage::testOneSample(){
-/*
-    因为infer是在另一个类中实现的，所以infer后对UI的操作仍然放在这个EvalPage类中实现，不然还要传ui。
-    但是UI的操作还是不能在主线程中进行，因为那还得等infer出来才能操作UI。所以另开一个线程，把
-*/
+
     if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
@@ -153,7 +150,7 @@ void  ModelEvalPage::testOneSample(){
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees);
 
-/////////////////把下面都当做对UI的操作
+        /*************************把下面都当做对UI的操作***************************/
         std::cout<<"(ModelEvalPage::testOneSample)degrees:";
         for(int i=0;i<degrees.size();i++){
             std::cout<<degrees[i]<<" ";
@@ -218,11 +215,12 @@ void ModelEvalPage::testAllSample(){
         PyTuple_SetItem(args, 0, Py_BuildValue("s", stringparm.c_str()));
         PyTuple_SetItem(args, 1, PyArray);
         //函数调用
-        pRet = (PyArrayObject*)PyEval_CallObject(pFunc, args);
+        pRet = (PyArrayObject*)PyObject_CallObject(pFunc, args);
         delete [ ] numpyptr;
         qDebug()<<"(ModelEvalPage::testAllSample) python done";
         QString imgPath = QString::fromStdString("D:/confusion_matrix.jpg");
         ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(QSize(576,432), Qt::KeepAspectRatio));
+        //ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(ui->label_evalpageMatrix->size(), Qt::KeepAspectRatio));
         /*************************Draw******************************/
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));

@@ -10,6 +10,17 @@ TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2lab
 
 }
 
+void oneNormalization_(std::vector<float> &list){
+    //特征归一化
+    float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
+    //std::cout<<"maxdata"<<dMaxValue<<'\n';
+    float dMinValue = *min_element(list.begin(),list.end());  //求最小值
+    //std::cout<<"mindata"<<dMinValue<<'\n';
+    for (int f = 0; f < list.size(); ++f) {
+        list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
+    }
+}
+
 void softmax(std::vector<float> &input){
     float maxn = 0.0;
     float sum= 0.0;
@@ -245,14 +256,14 @@ void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, 
 
     //int inputLen=2;int outputLen=6;
     //ready to send data to context
-
+    //oneNormalization_(data_vec);//对收到的数据做归一
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
-
     qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
     float *indata = new float[data_vec.size()];
     if (!data_vec.empty()){
         memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
     }
+    //qDebug()<<"(TrtInfer::realTimeInfer)  indata[0]==="<<indata[0];
     doInference(*context, indata, outdata, 1);
     std::vector<float> output_vec;
     //std::cout << "(TrtInfer::testOneSample)outdata:  ";

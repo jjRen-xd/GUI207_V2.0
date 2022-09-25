@@ -58,17 +58,17 @@ void MonitorPage::refresh(){
         for(auto &item: label2class)   class2label[item.second] = item.first;
     }
     //如果数据集或模型路径变了
-    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH ||
-    this->choicedDatasetPATH != datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=choicedModelPATH ||
+    choicedDatasetPATH != datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
         if(datasetInfo->selectedType=="INCRE") ifDataPreProcess=false;
-        //trtInfer = new TrtInfer(class2label);
-        this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
-        this->choicedDatasetPATH=datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+        choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
+        choicedDatasetPATH=datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
+        
         inferThread->setClass2LabelMap(class2label);
         //qDebug()<<"(MonitorPage::refresh) class2label.size()=="<<class2label.size();
-        inferThread->setParmOfRTI(this->choicedModelPATH,ifDataPreProcess);//只有小样本是false 既不做预处理
+        inferThread->setParmOfRTI(choicedModelPATH,ifDataPreProcess);//只有小样本是false 既不做预处理
         client->setClass2LabelMap(class2label);
-        client->setParmOfRTI(this->choicedDatasetPATH,ifDataPreProcess);
+        client->setParmOfRTI(choicedDatasetPATH,ifDataPreProcess);//发的数据不做归一化预处理
     }
 }
 
