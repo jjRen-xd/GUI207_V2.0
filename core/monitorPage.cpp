@@ -50,6 +50,7 @@ void MonitorPage::simulateSend(){
 }
 
 void MonitorPage::refresh(){
+    bool ifDataPreProcess=true;
     // 网络输出标签对应类别名称初始化
     std::vector<std::string> comboBoxContents = datasetInfo->selectedClassNames;
     if(comboBoxContents.size()>0){
@@ -59,12 +60,15 @@ void MonitorPage::refresh(){
     //如果数据集或模型路径变了
     if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=this->choicedModelPATH ||
     this->choicedDatasetPATH != datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+        if(datasetInfo->selectedType=="INCRE") ifDataPreProcess=false;
         //trtInfer = new TrtInfer(class2label);
         this->choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
         this->choicedDatasetPATH=datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
         inferThread->setClass2LabelMap(class2label);
-        qDebug()<<"(MonitorPage::refresh) class2label.size()=="<<class2label.size();
-        inferThread->setParmOfRTI(this->choicedModelPATH,true);//只有小样本是false 既不做预处理
+        //qDebug()<<"(MonitorPage::refresh) class2label.size()=="<<class2label.size();
+        inferThread->setParmOfRTI(this->choicedModelPATH,ifDataPreProcess);//只有小样本是false 既不做预处理
+        client->setClass2LabelMap(class2label);
+        client->setParmOfRTI(this->choicedDatasetPATH,ifDataPreProcess);
     }
 }
 
@@ -106,9 +110,9 @@ void MonitorPage::showColorMap(){
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     imageLabel->setScaledContents(true);
-    imageLabel->setStyleSheet("border:2px solid red;");
+    //imageLabel->setStyleSheet("border:2px solid red;");
     QImage image;
-    QImageReader reader("D:/asdfqwer.png");
+    QImageReader reader("D:/colorMap.png");
     reader.setAutoTransform(true);
     const QImage newImage = reader.read();
     if (newImage.isNull()) {

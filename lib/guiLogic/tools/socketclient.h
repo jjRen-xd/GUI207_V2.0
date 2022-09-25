@@ -17,9 +17,15 @@ public:
     void initSocketClient();
     SOCKET createClientSocket(const char* ip);
     void run();
+    void setClass2LabelMap(std::map<std::string, int> class2label);
+    void setParmOfRTI(std::string modelPath,bool dataProcess);
 signals:
     void sigClassName(int);
 
+private:
+    std::string datasetlPath="";
+    bool dataProcess=false;
+    std::map<std::string, int> class2label;
 };
 
 #endif // SOCKETCLIENT_H

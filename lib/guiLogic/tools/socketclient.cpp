@@ -58,10 +58,11 @@ void SocketClient::run(){
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
-    std::string dataset_path="D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
-    bool dataProcess=false;int inputLen=128;
+    // std::string dataset_path="D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
+    // bool dataProcess=false;
+    int inputLen=128;
 
-    auto mydataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label,inputLen);
+    auto mydataset = CustomDataset(datasetlPath,dataProcess, ".mat", class2label,inputLen);
     int mydataset_size=mydataset.labels.size();
     int classIdx_rightnow=mydataset.labels[0];
     for(int i=0;i<mydataset_size;i++){
@@ -88,5 +89,12 @@ void SocketClient::run(){
     }
     qDebug()<< "600个发送完毕";  
 }
-
+void SocketClient::setClass2LabelMap(std::map<std::string, int> class2label0){
+    class2label=class2label0;
+    qDebug()<<"(SocketClient::setClass2LabelMap) class2label.size()=="<<class2label.size();
+}
+void SocketClient::setParmOfRTI(std::string datasetP,bool dataP){
+    datasetlPath=datasetP;
+    dataProcess=dataP;
+}
 
