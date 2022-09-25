@@ -53,8 +53,8 @@ void SocketClient::run(){
 
     std::map<int, std::string> label2class;
     std::map<std::string, int> class2label;
-    label2class[0] ="bigball";label2class[1] ="DT"; label2class[2] ="Moxiu";
-    label2class[3] ="sallball"; label2class[4] ="taper"; label2class[5] ="WD";
+    label2class[0] ="DT";label2class[1] ="Moxiu"; label2class[2] ="WD";
+    label2class[3] ="bigball"; label2class[4] ="sallball"; label2class[5] ="taper";
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
@@ -62,7 +62,7 @@ void SocketClient::run(){
     // bool dataProcess=false;
     int inputLen=128;
 
-    auto mydataset = CustomDataset(datasetlPath,dataProcess, ".mat", class2label,inputLen);
+    auto mydataset = CustomDataset(datasetlPath, dataProcess, ".mat", class2label,inputLen);
     int mydataset_size=mydataset.labels.size();
     int classIdx_rightnow=mydataset.labels[0];
     for(int i=0;i<mydataset_size;i++){
