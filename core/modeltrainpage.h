@@ -57,7 +57,7 @@ public slots:
     void stopTrain();
     void monitorTrainProcess();
     void changeTrainType();
-//    void editModelFile();
+    void editModelFile();
 //    void chooseOldClass();
 
 signals:

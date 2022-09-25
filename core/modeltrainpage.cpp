@@ -199,3 +199,15 @@ void ModelTrainPage::showTrianResult(){
         }
     }
 }
+
+void ModelTrainPage::editModelFile(){
+    int modelType=ui->modelTypeBox->currentIndex();
+    QString modelFilePath;
+    switch(modelType){
+        case 0:modelFilePath="../../api/bashs/hrrp/train.py";break;
+        case 1:modelFilePath="../../api/bashs/afs/afs_model.py";break;
+        case 2:modelFilePath="../../api/bashs/incremental/model.py";break;
+    }
+    QString commd="gvim " + modelFilePath;
+    system(commd.toStdString().c_str());
+}
