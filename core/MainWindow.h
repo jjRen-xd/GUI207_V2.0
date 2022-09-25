@@ -8,7 +8,7 @@
 #include "./core/sensePage.h"
 #include "./core/modelChoicePage.h"
 #include "./core/modelEvalPage.h"
-#include "./core/modeltrainpage.h"
+#include "./core/modelTrainPage.h"
 #include "./core/monitorPage.h"
 
 //#include "./lib/guiLogic/modelEval.h"

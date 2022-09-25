@@ -22,11 +22,10 @@ HEADERS += \
     core/datasetsWindow/datasetDock.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
-    core/modelsWindow/modelDock.h \
     core/modelTrainPage.h \
+    core/modelsWindow/modelDock.h \
     core/monitorPage.h \
     core/sensePage.h \
-    core/modelTrain.h \
     #lib/algorithm/libtorchTest.h \
     #lib/algorithm/onnxinfer.h \
     lib/algorithm/inferthread.h \
@@ -46,13 +45,11 @@ HEADERS += \
     lib/guiLogic/tools/socketserver.h
 
 SOURCES += \
-    core/monitorPage.cpp \
     lib/algorithm/inferthread.cpp \
     lib/algorithm/matdataprocess.cpp \
     lib/guiLogic/tools/socketclient.cpp \
     lib/guiLogic/tools/socketserver.cpp \
     main.cpp \
-    core/modeltrainpage.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \
     core/datasetsWindow/chart.cpp \
@@ -60,7 +57,7 @@ SOURCES += \
     core/modelChoicePage.cpp \
     core/modelEvalPage.cpp \
     core/modelTrainPage.cpp \
-    core/modelTrain.cpp \
+    core/monitorPage.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
     #lib/algorithm/libtorchTest.cpp \

@@ -126,6 +126,56 @@ void ModelDock::importModel(string type){
 }
 
 
+void ModelDock::importModelAfterTrain(string type, QString modelName){
+
+    QString modelPath = "../../db/models/";
+
+    // TODO 解决模型重名问题
+     QString tempModelName = modelName;
+     while(1){
+         QFileInfo srcFileInfo = QFileInfo(modelPath+tempModelName+".trt");
+         if(srcFileInfo.isFile()){
+             modelName = tempModelName;
+             tempModelName += "_copy";
+         }
+         else{
+             break;
+         }
+
+     }
+
+    string savePath = modelPath.toStdString();
+    QString rootPath = modelPath.remove(modelPath.length()-modelName.length()-1, modelPath.length());
+    QString xmlPath;
+
+    vector<string> allXmlNames;
+    bool existXml = false;
+    dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
+    // 寻找与.mar文件相同命名的.xml文件
+    for(auto &xmlName: allXmlNames){
+        if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
+            existXml = true;
+            xmlPath = rootPath + "/" + QString::fromStdString(xmlName);
+            break;
+        }
+    }
+    if(existXml){
+        modelInfo->addItemFromXML(xmlPath.toStdString());
+
+        terminal->print("添加模型成功:"+xmlPath);
+        QMessageBox::information(NULL, "添加模型", "添加模型成功！");
+    }
+    else{
+        terminal->print("添加模型成功，但该模型没有说明文件.xml！");
+        QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
+    }
+
+    this->modelInfo->modifyAttri(type, modelName.toStdString(), "PATH", savePath);
+    this->reloadTreeView();
+    this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
+}
+
+
 void ModelDock::deleteModel(){
     if(previewType==""||previewName==""){
         QMessageBox::information(NULL, "错误", "未选择任何模型!");

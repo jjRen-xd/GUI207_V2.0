@@ -1,7 +1,6 @@
 #include <QShortcut>
 
 #include "MainWindow.h"
-
 #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
@@ -43,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
     this->modelEvalPage = new ModelEvalPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
 
-    this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo);
+    this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->modelDock);
 
     this->monitorPage = new MonitorPage(this->ui, this->terminal,this->globalDatasetInfo,this->globalModelInfo);
 }
@@ -66,6 +65,7 @@ void MainWindow::switchPage(){
     }
     else if(action==ui->action_ModelTrain){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelTrain);
+        this->modelTrainPage->refreshGlobalInfo();
     }
     else if(action==ui->action_Monitor){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_monitor);

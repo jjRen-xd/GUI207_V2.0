@@ -273,7 +273,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
     }
     // 获取所有类别子文件夹
     string rootPath = datasetInfo->getAttri(previewType, previewName, "PATH");
-    ui->datadirEdit->setText(QString::fromStdString(rootPath));
+//    ui->datadirEdit->setText(QString::fromStdString(rootPath));
     vector<string> subDirNames;
     if(dirTools->getDirs(subDirNames, rootPath)){
         //先确定数据集中数据文件的format

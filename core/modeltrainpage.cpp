@@ -1,43 +1,43 @@
 #include "modelTrainPage.h"
-#include "./lib/guiLogic/tools/searchFolder.h"
-#include <QMessageBox>
-#include <QFileDialog>
-#include <windows.h>
-#include <mat.h>
 
-ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo, ModelInfo *globalModelInfo):
-    ui(main_ui),terminal(bash_terminal),datasetInfo(globalDatasetInfo),modelInfo(globalModelInfo){
+ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
+                               ModelInfo *globalModelInfo, ModelDock *modelDock):
+    ui(main_ui),terminal(bash_terminal),datasetInfo(globalDatasetInfo),
+    modelInfo(globalModelInfo), modelDock(modelDock){
 
-    processTrain = new ModelTrain(ui->textBrowser, ui->train_img, ui->val_img, ui->confusion_mat, ui->timeRestEdit, ui->trainProgressBar);
+    ui->fewShotWidget->setVisible(false);
+    ui->oldClassNumEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,3}$")));
+    ui->dataNumPercentEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^0\\.[0-9]{0,1}[1-9]$")));
+    ui->preTrainEpochEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,3}[1-9]$")));
+    ui->trainEpochEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,4}[1-9]$")));
+    ui->trainBatchEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{1,4}[1-9]$")));
+    ui->saveModelNameEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_]+$")));
 
-    connect(ui->datadirButton, &QPushButton::clicked, this, &ModelTrainPage::chooseDataDir);
-    connect(ui->starttrianButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
-    connect(ui->stoptrainButton, &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
-    connect(ui->editModelButton, &QPushButton::clicked, this, &ModelTrainPage::editModelFile);
-    connect(ui->modeltypeBox, &QComboBox::currentIndexChanged, this, &ModelTrainPage::changeTrainType);
-    connect(ui->oldClassBox, &QComboBox::activated, this, &ModelTrainPage::chooseOldClass);
+    processTrain = new QProcess();
+    refreshGlobalInfo();
 
+    connect(processTrain, &QProcess::readyReadStandardOutput, this, &ModelTrainPage::monitorTrainProcess);
+    connect(ui->startTrainButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
+    connect(ui->stopTrainButton,  &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
+    connect(ui->modelTypeBox, &QComboBox::currentIndexChanged, this, &ModelTrainPage::changeTrainType);
 
 }
 
-void ModelTrainPage::chooseDataDir(){
-    QString dataPath = QFileDialog::getExistingDirectory(NULL,"请选择待训练数据的根目录","./",QFileDialog::ShowDirsOnly);
-    if(dataPath == ""){
-        QMessageBox::warning(NULL,"提示","未选择有效数据集根目录!");
-        ui->datadirEdit->setText("");
-        return;
-    }
-    ui->datadirEdit->setText(dataPath);
 
-    int len=getDataClassNum(dataPath.toStdString(), "model_saving");
-    ui->oldClassBox->clear();
-    for(int i=1;i<len;i++){
-        ui->oldClassBox->addItem(QString::number(i));
+void ModelTrainPage::refreshGlobalInfo(){
+    if(QString::fromStdString(datasetInfo->selectedName)!=""){
+        ui->choosedDataText->setText(QString::fromStdString(datasetInfo->selectedName));
+        this->choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH"));
+    }
+    else{
+        ui->choosedDataText->setText("未指定");
+        this->choicedDatasetPATH = "";
     }
 }
+
 
 void ModelTrainPage::changeTrainType(){
-    int modelType=ui->modeltypeBox->currentIndex();
+    int modelType=ui->modelTypeBox->currentIndex();
 
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(1);
@@ -46,132 +46,168 @@ void ModelTrainPage::changeTrainType(){
         ui->tabWidget->addTab(ui->tab,"训练集准确率");
         ui->tabWidget->addTab(ui->tab_2,"验证集准确率");
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
-        ui->stackedWidget->setCurrentIndex(0);
+        ui->tabWidget->setCurrentIndex(0);
     }
     else if(modelType==1){
-        ui->tabWidget->addTab(ui->tab_2,"特征准确率");
+        ui->tabWidget->addTab(ui->tab_2,"特征关联性能");
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
-        ui->stackedWidget->setCurrentIndex(0);
+        ui->tabWidget->setCurrentIndex(0);
     }
-    else if(modelType==2){
-        ui->tabWidget->addTab(ui->tab_2,"特征准确率");
-        ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
-        ui->stackedWidget->setCurrentIndex(1);
-    }
+//    else if(modelType==2){
+//        ui->tabWidget->addTab(ui->tab_2,"鐗瑰緛鍑嗙‘鐜?);
+//        ui->tabWidget->addTab(ui->tab_3,"娣锋穯鐭╅樀");
+//        ui->stackedWidget->setCurrentIndex(1);
+//    }
 }
 
+
 void ModelTrainPage::startTrain(){
-    int modelType=ui->modeltypeBox->currentIndex();
-    QString dataDir = ui->datadirEdit->toPlainText();
-    if(dataDir==""){
-        QMessageBox::warning(NULL, "配置出错", "请指定待训练数据的根目录!");
+    if(choicedDatasetPATH==""){
+        QMessageBox::warning(NULL,"错误","未选择训练数据集!");
         return;
     }
-    QString cmd,datasetName;
-    QString falseRootPath="";//习惯是路径最后没有/
-    if(dataDir.lastIndexOf("/")+1==dataDir.size()){
-        datasetName=dataDir.left(dataDir.lastIndexOf("/"));
-        falseRootPath=datasetName.left(datasetName.lastIndexOf("/"));
-        datasetName=datasetName.right(datasetName.size() - (datasetName.lastIndexOf("/")+1));
-    }else{
-        datasetName=dataDir.right(dataDir.size() - (dataDir.lastIndexOf("/")+1));
-        falseRootPath=dataDir.left(dataDir.lastIndexOf("/"));
-    }
-
-    if(modelType<2){
-        //TODO 此处判断模型类型和数据是否匹配
-        QString bathSize=ui->batchsizeBox->currentText();
-        QString maxEpoch=ui->maxepochBox->currentText();
-        switch(modelType){
-            case 0:cmd ="conda activate tf23 && python ../../db/bashs/hrrp/train.py"
-                        " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
-            case 1:cmd = "conda activate tf23 && python ../../db/bashs/afs/train.py"
-                        " --data_dir "+dataDir+" --batch_size "+bathSize+" --max_epochs "+maxEpoch;break;
+    QDateTime dateTime(QDateTime::currentDateTime());
+    time = dateTime.toString("yyyy-MM-dd-hh-mm-ss");
+    trainModelType = ui->modelTypeBox->currentIndex();
+    batchSize = ui->trainBatchEdit->text();
+    epoch = ui->trainEpochEdit->text();
+    saveModelName = ui->saveModelNameEdit->text();
+    if(trainModelType<2){
+        if(batchSize=="" || epoch=="" || saveModelName==""){
+            QMessageBox::warning(NULL,"错误","请检查各项文本框中训练参数是否正确配置!");
+            return;
         }
-        if(modelType==0)
-            processTrain->saved_model_dir=falseRootPath+"/TriModel_"+datasetName;
-        else if(modelType==1)
-            processTrain->saved_model_dir=falseRootPath+"/AfsModel_"+datasetName;
+        uiInitial();
+        switch(trainModelType){
+            case 0:cmd = "activate TF2 && python ../../api/bashs/hrrp/train.py --data_dir "+choicedDatasetPATH+ \
+                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
+            case 1:cmd = "activate TF2 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
+                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
+        }
     }
-    else if(modelType==2){
-        //TODO 此处判断模型类型和数据是否匹配
-        int allclassNum=getDataClassNum(dataDir.toStdString(), "model_saving");
-        int data_dimension=getDataLen(dataDir.toStdString());
-        QString oldclassNum=ui->oldClassBox->currentText();
-        QString sampleRatio=ui->sampleRatioBox->currentText();//新类别训练样本比例
-        QString bathSize=ui->batchSizeBox2->currentText();
-        QString preEpoch=ui->pretrainEpochBox->currentText();
-        QString addEpoch=ui->increseEpochBox->currentText();
+    else if(trainModelType==2){
 
-        cmd="conda activate PT && python ../../db/bashs/incremental/main.py --all_class="+QString::number(allclassNum)+
-                " --batch_size="+bathSize+" --bound=0.3 --increment_epoch="+addEpoch+" --reduce_sample="+sampleRatio+
-                " --learning_rate=0.001 --memory_size=200 --old_class="+oldclassNum+" --pretrain_epoch="+
-                preEpoch+" --random_seed=2022 --snr=2 --task_size=1 --test_ratio=0.5 --data_dimension="+
-                QString::number(data_dimension)+" --raw_data_path="+dataDir;
-        processTrain->saved_model_dir=falseRootPath+"/CILModel_"+datasetName;
-        //test_ratio\task_size
     }
-    processTrain->model_type=modelType;
-    processTrain->startTrain(cmd);
+    qDebug() << cmd;
+    execuCmd(cmd);
+}
+
+void ModelTrainPage::uiInitial(){
+    ui->startTrainButton->setEnabled(true);
+    ui->trainProgressBar->setMaximum(100);
+    ui->trainProgressBar->setValue(0);
+    ui->textBrowser->clear();
+    ui->train_img->clear();
+    ui->val_img->clear();
+    ui->confusion_mat->clear();
+}
+
+void ModelTrainPage::execuCmd(QString cmd){
+  // TODO add code here
+    if(processTrain->state()==QProcess::Running){
+        processTrain->close();
+        processTrain->kill();
+    }
+    showLog=false;
+    ui->startTrainButton->setEnabled(false);
+    processTrain->setProcessChannelMode(QProcess::MergedChannels);
+    processTrain->start("cmd.exe");
+    ui->textBrowser->setText("===================Train Starting===================");
+    ui->trainProgressBar->setMaximum(0);
+    ui->trainProgressBar->setValue(0);
+    processTrain->write(cmd.toLocal8Bit() + '\n');
 }
 
 void ModelTrainPage::stopTrain(){
-    processTrain->stopTrain();
+    QString cmd="\\x03";
+    processTrain->write(cmd.toLocal8Bit() + '\n');
+    showLog=false;
+    ui->startTrainButton->setEnabled(true);
+    ui->trainProgressBar->setMaximum(100);
+    ui->trainProgressBar->setValue(0);
+    ui->textBrowser->append("===================Train Stoping===================");
+    if(processTrain->state()==QProcess::Running){
+        processTrain->close();
+        processTrain->kill();
+    }
 }
 
-void ModelTrainPage::chooseOldClass(){
-    std::string dataPath;
-    if(ui->datadirEdit->toPlainText().toStdString()==""){
-        QMessageBox::warning(NULL, "操作提醒", "请先指定待训练数据的根目录在选择该参数!");
-        return;
+void ModelTrainPage::monitorTrainProcess(){
+    /* 读取终端输出并显示 */
+    QByteArray cmdOut = processTrain->readAllStandardOutput();
+    if(!cmdOut.isEmpty()){
+        QString logs=QString::fromLocal8Bit(cmdOut);
+        QStringList lines = logs.split("\n");
+        int len=lines.length();
+        for(int i=0;i<len;i++){
+            QStringList Infos = lines[i].simplified().split(" ");
+            if(lines[i].contains("Train Ended",Qt::CaseSensitive)){
+                ui->textBrowser->append("===================Train Ended===================");
+                showLog=false;
+                ui->startTrainButton->setEnabled(true);
+            //    导入训练好的模型至系统
+//                modelDock->importModelAfterTrain(modelTypes[trainModelType], saveModelName);
+                showTrianResult();
+                if(processTrain->state()==QProcess::Running){
+                    processTrain->close();
+                    processTrain->kill();
+                }
+            }
+            else if(lines[i].contains(cmd,Qt::CaseSensitive)){
+                showLog=true;
+            }
+            else if(lines[i].contains("Train Failed",Qt::CaseSensitive)){
+                ui->startTrainButton->setEnabled(true);
+                QDateTime dateTime(QDateTime::currentDateTime());
+                ui->textBrowser->append(dateTime.toString("yyyy-MM-dd-hh-mm-ss")+" - 网络模型训练出错：");
+                for(i++;i<len;i++){
+                    ui->textBrowser->append(lines[i]);
+                }
+                stopTrain();
+            }
+            else if(showLog){
+                ui->textBrowser->append(lines[i]);
+            }
+        }
+    }
+    ui->textBrowser->update();
+}
+
+
+void ModelTrainPage::showTrianResult(){
+    ui->trainProgressBar->setMaximum(100);
+    ui->trainProgressBar->setValue(100);
+    //TODO
+    QDir dir("../../db/trainLogs");
+    QStringList dirList = dir.entryList(QDir::Dirs);
+    foreach (auto dir , dirList){
+        if(dir.contains(time)){
+            QString wordir    = "../../db/trainLogs/"+dir;
+            if(trainModelType==0){
+                ui->train_img->setPixmap(QPixmap(wordir+"/training_accuracy.jpg"));
+                ui->val_img->setPixmap(QPixmap(wordir+"/verification_accuracy.jpg"));
+                ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
+            }
+            else if(trainModelType==1){
+                ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
+                ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
+            }
+            else if(trainModelType==2){
+//                ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
+//                ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
+            }
+        }
     }
 }
 
 void ModelTrainPage::editModelFile(){
-    int modelType=ui->modeltypeBox->currentIndex();
+    int modelType=ui->modelTypeBox->currentIndex();
     QString modelFilePath;
     switch(modelType){
-        case 0:modelFilePath="../../db/bashs/hrrp/train.py";break;
-        case 1:modelFilePath="../../db/bashs/afs/afs_model.py";break;
-        case 2:modelFilePath="../../db/bashs/incremental/model.py";break;
+        case 0:modelFilePath="../../api/bashs/hrrp/train.py";break;
+        case 1:modelFilePath="../../api/bashs/afs/afs_model.py";break;
+        case 2:modelFilePath="../../api/bashs/incremental/model.py";break;
     }
-
-
-    
     QString commd="gvim " + modelFilePath;
-    //WinExec(commd.toStdString().c_str(), SW_HIDE);
     system(commd.toStdString().c_str());
-}
-
-int ModelTrainPage::getDataClassNum(std::string dataPath, std::string specialDir){
-    std::vector<std::string> allDir;
-    SearchFolder searchFolder;
-    if (searchFolder.getDirs(allDir, dataPath)) {
-        auto tar = std::find(allDir.begin(), allDir.end(), specialDir);
-        if (tar != allDir.end()) return allDir.size() - 1;
-        else return allDir.size();
-    }
-}
-
-int ModelTrainPage::getDataLen(std::string dataPath){//指定数据集地址，返回其中mat数据的长度  #include<mat.h>
-    std::string theMatFilePath;
-    std::string matVariable;
-    std::vector<std::string> allMatFile;
-    std::vector<std::string> allDir;
-    SearchFolder searchFolder;
-    int dataLen=-1;
-    if(searchFolder.getDirs(allDir, dataPath)){
-        if(searchFolder.getFiles(allMatFile, ".mat", dataPath+"/"+allDir[0])){
-            theMatFilePath=dataPath+"/"+allDir[0]+"/"+allMatFile[0];
-            matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
-        }
-    }
-    MATFile* pMatFile = NULL;
-    mxArray* pMxArray = NULL;
-    pMatFile = matOpen(theMatFilePath.c_str(), "r");
-    if(!pMatFile){qDebug()<<"()文件指针空！！！！！！";return -1;}
-    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
-    if(!pMxArray){qDebug()<<"()pMxArray变量没找到！！！！！！";return -1;}
-    dataLen = mxGetM(pMxArray);  //N 列数
-    return dataLen;
 }
