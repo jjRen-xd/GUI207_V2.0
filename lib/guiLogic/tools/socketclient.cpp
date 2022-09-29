@@ -51,20 +51,24 @@ void SocketClient::run(){
     initSocketClient();
     s_server = createClientSocket("127.0.0.1");
 
-    std::map<int, std::string> label2class;
-    std::map<std::string, int> class2label;
-    label2class[0] ="DT";label2class[1] ="Moxiu"; label2class[2] ="WD";
-    label2class[3] ="bigball"; label2class[4] ="sallball"; label2class[5] ="taper";
-    for(auto &item: label2class){
-        class2label[item.second] = item.first;
-    }
+    // std::map<int, std::string> label2class;
+    // std::map<std::string, int> class2label;
+    // label2class[0] ="DT";label2class[1] ="Moxiu"; label2class[2] ="WD";
+    // label2class[3] ="bigball"; label2class[4] ="sallball"; label2class[5] ="taper";
+    // for(auto &item: label2class){
+    //     class2label[item.second] = item.first;
+    // }
     // std::string dataset_path="D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
     // bool dataProcess=false;
     int inputLen=128;
-
-    auto mydataset = CustomDataset(datasetlPath, dataProcess, ".mat", class2label,inputLen);
+    for (auto const &pair: class2label) {
+        qDebug()<< "{" << QString::fromStdString(pair.first) << ": " << QString::number(pair.second) << "}";
+    }
+    qDebug()<<"(SocketClient::run)datasetlPath=="<<QString::fromStdString(datasetlPath);
+    auto mydataset = CustomDataset(datasetlPath, false, ".mat", class2label,inputLen);//发的数据不做归一化预处理。inputLen要和单一样本长度一致，而不能是可能更大的输入层数据长度
     int mydataset_size=mydataset.labels.size();
     int classIdx_rightnow=mydataset.labels[0];
+    qDebug()<<"(SocketClient::run)mydataset_size=="<<QString::number(mydataset.labels.size());
     for(int i=0;i<mydataset_size;i++){
         for(int j=0;j<inputLen;j++){
             float floatVariable = mydataset.data[i][j];
@@ -93,8 +97,7 @@ void SocketClient::setClass2LabelMap(std::map<std::string, int> class2label0){
     class2label=class2label0;
     qDebug()<<"(SocketClient::setClass2LabelMap) class2label.size()=="<<class2label.size();
 }
-void SocketClient::setParmOfRTI(std::string datasetP,bool dataP){
+void SocketClient::setParmOfRTI(std::string datasetP){
     datasetlPath=datasetP;
-    dataProcess=dataP;
 }
 

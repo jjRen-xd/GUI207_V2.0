@@ -1,6 +1,7 @@
 /.vscode/
 /.history/
 /db/datasets/*
+/db/trainLogs/*
 /db/models/*
 /db/bashs/incremental/data/*
 /lib/TRANSFER/ToHrrp_mcr/*

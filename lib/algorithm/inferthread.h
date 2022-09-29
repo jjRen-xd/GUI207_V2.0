@@ -19,7 +19,7 @@ public:
     QSemaphore *sem;
 
     TrtInfer* trtInfer;
-    void setParmOfRTI(std::string modelPath,bool dataProcess);
+    void setParmOfRTI(std::string modelPath,bool ifDataPreProcess);
     void setClass2LabelMap(std::map<std::string, int> class2label);
     std::queue<std::vector<float>>* sharedQue;
     QMutex *lock;
@@ -30,7 +30,7 @@ private:
     //trtInfer需要的参数
     std::string inferMode="";
     std::string modelPath="";
-    bool dataProcess=false;
+    bool dataProcess=true;
 
 
 };

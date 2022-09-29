@@ -68,7 +68,7 @@ void MonitorPage::refresh(){
         //qDebug()<<"(MonitorPage::refresh) class2label.size()=="<<class2label.size();
         inferThread->setParmOfRTI(choicedModelPATH,ifDataPreProcess);//只有小样本是false 既不做预处理
         client->setClass2LabelMap(class2label);
-        client->setParmOfRTI(choicedDatasetPATH,ifDataPreProcess);//发的数据不做归一化预处理
+        client->setParmOfRTI(choicedDatasetPATH);//发的数据不做归一化预处理
     }
 }
 

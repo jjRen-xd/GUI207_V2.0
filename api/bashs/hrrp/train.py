@@ -70,7 +70,9 @@ def read_mat(read_path):
         class_data = sio.loadmat(class_path)[matrix_name].T  # 读入.mat文件，并转置
 
         class_data_normalization = data_normalization(class_data)  # 归一化处理
-
+        if(i==1):
+            print("class_data_normalization.shape==",class_data_normalization.shape)
+            print("class_data_normalization[50]==",class_data_normalization[50])
         # 数据复制64次
         class_data_picture = []
         for j in range(0, len(class_data_normalization)):
@@ -90,6 +92,8 @@ def read_mat(read_path):
         x_test = class_data_picture[int(len(class_data_picture)/2):, :]
         y_train = label[:int(len(class_data_picture)/2), :]
         y_test = label[int(len(class_data_picture)/2):, :]
+        print("x_trian.shape=",x_train.shape)
+        print("x_test.shape=",x_test.shape)
         if i == 0:
             train_x = x_train
             test_x = x_test
@@ -152,9 +156,9 @@ def show_confusion_matrix(classes, confusion_matrix, work_dir):
     iters = np.reshape([[[i, j] for j in range(length)] for i in range(length)], (confusion_matrix.size, 2))
     for i, j in iters:
         if i == j:
-            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10, color='white',
+            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10, color='red',
                      weight=5)  
-            plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10, color='white')
+            plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10, color='red')
         else:
             plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10)  
             plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10)
@@ -195,19 +199,33 @@ def val_acc(v_acc, work_dir):
 
 
 def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir, model_name):
+    #print(x_train.shape,y_train.shape, x_test.shape, y_test.shape)
+    len_train = len(x_train)
+    len_test = len(x_test)
+    train_shuffle = np.arange(len_train)
+    test_shuffle = np.arange(len_test)
+    np.random.shuffle(train_shuffle)
+    np.random.shuffle(test_shuffle)
+
+    x_train = x_train[train_shuffle, :]
+    y_train = y_train[train_shuffle, :]
+
+    x_test = x_test[test_shuffle, :]
+    y_test = y_test[test_shuffle, :]
+
     model = tf.keras.models.Sequential()
     model.add(tf.keras.applications.densenet.DenseNet121(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
     model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
-    learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,factor=0.5, min_lr=0.00001)
+    learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,factor=0.99, min_lr=0.00001)
     
     checkpoint = tf.keras.callbacks.ModelCheckpoint(work_dir+'/model/'+model_name+'.hdf5', monitor='val_accuracy',verbose=1, save_best_only=True, mode='max')
     callbacks_list = [checkpoint, learning_rate_reduction]
     # model.summary()
-    h = model.fit(x_train, y_train, batch_size=int(args.batch_size), epochs=int(args.max_epochs), shuffle=True,
-              validation_data=(x_test, y_test), callbacks=callbacks_list, verbose=2, validation_freq=1)
+    h = model.fit(x_train, y_train, batch_size=int(args.batch_size), epochs=int(args.max_epochs), shuffle=False,
+              validation_data=(x_test, y_test),callbacks=callbacks_list, verbose=2, validation_freq=1)
     h_parameter = h.history
     train_acc(int(args.max_epochs), h_parameter['accuracy'], work_dir)
-    val_acc(h_parameter['accuracy'], work_dir)
+    val_acc(h_parameter['val_accuracy'], work_dir)
     save_model = tf.keras.models.load_model(work_dir+'/model/'+model_name+'.hdf5')
     Y_test = np.argmax(y_test, axis=1)
     #y_pred = save_model.predict_classes(x_test)   
@@ -219,18 +237,18 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir,
 
 
 if __name__ == '__main__':
-    try:
-        args = parse_args()
-        x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
-        datasetName = args.data_dir.split("/")[-1].split("_")[0]
-        args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName
-        if not os.path.exists(args.work_dir):
-            os.makedirs(args.work_dir)
-            os.makedirs(args.work_dir + '/model')
+    # try:
+    args = parse_args()
+    x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
+    datasetName = args.data_dir.split("/")[-1].split("_")[0]
+    args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName
+    if not os.path.exists(args.work_dir):
+        os.makedirs(args.work_dir)
+        os.makedirs(args.work_dir + '/model')
 
-        run_main(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
+    run_main(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
 
-        # os.system("python ../../api/bashs/hdf52trt.py --model_type HRRP --work_dir "+args.work_dir+" --model_name "+args.model_name)
-        print("Train Ended:")
-    except Exception as re:
-        print("Train Failed:",re)
+    # os.system("python ../../api/bashs/hdf52trt.py --model_type HRRP --work_dir "+args.work_dir+" --model_name "+args.model_name)
+    print("Train Ended:")
+    # except Exception as re:
+    #     print("Train Failed:",re)

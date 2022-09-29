@@ -82,8 +82,9 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
 
 void TrtInfer::testOneSample(
         std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
-        int *predIdx,std::vector<float> &degrees)
+        int *predIdx,std::vector<float> &degrees,std::string flag)
 {
+    //emIndex=;
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -123,17 +124,24 @@ void TrtInfer::testOneSample(
     //ready to send data to context
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
-    MatDataProcess matDataPrcs;
-    matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
-    //for(int i=0;i<inputLen;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+    if(flag=="FEA_RELE"){
+        MatDataProcess_afs matDataPrcs(dataOrder,modelIdx);
+        matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
+    }
+    else{
+        MatDataProcess matDataPrcs;
+        matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
+    }
+    // std::cout<<"(TrtInfer::testOneSample) print data[0]:"<<std::endl;
+    // for(int i=0;i<128;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
 
     //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
     doInference(*context, indata, outdata, 1);
     std::vector<float> output_vec;
-    //std::cout << "(TrtInfer::testOneSample)outdata:  ";
+    std::cout << "(TrtInfer::testOneSample)outdata:  ";
     float outdatasum=0.0;
     for (unsigned int i = 0; i < outputLen; i++){
-        //std::cout << outdata[i] << ", ";
+        std::cout << outdata[i] << ", ";
         outdatasum+=outdata[i];
         output_vec.push_back(outdata[i]);
     }std::cout<<std::endl;
@@ -149,7 +157,7 @@ void TrtInfer::testOneSample(
 
 bool TrtInfer::testAllSample(
         std::string dataset_path,std::string modelPath,int inferBatch, bool dataProcess,
-        float &Acc,std::vector<std::vector<int>> &confusion_matrix){
+        float &Acc,std::vector<std::vector<int>> &confusion_matrix,std::string flag){
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created successfully.";
     else qDebug()<< "(TrtInfer::testAllSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -172,7 +180,7 @@ bool TrtInfer::testAllSample(
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return 0;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=50;
+    INFERENCE_BATCH=1;//这里是写死了，应该传过来
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){
@@ -187,29 +195,32 @@ bool TrtInfer::testAllSample(
             return 0;
         }
     }
-    qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
+    //qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
     qDebug()<<"(TrtInfer::testAllSample) inputLen==="<<inputLen;
 
     // LOAD DataSet
     clock_t start,end;
     start = clock();
-    auto test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label,inputLen);
+    auto test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
 
+    qDebug()<<"(TrtInfer::testAllSample) test_dataset.data.size()==="<<test_dataset.data.size();
+    qDebug()<<"(TrtInfer::testAllSample) test_dataset.label.size()==="<<test_dataset.labels.size();
     end = clock();
     int correct=0;
     qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
     int test_dataset_size=test_dataset.labels.size();
     //qDebug()<<"(TrtInfer::testAllSample) DataSetsize: "<<test_dataset.data.size()<<"LabelSize: "<<test_dataset.labels.size();
     qDebug()<<"(TrtInfer::testAllSample) 数据加载用时: "<<(double)(end-start)/CLOCKS_PER_SEC;
-
-    for(int l=1;l<=ceil(test_dataset_size/INFERENCE_BATCH);l++){            //分批喂数据
+    float test_dataset_size_float=test_dataset_size;
+    for(int l=1;l<=ceil(test_dataset_size_float/INFERENCE_BATCH);l++){            //分批喂数据
         std::vector<float> thisBatchData;
         std::vector<float> thisBatchLabels;
-        int thisBatchNum=1;
-        if(l==ceil(test_dataset_size/INFERENCE_BATCH)) thisBatchNum=test_dataset_size-(l-1)*INFERENCE_BATCH;
+        int thisBatchNum=1;//这批数据的number
+        if(l==ceil(test_dataset_size_float/INFERENCE_BATCH)) thisBatchNum=test_dataset_size-(l-1)*INFERENCE_BATCH;
         else thisBatchNum=INFERENCE_BATCH;
 
         int beginIdx=(l-1)*INFERENCE_BATCH;
+
         for(int i=0;i<thisBatchNum;i++){
             thisBatchData.insert(thisBatchData.end(),test_dataset.data[beginIdx+i].begin(),test_dataset.data[beginIdx+i].end());
             thisBatchLabels.push_back(test_dataset.labels[beginIdx+i]);
@@ -220,6 +231,12 @@ bool TrtInfer::testAllSample(
         if (!thisBatchData.empty()){
             memcpy(indata, &thisBatchData[0], thisBatchData.size()*sizeof(float));
         }
+        // qDebug()<<"(TrtInfer::testAllSample) beginIdx="<<QString::number(beginIdx)<<"  label=="<<QString::number(test_dataset.labels[beginIdx]);
+        // if(beginIdx==50){
+        //     std::cout<<"(TrtInfer::testAllSample) print first col of DT:";
+        //     for(int i=0;i<128;i++) std::cout<<indata[i]<<" ";
+        //     std::cout<<std::endl;
+        // }
         doInference(*context, indata, outdata, thisBatchNum);
 
         std::vector<std::vector<float>> output_vec;
@@ -245,6 +262,12 @@ bool TrtInfer::testAllSample(
             //std::cout<<"confusion_matrix["<<real<<"]["<<guess<<"]++"<<std::endl;
         }
     }
+    // std::cout<<std::endl<<"打印源混淆矩阵"<<std::endl;
+    // for(int i=0;i<confusion_matrix.size();i++){
+    //     for(int j=0;j<confusion_matrix[i].size();j++){
+    //         std::cout<<confusion_matrix[i][j]<<" ";
+    //     }std::cout<<std::endl;
+    // }
     qDebug()<<"test_dataset_size="<<test_dataset_size;
     qDebug()<< "correct:"<<correct;
 
@@ -256,14 +279,14 @@ void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, 
 
     //int inputLen=2;int outputLen=6;
     //ready to send data to context
-    //oneNormalization_(data_vec);//对收到的数据做归一
+    if(dataProcess) oneNormalization_(data_vec);//对收到的数据做归一
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
     qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
     float *indata = new float[data_vec.size()];
     if (!data_vec.empty()){
         memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
     }
-    //qDebug()<<"(TrtInfer::realTimeInfer)  indata[0]==="<<indata[0];
+    qDebug()<<"(TrtInfer::realTimeInfer)  indata[0]==="<<indata[0];
     doInference(*context, indata, outdata, 1);
     std::vector<float> output_vec;
     //std::cout << "(TrtInfer::testOneSample)outdata:  ";
@@ -313,7 +336,12 @@ void TrtInfer::createEngine(std::string modelPath){
         context->setBindingDimensions(0, dims4);
     }
 }
+
 void TrtInfer::setBatchSize(int batchSize){
     INFERENCE_BATCH=batchSize;
 }
 
+void TrtInfer::setParmsOfAFS(int modelIdxp, std::vector<int> dataOrderp){
+    modelIdx=modelIdxp;
+    dataOrder=dataOrderp;
+}

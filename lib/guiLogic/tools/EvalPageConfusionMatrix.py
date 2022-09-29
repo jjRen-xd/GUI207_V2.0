@@ -33,9 +33,9 @@ def draw_confusion_matrix(classesf, confusion_matrix):
     iters = np.reshape([[[i, j] for j in range(length)] for i in range(length)], (confusion_matrix.size, 2))
     for i, j in iters:
         if i == j:
-            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10, color='white',
+            plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10, color='red',
                      weight=5)  # 显示对应的数字
-            plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10, color='white')
+            plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10, color='red')
         else:
             plt.text(j, i + 0.12, format(confusion_matrix[i, j]), va='center', ha='center', fontsize=10)  # 显示对应的数字
             plt.text(j, i - 0.12, pshow[i, j], va='center', ha='center', fontsize=10)

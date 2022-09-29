@@ -79,9 +79,9 @@ void ModelTrainPage::startTrain(){
         }
         uiInitial();
         switch(trainModelType){
-            case 0:cmd = "activate TF2 && python ../../api/bashs/hrrp/train.py --data_dir "+choicedDatasetPATH+ \
+            case 0:cmd = "activate tf23 && python ../../api/bashs/hrrp/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 1:cmd = "activate TF2 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
+            case 1:cmd = "activate tf23 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
         }
     }

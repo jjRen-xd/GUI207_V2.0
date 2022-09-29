@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalDatasetInfo datasetTypeNum="1">
-    <HRRP typeID="1">
-        <falseHRRPmat_1x128 nameID="1">
-            <PATH>E:/GitHub/dev_zyx/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
+<globalDatasetInfo datasetTypeNum="5">
+    <FEATURE typeID="1">
+        <fea39 nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/fea39</PATH>
+        </fea39>
+    </FEATURE>
+    <HRRP typeID="2">
+        <falseHRRPmat_1x128 nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
             <datasetName>未定义</datasetName>
@@ -13,5 +18,11 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
         </falseHRRPmat_1x128>
-    </HRRP >
+        <falseHRRPmat_1x128_real nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real</PATH>
+        </falseHRRPmat_1x128_real>
+    </HRRP>
+    <IMAGE typeID="3" />
+    <RADIO typeID="4" />
+    <RCS typeID="5" />
 </globalDatasetInfo>

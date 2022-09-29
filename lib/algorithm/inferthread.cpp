@@ -34,7 +34,7 @@ void InferThread::setInferMode(std::string infermode){
     inferMode=infermode;
 }
 
-void InferThread::setParmOfRTI(std::string modelP,bool dataP){
+void InferThread::setParmOfRTI(std::string modelP,bool ifDataPreProcess){
+    dataProcess=ifDataPreProcess;
     modelPath=modelP;
-    dataProcess=dataP;
 }

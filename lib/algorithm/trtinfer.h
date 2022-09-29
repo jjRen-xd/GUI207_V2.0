@@ -17,9 +17,10 @@
 #include <stdio.h>
 #include <QDebug>
 #include <mat.h>
-#include "./lib/algorithm/matdataprocess.h"
+// #include "./lib/dataprocess/matdataprocess.h"
+// #include "./lib/dataprocess/matdataprocess_afs.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
-#include "./lib/algorithm/customdataset.h"
+#include "./lib/dataprocess/customdataset.h"
 
 class TrtInfer
 {
@@ -27,13 +28,14 @@ public:
     TrtInfer(std::map<std::string, int> class2label);
     void setBatchSize(int batchSize);//留出来的接口
     void createEngine(std::string modelPath);
+    void setParmsOfAFS(int modelIdx, std::vector<int> dataOrder);
     MatDataProcess *matDataPrcs;
 
 public slots:
 
-    void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees);
+    void testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees,std::string flag);
 
-    bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, bool dataProcess, float &Acc,std::vector<std::vector<int>> &confusion_matrix);
+    bool testAllSample(std::string dataset_path,std::string model_path,int inferBatch, bool dataProcess, float &Acc,std::vector<std::vector<int>> &confusion_matrix, std::string flag);
 
     void realTimeInfer(std::vector<float> data_vec,std::string modelPath, bool dataProcess, int *predIdx, std::vector<float> &degrees);
 
@@ -52,6 +54,10 @@ private:
     std::map<std::string, int> class2label;
 
     void doInference(nvinfer1::IExecutionContext&context,  float* input, float* output, int batchsize);
+
+    //AFS(39)推理在读数据上需要的参数
+    int modelIdx;
+    std::vector<int> dataOrder;
 
 };
 

@@ -146,9 +146,16 @@ void  ModelEvalPage::testOneSample(){
         //classnum==(datasetInfo->selectedClassNames.size())
         std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
         std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
-        bool dataProcess=true;
+        bool dataProcess=true;std::string flag="";
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
-        trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees);
+        if(modelInfo->selectedType=="FEA_RELE"){
+            int modelIdx=1;std::vector<int> dataOrder;
+            for(int i=0;i<39;i++) dataOrder.push_back(i);
+            //TODO读取模型文件附近的txt，初始化dataOrder[] 和modelIdx
+            trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+            flag="FEA_RELE";
+        }
+        trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees, flag);
 
         /*************************把下面都当做对UI的操作***************************/
         std::cout<<"(ModelEvalPage::testOneSample)degrees:";
@@ -167,11 +174,6 @@ void  ModelEvalPage::testOneSample(){
 
         // 绘制隶属度柱状图
         disDegreeChart(predClass, degrees, label2class);
-//        Chart *forDegreeChart = new Chart(ui->label_mE_chartGT,"","");//这里传的参没啥用，只是想在下面调用一下它的方法
-//        removeLayout(ui->horizontalLayout_degreeChart2);
-//        QWidget* view=forDegreeChart->drawDisDegreeChart(predClass, degrees, label2class);
-//        ui->horizontalLayout_degreeChart2->addWidget(view);
-//        QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 
     }
     else{
@@ -189,15 +191,27 @@ void ModelEvalPage::testAllSample(){
     if(!choicedDatasetPATH.empty() && !choicedModelPATH.empty() ){
         float acc = 0.6;
         int classNum=label2class.size();
-        std::vector<std::vector<int>> confusion_matrix(classNum, std::vector<int>(classNum, 6));
+        std::vector<std::vector<int>> confusion_matrix(classNum, std::vector<int>(classNum, 0));
         //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
         //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
 
         bool dataProcess=true;
-        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
-        if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH, inferBatch, dataProcess, acc, confusion_matrix)){
+        std::string flag="";
+        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是没做预处理的
+
+        if(modelInfo->selectedType=="FEA_RELE"){
+            int modelIdx=1;std::vector<int> dataOrder;
+            for(int i=0;i<39;i++) dataOrder.push_back(i);
+            //TODO读取模型文件附近的txt，初始化dataOrder[] 和modelIdx
+            trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+            flag="FEA_RELE";
+        }
+
+        if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH,inferBatch,dataProcess,acc,confusion_matrix,flag)){
             return ;
         }
+
+        
 
         /*************************Draw******************************/
         int* numpyptr= new int[classNum*classNum];

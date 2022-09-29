@@ -9,6 +9,8 @@ import afs_model
 from data_process import read_mat, storage_characteristic_matrix
 from data_process import show_feature_selection, show_confusion_matrix
 from utils import BatchCreate
+
+theone="39"
 # from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 tfv1.compat.v1.disable_eager_execution()
 
@@ -99,13 +101,25 @@ def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_
         print('== Get feature weight by using AFS ==')
         A = run_train(sess, train_X, train_Y, train_step, batchsize)
     print('==  The Evaluation of AFS ==')
+    at = A.mean(0)
+    A_wight_rank = list(np.argsort(at))[::-1]
+    save_A_path = work_dir + '/model/'+'attention.txt'
+    attention_weights = open(save_A_path, 'w', encoding='utf-8')
+    for i in range(0, len(A_wight_rank)):
+        attention_weights.write(str(A_wight_rank[i])+'\n')
+    attention_weights.close()
     ac_score_list, characteristic_matrix_summary = run_test(A, train_X, train_Y, test_X,
                                             test_Y, train_step, len(train_Y[0]), f_start, f_end, f_interval, work_dir, model_name)
     show_feature_selection(ac_score_list, f_start, f_end, f_interval, work_dir)#hh
     optimal_result = ac_score_list.index(max(ac_score_list))
     show_confusion_matrix(class_label, characteristic_matrix_summary[optimal_result], work_dir)#hh
     print(optimal_result)
+    attention_weights = open(save_A_path, 'a', encoding='utf-8')
+    attention_weights.write(str(ac_score_list.index(max(ac_score_list))+1)+'\n')
+    attention_weights.close()
     print(max(ac_score_list))
+    global theone
+    theone=str(ac_score_list.index(max(ac_score_list))+1)
 
 
 if __name__ == '__main__':
@@ -121,8 +135,10 @@ if __name__ == '__main__':
         args.modelid=1
         args.schedule=0
         inference(path,int(args.max_epochs), int(args.batch_size), 1, 39, 1, args.work_dir, args.model_name)
-        
-        # os.system("python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name)
+        print("theone==",theone)
+        os.system("python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name + "--afsmode_Idx" + theone)
+        #python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir D:/lyh/GUI207_V2.0/db/trainLogs/2022-09-28-13-51-11-AFS-falseHRRPmat --model_name trttest --afsmode_Idx 39
+
         print("Train Ended:")
     except Exception as re:
         print("Train Failed:",re)

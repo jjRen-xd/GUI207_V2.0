@@ -7,8 +7,8 @@
 #include <winsock.h>   // windows平台的网络库头文件
 #include <QDebug>
 #include <QThread>
-#include "./lib/algorithm/matdataprocess.h"
-#include "./lib/algorithm/customdataset.h"
+#include "./lib/dataprocess/matdataprocess.h"
+#include "./lib/dataprocess/customdataset.h"
 class SocketClient:public QThread
 {
     Q_OBJECT
@@ -18,7 +18,7 @@ public:
     SOCKET createClientSocket(const char* ip);
     void run();
     void setClass2LabelMap(std::map<std::string, int> class2label);
-    void setParmOfRTI(std::string modelPath,bool dataProcess);
+    void setParmOfRTI(std::string modelPath);
 signals:
     void sigClassName(int);
 

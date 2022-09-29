@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalModelInfo datasetTypeNum="4">
     <FEA_OPTI typeID="1" />
-    <FEA_RELE typeID="2" />
+    <FEA_RELE typeID="2">
+        <afstest.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-09-28-17-30-03-AFS-fea39/afstest.trt</PATH>
+        </afstest.trt>
+    </FEA_RELE>
     <INCRE typeID="3">
-        <increment_6_128_save_reduce_512.trt nameID="1">
+        <increment_6_128_save_reduce_512.trt nameID="2">
             <PATH>D:/lyh/GUI207_V2.0/db/models/increment_6_128_save_reduce_512.trt</PATH>
         </increment_6_128_save_reduce_512.trt>
     </INCRE>
     <TRA_DL typeID="4">
-        <DenseNet121_500.trt nameID="2">
+        <DenseNet121_500.trt nameID="3">
             <PATH>D:/lyh/GUI207_V2.0/db/models/DenseNet121_500.trt</PATH>
             <accuracy>99.99%</accuracy>
             <algorithm>xml载入测试</algorithm>
@@ -19,11 +23,14 @@
             <trainEpoch>100轮</trainEpoch>
             <trainLR>0.001</trainLR>
         </DenseNet121_500.trt>
-        <TriModel.trt nameID="3">
+        <TriModel.trt nameID="4">
             <PATH>D:/lyh/GUI207_V2.0/db/datasets/TriModel_falseHRRPmat_1x128_real/TriModel.trt</PATH>
         </TriModel.trt>
-        <densenet121_hrrp_128.trt nameID="4">
+        <densenet121_hrrp_128.trt nameID="5">
             <PATH>D:/lyh/GUI207_V2.0/db/models/densenet121_hrrp_128.trt</PATH>
         </densenet121_hrrp_128.trt>
+        <lucky.trt nameID="6">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-09-25-23-18-22-HRRP-falseHRRPmat/lucky.trt</PATH>
+        </lucky.trt>
     </TRA_DL>
 </globalModelInfo>

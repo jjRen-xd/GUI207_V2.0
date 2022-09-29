@@ -1,6 +1,6 @@
 #ifndef SEARCHFOLDER_H
 #define SEARCHFOLDER_H
-
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
