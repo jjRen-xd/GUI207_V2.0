@@ -670,3 +670,381 @@ All_OA:tensor(17.0667)
     accuracy                           0.17      3000
    macro avg       0.18      0.17      0.11      3000
 weighted avg       0.18      0.17      0.11      3000
+
+2022-10-08 21:32:10
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:\\lyh\\GUI207_V2.0\\db\\datasets\\falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 36.38666009902954
+increment_consume_time: 11.77244234085083
+Old_OA:tensor(41.6000)
+New_OA:tensor(20.)
+All_OA:tensor(38.)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       1.00      0.08      0.15        50
+           3       0.42      1.00      0.60        50
+           4       0.50      1.00      0.67        50
+           5       0.16      0.20      0.18        50
+
+    accuracy                           0.38       300
+   macro avg       0.35      0.38      0.26       300
+weighted avg       0.35      0.38      0.26       300
+
+2022-10-08 21:35:34
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5)
+pretrain_consume_time: 15.051283359527588
+increment_consume_time: 11.132209300994873
+Old_OA:tensor(44.)
+New_OA:tensor(22.)
+All_OA:tensor(40.3333)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.50      0.20      0.29        50
+           2       0.00      0.00      0.00        50
+           3       0.47      1.00      0.64        50
+           4       0.50      1.00      0.67        50
+           5       0.15      0.22      0.18        50
+
+    accuracy                           0.40       300
+   macro avg       0.27      0.40      0.30       300
+weighted avg       0.27      0.40      0.30       300
+
+2022-10-09 10:37:59
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 16.954832315444946
+increment_consume_time: 13.210874080657959
+Old_OA:tensor(43.2000)
+New_OA:tensor(80.)
+All_OA:tensor(49.3333)
+
+              precision    recall  f1-score   support
+
+           0       0.50      1.00      0.67        50
+           1       0.29      0.16      0.21        50
+           2       0.00      0.00      0.00        50
+           3       0.83      1.00      0.91        50
+           4       0.00      0.00      0.00        50
+           5       0.36      0.80      0.49        50
+
+    accuracy                           0.49       300
+   macro avg       0.33      0.49      0.38       300
+weighted avg       0.33      0.49      0.38       300
+
+2022-10-09 10:41:42
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 17.23407220840454
+increment_consume_time: 13.266886711120605
+Old_OA:tensor(44.8000)
+New_OA:tensor(80.)
+All_OA:tensor(50.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.40      0.20      0.27        50
+           2       1.00      0.04      0.08        50
+           3       0.83      1.00      0.91        50
+           4       0.50      1.00      0.67        50
+           5       0.35      0.80      0.49        50
+
+    accuracy                           0.51       300
+   macro avg       0.51      0.51      0.40       300
+weighted avg       0.51      0.51      0.40       300
+
+2022-10-09 10:50:46
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 17.119938373565674
+increment_consume_time: 13.556458473205566
+Old_OA:tensor(43.2000)
+New_OA:tensor(20.)
+All_OA:tensor(39.3333)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       1.00      0.16      0.28        50
+           3       0.50      1.00      0.67        50
+           4       0.50      1.00      0.67        50
+           5       0.11      0.20      0.14        50
+
+    accuracy                           0.39       300
+   macro avg       0.35      0.39      0.29       300
+weighted avg       0.35      0.39      0.29       300
+
+2022-10-09 10:54:30
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-10-53-53', work_dir='../../../db/trainLogs/2022-10-09-10-53-53-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 15.204762935638428
+increment_consume_time: 11.220046520233154
+Old_OA:tensor(40.)
+New_OA:tensor(80.)
+All_OA:tensor(46.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.50      1.00      0.67        50
+           1       0.00      0.00      0.00        50
+           2       0.00      0.00      0.00        50
+           3       0.83      1.00      0.91        50
+           4       0.00      0.00      0.00        50
+           5       0.31      0.80      0.44        50
+
+    accuracy                           0.47       300
+   macro avg       0.27      0.47      0.34       300
+weighted avg       0.27      0.47      0.34       300
+
+2022-10-09 15:04:09
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=1, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 7.875202655792236
+increment_consume_time: 3.2911176681518555
+Old_OA:tensor(43.2000)
+New_OA:tensor(60.)
+All_OA:tensor(46.)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.44      0.16      0.24        50
+           2       0.00      0.00      0.00        50
+           3       0.71      1.00      0.83        50
+           4       0.50      1.00      0.67        50
+           5       0.27      0.60      0.37        50
+
+    accuracy                           0.46       300
+   macro avg       0.32      0.46      0.35       300
+weighted avg       0.32      0.46      0.35       300
+
+2022-10-09 15:38:33
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 7.794283151626587
+increment_consume_time: 8.229187965393066
+Old_OA:tensor(43.2000)
+New_OA:tensor(78.)
+All_OA:tensor(49.)
+
+              precision    recall  f1-score   support
+
+           0       0.50      0.70      0.58        50
+           1       0.44      0.16      0.24        50
+           2       0.00      0.00      0.00        50
+           3       0.82      1.00      0.90        50
+           4       0.50      0.30      0.37        50
+           5       0.33      0.78      0.46        50
+
+    accuracy                           0.49       300
+   macro avg       0.43      0.49      0.43       300
+weighted avg       0.43      0.49      0.43       300
+
+2022-10-09 15:51:08
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 8.20616102218628
+increment_consume_time: 9.18686294555664
+Old_OA:tensor(48.4000)
+New_OA:tensor(20.)
+All_OA:tensor(43.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.50      0.42      0.46        50
+           3       0.60      1.00      0.75        50
+           4       0.50      1.00      0.67        50
+           5       0.14      0.20      0.17        50
+
+    accuracy                           0.44       300
+   macro avg       0.29      0.44      0.34       300
+weighted avg       0.29      0.44      0.34       300
+
+2022-10-09 16:13:44
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=5, learning_rate=0.0001, memory_size=2000, model_name='model', old_class=5, pretrain_epoch=3, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-09-21-21-52-17', work_dir='../../../db/trainLogs/2022-09-21-21-52-17-HRRP-falseHRRPmat_1x128_real-model')
+pretrain_consume_time: 15.794844627380371
+increment_consume_time: 19.746534824371338
+Old_OA:tensor(26.4000)
+New_OA:tensor(88.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.15      0.20      0.17        50
+           3       0.50      0.12      0.19        50
+           4       0.44      1.00      0.61        50
+           5       0.45      0.88      0.60        50
+
+    accuracy                           0.37       300
+   macro avg       0.26      0.37      0.26       300
+weighted avg       0.26      0.37      0.26       300
+
+2022-10-09 16:52:33
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=50, learning_rate=0.0001, memory_size=2000, model_name='cil', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-16-48-54', work_dir='../../../db/trainLogs/2022-10-09-16-48-54-HRRP-falseHRRPmat_1x128_real-cil')
+pretrain_consume_time: 10.256091594696045
+increment_consume_time: 198.25580620765686
+Old_OA:tensor(44.)
+New_OA:tensor(0.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.18      0.20      0.19        50
+           3       0.50      1.00      0.67        50
+           4       0.46      1.00      0.63        50
+           5       0.00      0.00      0.00        50
+
+    accuracy                           0.37       300
+   macro avg       0.19      0.37      0.25       300
+weighted avg       0.19      0.37      0.25       300
+
+2022-10-09 16:59:06
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=1, learning_rate=0.0001, memory_size=2000, model_name='asdf', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-16-58-42', work_dir='../../../db/trainLogs/2022-10-09-16-58-42-HRRP-falseHRRPmat_1x128_real-asdf')
+pretrain_consume_time: 10.022090911865234
+increment_consume_time: 3.3380298614501953
+Old_OA:tensor(44.)
+New_OA:tensor(0.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.18      0.20      0.19        50
+           3       0.50      1.00      0.67        50
+           4       0.46      1.00      0.63        50
+           5       0.00      0.00      0.00        50
+
+    accuracy                           0.37       300
+   macro avg       0.19      0.37      0.25       300
+weighted avg       0.19      0.37      0.25       300
+
+2022-10-09 17:02:13
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='asdf', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-17-01-44', work_dir='../../../db/trainLogs/2022-10-09-17-01-44-HRRP-falseHRRPmat_1x128_real-asdf')
+pretrain_consume_time: 10.018091440200806
+increment_consume_time: 9.064082622528076
+Old_OA:tensor(24.)
+New_OA:tensor(100.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.15      0.20      0.17        50
+           3       0.00      0.00      0.00        50
+           4       0.71      1.00      0.83        50
+           5       0.32      1.00      0.49        50
+
+    accuracy                           0.37       300
+   macro avg       0.20      0.37      0.25       300
+weighted avg       0.20      0.37      0.25       300
+
+2022-10-09 17:09:21
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='asdf', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-17-08-52', work_dir='../../../db/trainLogs/2022-10-09-17-08-52-HRRP-falseHRRPmat_1x128_real-asdf')
+pretrain_consume_time: 9.96508502960205
+increment_consume_time: 8.61907410621643
+Old_OA:tensor(28.)
+New_OA:tensor(100.)
+All_OA:tensor(40.)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       1.00      0.20      0.33        50
+           2       0.17      0.20      0.19        50
+           3       0.00      0.00      0.00        50
+           4       0.78      1.00      0.88        50
+           5       0.30      1.00      0.46        50
+
+    accuracy                           0.40       300
+   macro avg       0.38      0.40      0.31       300
+weighted avg       0.38      0.40      0.31       300
+
+2022-10-09 17:21:00
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='asdf', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-17-20-31', work_dir='../../../db/trainLogs/2022-10-09-17-20-31-HRRP-falseHRRPmat_1x128_real-asdf')
+pretrain_consume_time: 9.880083560943604
+increment_consume_time: 9.098077058792114
+Old_OA:tensor(36.8000)
+New_OA:tensor(50.)
+All_OA:tensor(39.)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       1.00      0.14      0.25        50
+           2       0.20      0.20      0.20        50
+           3       0.50      0.50      0.50        50
+           4       0.41      1.00      0.58        50
+           5       0.37      0.50      0.42        50
+
+    accuracy                           0.39       300
+   macro avg       0.41      0.39      0.33       300
+weighted avg       0.41      0.39      0.33       300
+
+2022-10-09 17:21:51
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='asdf', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-17-21-21', work_dir='../../../db/trainLogs/2022-10-09-17-21-21-HRRP-falseHRRPmat_1x128_real-asdf')
+pretrain_consume_time: 10.140085697174072
+increment_consume_time: 9.019076108932495
+Old_OA:tensor(24.)
+New_OA:tensor(100.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.15      0.20      0.17        50
+           3       0.00      0.00      0.00        50
+           4       0.41      1.00      0.58        50
+           5       0.50      1.00      0.67        50
+
+    accuracy                           0.37       300
+   macro avg       0.18      0.37      0.24       300
+weighted avg       0.18      0.37      0.24       300
+
+2022-10-09 17:29:49
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=100, learning_rate=0.0001, memory_size=2000, model_name='cil', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-17-22-54', work_dir='../../../db/trainLogs/2022-10-09-17-22-54-HRRP-falseHRRPmat_1x128_real-cil')
+pretrain_consume_time: 9.833082437515259
+increment_consume_time: 394.94535756111145
+Old_OA:tensor(25.2000)
+New_OA:tensor(100.)
+All_OA:tensor(37.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       1.00      0.06      0.11        50
+           2       0.15      0.20      0.17        50
+           3       0.00      0.00      0.00        50
+           4       0.53      1.00      0.69        50
+           5       0.38      1.00      0.56        50
+
+    accuracy                           0.38       300
+   macro avg       0.34      0.38      0.26       300
+weighted avg       0.34      0.38      0.26       300
+
+2022-10-09 21:01:19
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='cil', old_class=5, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-10-09-21-00-49', work_dir='../../../db/trainLogs/2022-10-09-21-00-49-HRRP-falseHRRPmat_1x128_real-cil')
+pretrain_consume_time: 10.206081628799438
+increment_consume_time: 9.014845609664917
+Old_OA:tensor(44.)
+New_OA:tensor(0.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.20      0.20      0.20        50
+           3       0.50      1.00      0.67        50
+           4       0.56      1.00      0.71        50
+           5       0.00      0.00      0.00        50
+
+    accuracy                           0.37       300
+   macro avg       0.21      0.37      0.26       300
+weighted avg       0.21      0.37      0.26       300

@@ -20,6 +20,7 @@ ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_termin
     connect(ui->startTrainButton, &QPushButton::clicked, this, &ModelTrainPage::startTrain);
     connect(ui->stopTrainButton,  &QPushButton::clicked, this, &ModelTrainPage::stopTrain);
     connect(ui->modelTypeBox, &QComboBox::currentIndexChanged, this, &ModelTrainPage::changeTrainType);
+    connect(ui->editModelButton,  &QPushButton::clicked, this, &ModelTrainPage::editModelFile);
 
 }
 
@@ -42,22 +43,22 @@ void ModelTrainPage::changeTrainType(){
     ui->tabWidget->removeTab(0);
     ui->tabWidget->removeTab(1);
     ui->tabWidget->removeTab(2);
-    if(modelType==0){
+    if(modelType<5){
+        ui->fewShotWidget->setVisible(false);
         ui->tabWidget->addTab(ui->tab,"训练集准确率");
         ui->tabWidget->addTab(ui->tab_2,"验证集准确率");
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
-        ui->tabWidget->setCurrentIndex(0);
     }
-    else if(modelType==1){
+    else if(modelType==5){
+        ui->fewShotWidget->setVisible(false);
         ui->tabWidget->addTab(ui->tab_2,"特征关联性能");
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
-        ui->tabWidget->setCurrentIndex(0);
     }
-//    else if(modelType==2){
-//        ui->tabWidget->addTab(ui->tab_2,"鐗瑰緛鍑嗙‘鐜?);
-//        ui->tabWidget->addTab(ui->tab_3,"娣锋穯鐭╅樀");
-//        ui->stackedWidget->setCurrentIndex(1);
-//    }
+   else if(modelType==6){
+       ui->tabWidget->addTab(ui->tab_2,"Acc");
+       ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
+       ui->fewShotWidget->setVisible(true);
+   }
 }
 
 
@@ -72,23 +73,38 @@ void ModelTrainPage::startTrain(){
     batchSize = ui->trainBatchEdit->text();
     epoch = ui->trainEpochEdit->text();
     saveModelName = ui->saveModelNameEdit->text();
-    if(trainModelType<2){
+    //below for CIL
+    old_class_num = ui->oldClassNumEdit->text();
+    reduce_sample = ui->dataNumPercentEdit->text();
+    pretrain_epoch = ui->preTrainEpochEdit->text(); 
+
+    if(trainModelType<6){
         if(batchSize=="" || epoch=="" || saveModelName==""){
             QMessageBox::warning(NULL,"错误","请检查各项文本框中训练参数是否正确配置!");
             return;
         }
         uiInitial();
         switch(trainModelType){
-            case 0:cmd = "activate tf23 && python ../../api/bashs/hrrp/train.py --data_dir "+choicedDatasetPATH+ \
+            case 0:cmd = "activate tf23 && python ../../api/bashs/hrrp_densenet121/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 1:cmd = "activate tf23 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
+            case 1:cmd = "activate tf23 && python ../../api/bashs/hrrp_vgg16/train.py --data_dir "+choicedDatasetPATH+ \
+                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
+            case 2:cmd = "activate tf23 && python ../../api/bashs/hrrp_mobilenet/train.py --data_dir "+choicedDatasetPATH+ \
+                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
+            case 3:cmd = "activate tf23 && python ../../api/bashs/hrrp_resnet101/train.py --data_dir "+choicedDatasetPATH+ \
+                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
+            case 4:cmd = "activate tf23 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
+            case 5:cmd = "activate tf23 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
         }
     }
-    else if(trainModelType==2){
-
+    else if(trainModelType==6){
+        if(reduce_sample=="")reduce_sample="1.0";
+        if(old_class_num=="")old_class_num="5";
+        if(pretrain_epoch=="")pretrain_epoch="1";
+        cmd="activate PT && python ../../api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+" --time "+time+" --old_class "+old_class_num+" --reduce_sample "+reduce_sample+" --pretrain_epoch "+pretrain_epoch+" --increment_epoch "+epoch+" --model_name "+saveModelName;
     }
-    qDebug() << cmd;
     execuCmd(cmd);
 }
 
@@ -183,18 +199,18 @@ void ModelTrainPage::showTrianResult(){
     foreach (auto dir , dirList){
         if(dir.contains(time)){
             QString wordir    = "../../db/trainLogs/"+dir;
-            if(trainModelType==0){
+            if(trainModelType<5){
                 ui->train_img->setPixmap(QPixmap(wordir+"/training_accuracy.jpg"));
                 ui->val_img->setPixmap(QPixmap(wordir+"/verification_accuracy.jpg"));
                 ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
             }
-            else if(trainModelType==1){
+            else if(trainModelType==5){
                 ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
                 ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
             }
-            else if(trainModelType==2){
+            else if(trainModelType==6){
 //                ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
-//                ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
+                ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
             }
         }
     }
@@ -204,9 +220,13 @@ void ModelTrainPage::editModelFile(){
     int modelType=ui->modelTypeBox->currentIndex();
     QString modelFilePath;
     switch(modelType){
-        case 0:modelFilePath="../../api/bashs/hrrp/train.py";break;
-        case 1:modelFilePath="../../api/bashs/afs/afs_model.py";break;
-        case 2:modelFilePath="../../api/bashs/incremental/model.py";break;
+        case 0:modelFilePath="../../api/bashs/hrrp_densenet121/train.py";break;
+        case 1:modelFilePath="../../api/bashs/hrrp_vgg16/train.py";break;
+        case 2:modelFilePath="../../api/bashs/hrrp_mobilenet/train.py";break;
+        case 3:modelFilePath="../../api/bashs/hrrp_resnet101/train.py";break;
+        case 4:modelFilePath="../../api/bashs/hrrp_effcientnet80/train.py";break;
+        case 5:modelFilePath="../../api/bashs/afs/train.py";break;
+        case 6:modelFilePath="../../api/bashs/incremental/model.py";break;
     }
     QString commd="gvim " + modelFilePath;
     system(commd.toStdString().c_str());

@@ -74,7 +74,7 @@ void ModelEvalPage::randSample(){
     // 已选类别的随机取样
     if(!selectedClass.empty()){
         string classPath = choicedDatasetPATH +"/" +selectedClass;
-        string datafileFormat =datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "dataFileFormat");
+        // string datafileFormat =datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "dataFileFormat");
         srand((unsigned)time(NULL));
         Chart *previewChart;
 
@@ -149,8 +149,15 @@ void  ModelEvalPage::testOneSample(){
         bool dataProcess=true;std::string flag="";
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         if(modelInfo->selectedType=="FEA_RELE"){
-            int modelIdx=1;std::vector<int> dataOrder;
-            for(int i=0;i<39;i++) dataOrder.push_back(i);
+            int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
+            std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
+            std::ifstream infile(feaWeightTxtPath);
+            while (getline(infile, line)){
+                if(++tempi==40){modelIdx=std::stoi(line);break;}
+                dataOrder.push_back(std::stoi(line));
+    	        //cout<<std::stoi(line)<<endl;
+	        }infile.close();
+            //for(int i=0;i<39;i++) dataOrder.push_back(i);
             //TODO读取模型文件附近的txt，初始化dataOrder[] 和modelIdx
             trtInfer->setParmsOfAFS(modelIdx, dataOrder);
             flag="FEA_RELE";
@@ -161,7 +168,7 @@ void  ModelEvalPage::testOneSample(){
         std::cout<<"(ModelEvalPage::testOneSample)degrees:";
         for(int i=0;i<degrees.size();i++){
             std::cout<<degrees[i]<<" ";
-        }
+        } 
         QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
         terminal->print("识别结果： " + predClass);
         terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
@@ -200,9 +207,16 @@ void ModelEvalPage::testAllSample(){
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是没做预处理的
 
         if(modelInfo->selectedType=="FEA_RELE"){
-            int modelIdx=1;std::vector<int> dataOrder;
-            for(int i=0;i<39;i++) dataOrder.push_back(i);
-            //TODO读取模型文件附近的txt，初始化dataOrder[] 和modelIdx
+            int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
+            std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
+            std::ifstream infile(feaWeightTxtPath);
+            while (getline(infile, line)){
+                if(++tempi==40){modelIdx=std::stoi(line);break;}
+                dataOrder.push_back(std::stoi(line));
+    	        //cout<<std::stoi(line)<<endl;
+	        }infile.close();
+            //for(int i=0;i<39;i++) dataOrder.push_back(i);
+            //TODO读取模型文件附近的txt，初始化dataOrder[] 和 modelIdx
             trtInfer->setParmsOfAFS(modelIdx, dataOrder);
             flag="FEA_RELE";
         }
@@ -245,13 +259,13 @@ void ModelEvalPage::testAllSample(){
 }
 
 void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
+    
     QChart *chart = new QChart;
     //qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
     std::map<QString, vector<float>> mapnum;
     mapnum.insert(pair<QString, vector<float>>(classGT, degrees));  //后续可拓展
     QBarSeries *series = new QBarSeries();
     map<QString, vector<float>>::iterator it = mapnum.begin();
-    //std::cout<<"(ModelEvalPage::disDegreeChart): H22222222222"<<std::endl;
     //将数据读入
     while (it != mapnum.end()){
         QString tit = it->first;
@@ -274,7 +288,6 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     axisy->setTitleText("隶属度");
     chart->addSeries(series);
     chart->setTitle("识别目标对各类别隶属度分析图");
-    //std::cout<<"(ModelEvalPage::disDegreeChart): H444444444444"<<std::endl;
     chart->setAxisX(axis, series);
     chart->setAxisY(axisy, series);
     chart->legend()->setVisible(true);

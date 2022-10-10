@@ -72,7 +72,7 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
         updateAttriLabel();
         // 网络图像展示
         QString rootPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH"));
-        QString imgPath = rootPath.split(".pt").first()+".png";
+        QString imgPath = rootPath.split(".trt").first()+".png";
         terminal->print(imgPath);
         ui->label_modelImg->setPixmap(QPixmap(imgPath).scaled(QSize(400,400), Qt::KeepAspectRatio));
 

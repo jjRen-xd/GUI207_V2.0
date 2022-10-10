@@ -60,7 +60,7 @@ def convert_hdf5_to_trt(model_type, work_dir, model_name, afsmode_Idx, workspace
         hdfPath = work_dir+"/model/"+model_name+".hdf5"
     pbPath  = work_dir+"/model/temp.pb"
     oxPath  = work_dir+"/model/temp.onnx"
-    trtPath = work_dir+"/"+model_name+'.trt'
+    trtPath = work_dir+"/"+model_name+"_feature_"+afsmode_Idx+".trt"
     
     try:
         inputNodeName,outputNodeName,inputShape=convert_h5to_pb(hdfPath,pbPath)

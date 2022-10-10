@@ -16,7 +16,7 @@ void MatDataProcess_afs::oneNormalization(std::vector<float> &list){
     }
 }
 
-void MatDataProcess_afs::getAllDataFromMat(std::string matPath,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen){
+void MatDataProcess_afs::getAllDataFromMat(std::string matPath,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen,std::vector<int> &eachClassQuantity){
     MATFile* pMatFile = NULL;
     mxArray* pMxArray = NULL;
     // 读取.mat文件（例：mat文件名为"initUrban.mat"，其中包含"initA"）
@@ -39,12 +39,13 @@ void MatDataProcess_afs::getAllDataFromMat(std::string matPath,bool dataProcess,
     int M = mxGetM(pMxArray);  //行数
     int N = mxGetN(pMxArray);  //列数
     //考虑用户给的数据集M不等于模型对应的dataOrder.size()
-    if(!(dataOrder.size()==M && inputLen==M)){
+    if(!(dataOrder.size()==M)){
         qDebug()<<"(MatDataProcess_afs::getAllDataFromMat) 所选数据集和模型或其权重向量长度不匹配！";
         return ;
     }
-    for(int i=0;i<N/2;i++){
-    //for(int i=N/2;i<N;i++){
+    int thisClassNum=0;
+    //for(int i=0;i<N/2;i++){
+    for(int i=N/2;i<N;i++){
         std::vector<float> onesmp;//存当前遍历的一个样本
         for(int j=0;j<M;j++){
             onesmp.push_back(matdata[i*M+j]);
@@ -72,12 +73,13 @@ void MatDataProcess_afs::getAllDataFromMat(std::string matPath,bool dataProcess,
 
         data.push_back(temp);
         labels.push_back(label);
+        thisClassNum++;
     }
     // qDebug()<<"(MatDataProcess_afs:getAllDataFromMat)matVariable=="<<QString::fromStdString(matVariable);
+    eachClassQuantity.push_back(thisClassNum);
 }
 
-void MatDataProcess_afs::loadAllDataFromFolder(std::string datasetPath,std::string type,bool dataProcess,std::vector<std::vector<float>> &data,
-                           std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen){
+void MatDataProcess_afs::loadAllDataFromFolder(std::string datasetPath,std::string type,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,std::map<std::string, int> &class2label,int inputLen,std::vector<int> &eachClassQuantity){
     SearchFolder *dirTools = new SearchFolder();
     // 寻找子文件夹 WARN:数据集的路径一定不能包含汉字 否则遍历不到文件路径
     std::vector<std::string> subDirs;
@@ -87,11 +89,25 @@ void MatDataProcess_afs::loadAllDataFromFolder(std::string datasetPath,std::stri
         std::vector<std::string> fileNames;
         std::string subDirPath = datasetPath+"/"+subDir;
         dirTools->getFiles(fileNames, type, subDirPath);
-        for(auto &fileName: fileNames){
+        for(auto &fileName: fileNames){//一般就一个mat
             qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
-            getAllDataFromMat(subDirPath+"/"+fileName,dataProcess,data,labels,class2label[subDir],inputLen);
+            getAllDataFromMat(subDirPath+"/"+fileName,false,data,labels,class2label[subDir],inputLen,eachClassQuantity);
         }
     }
+    if(dataProcess){
+        for(int i=0;i<data[0].size();i++){//遍历n个特征个次数，对数据集的每个特征做归一
+            std::vector<float> datasetMatrix_row;
+            for(int j=0;j<data.size();j++){
+                datasetMatrix_row.push_back(data[j][i]);
+            }
+            oneNormalization(datasetMatrix_row);//归一化
+            for(int j=0;j<data.size();j++){
+                data[j][i]=datasetMatrix_row[j];
+            }
+        }
+    }
+    qDebug()<<"(MatDataProcess_afs::loadAllDataFromFolder)data.size()="<<data.size();
+    qDebug()<<"(MatDataProcess_afs::loadAllDataFromFolder)data[0].size()="<<data[0].size();
     return;
 }
 
@@ -118,7 +134,8 @@ void MatDataProcess_afs::getDataFromMat(std::string targetMatFile,int emIdx,bool
     matdata = (double*)mxGetData(pMxArray);
     int M = mxGetM(pMxArray);  //行数
     int N = mxGetN(pMxArray);  //列数
-    if(!(dataOrder.size()==M && inputLen==M)){
+    //if(!(dataOrder.size()==M && inputLen==M)){
+    if(!(dataOrder.size()==M)){
         qDebug()<<"(MatDataProcess_afs::getAllDataFromMat) 所选数据集和模型或其权重向量长度不匹配！";
         return ;
     }

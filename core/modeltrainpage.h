@@ -34,6 +34,9 @@ public:
     QString batchSize = "";
     QString epoch = "";
     QString saveModelName = "";
+    QString old_class_num = "";
+    QString reduce_sample = "";
+    QString pretrain_epoch = "";
 
     ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
                    ModelInfo *globalModelInfo, ModelDock *modelDock);

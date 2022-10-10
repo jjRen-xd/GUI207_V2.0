@@ -86,6 +86,7 @@ void SocketServer::run(){           //Producer
     }
     // 可以和客户端进行通信了
     std::vector<float> dataFrame;//里面放大小为模型输入数据长度个浮点数，用以送进网络。
+    std::vector<float> repeatDataFrame;
     while (true) {
         // recv从指定的socket接受消息
         int getCharNum=recv(s_accept, recv_buf, RECEIVE_BUF_SIZ, 0);
@@ -99,11 +100,15 @@ void SocketServer::run(){           //Producer
             }
             //qDebug() << "客户端信息:" << QString::number(num_float) ;
             //terminal->print("Receive:"+QString::number(num_float));
-            if(dataFrame.size()==127){//之后要和选择的模型匹配起来！！TODO
+            if(dataFrame.size()==(128-1)){//之后要和选择的模型匹配起来！！TODO
                 //while(sharedQue->size()>0){}
                 dataFrame.push_back(num_float);
+                for(int i=0;i<128;i++){
+                    for(int j=0;j<64;j++)
+                        repeatDataFrame.push_back(dataFrame[i]);
+                }
                 //QMutexLocker x(lock);//智能锁,在栈区使用结束会自动释放
-                sharedQue->push(dataFrame);
+                sharedQue->push(repeatDataFrame);
                 sem->release(1);
                 qDebug()<<"(SocketServer::run) sem->release()"<<QString::number(num_float);
                 //terminal->print("One Sample was received ");
@@ -112,6 +117,7 @@ void SocketServer::run(){           //Producer
                 colorMapMatrix.push_front(dataFrame);
                 dataVisualization();
                 dataFrame.clear();
+                repeatDataFrame.clear();
             }
             else{
                 dataFrame.push_back(num_float);

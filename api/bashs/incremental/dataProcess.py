@@ -110,30 +110,47 @@ def read_mat_256(raw_data_path):
     np.save(data_path + "test/label.npy", test_label)
 
 
-def read_mat_128_new(raw_data_path):
+def read_mat_128_new(raw_data_path,folder_names):
     g = os.walk(raw_data_path)
     data_list = []
     label_list = []
     label=0
-    for path,dir_list,file_list in g:
-        for dir_name in dir_list:
-            if(dir_name=="model_saving"):
-                continue
-            tempn=os.path.join(path, dir_name)
-            print(tempn)
-            g2 = os.walk(tempn)
-            for path2,dir_list2,file_list2 in g2:
-                for file_name in file_list2:
-                    if file_name[-4:]==".mat":
-                        try:
-                            temp = sio.loadmat(os.path.join(path2, file_name))[file_name[0:-4]]
-                            data_list.append(temp)
-                            label_list.append(label)
-                            print(os.path.join(path2, file_name))
-                            print("label:"+str(label))
-                        except KeyError:
-                            print("Warn: read_mat_128_new视图读入"+os.path.join(path2, file_name)+",但是其不包含同名变量")
-            label+=1
+    for className in folder_names:
+        tempn=os.path.join(raw_data_path, className)
+        wk = os.walk(tempn)
+        for path,dir_list,file_list in wk:
+            for file_name in file_list:
+                if file_name[-4:]==".mat":
+                    try:
+                        temp = sio.loadmat(os.path.join(path, file_name))[file_name[0:-4]]
+                        data_list.append(temp)
+                        label_list.append(label)
+                        #print(os.path.join(path, file_name))
+                        #print("label:"+str(label))
+                    except KeyError:
+                        print("Warn: read_mat_128_new试图读入"+os.path.join(path, file_name)+",但是其不包含同名变量")
+        label+=1
+
+    # for path,dir_list,file_list in g:
+    #     for dir_name in dir_list:
+    #         if(dir_name=="model_saving"):
+    #             continue
+    #         tempn=os.path.join(path, dir_name)
+    #         print(tempn)
+    #         g2 = os.walk(tempn)
+    #         for path2,dir_list2,file_list2 in g2:
+    #             for file_name in file_list2:
+    #                 if file_name[-4:]==".mat":
+    #                     try:
+    #                         temp = sio.loadmat(os.path.join(path2, file_name))[file_name[0:-4]]
+    #                         data_list.append(temp)
+    #                         label_list.append(label)
+    #                         print(os.path.join(path2, file_name))
+    #                         print("label:"+str(label))
+    #                     except KeyError:
+    #                         print("Warn: read_mat_128_new试图读入"+os.path.join(path2, file_name)+",但是其不包含同名变量")
+    #         label+=1
+
     # print(bigball_hrrp.shape, DT_hrrp.shape, Moxiu_hrrp.shape, smallball_hrrp.shape, taper_hrrp.shape, WD_19_hrrp.shape)
     
 

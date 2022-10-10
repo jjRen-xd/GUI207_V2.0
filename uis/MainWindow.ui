@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>507</width>
-             <height>1131</height>
+             <width>728</width>
+             <height>1056</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1415,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>635</width>
-             <height>602</height>
+             <width>745</width>
+             <height>586</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>326</width>
-               <height>517</height>
+               <width>259</width>
+               <height>235</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2438,8 +2438,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>404</width>
-               <height>606</height>
+               <width>373</width>
+               <height>584</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2723,8 +2723,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>764</width>
-             <height>565</height>
+             <width>760</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -2878,17 +2878,37 @@
                    </property>
                    <item>
                     <property name="text">
-                     <string>HRRP识别模型</string>
+                     <string>hrrp_densenet121</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>特征关联模型</string>
+                     <string>hrrp_vgg16</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>小样本增量模型</string>
+                     <string>hrrp_mobilenet</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>hrrp_resnet101</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>hrrp_efficientnetB0</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>FeatureRelate</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>CILmodel</string>
                     </property>
                    </item>
                   </widget>
@@ -2922,6 +2942,9 @@
                </item>
                <item>
                 <widget class="QWidget" name="fewShotWidget" native="true">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -2945,91 +2968,134 @@
                    <number>5</number>
                   </property>
                   <item>
-                   <widget class="QLabel" name="label_7">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>旧类别数：</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="oldClassNumEdit">
-                    <property name="minimumSize">
-                     <size>
-                      <width>50</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>50</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_15">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string> 新类别训练样本比例：</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="dataNumPercentEdit">
-                    <property name="minimumSize">
-                     <size>
-                      <width>50</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>50</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_79">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string> 预训练轮次：</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="preTrainEpochEdit">
-                    <property name="minimumSize">
-                     <size>
-                      <width>50</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>50</width>
-                      <height>22</height>
-                     </size>
-                    </property>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_75">
+                    <item>
+                     <widget class="QLabel" name="label_7">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>旧类别数：</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="oldClassNumEdit">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>50</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>50</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_93">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_15">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string> 新类别训练样本比例：</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="dataNumPercentEdit">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>50</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>50</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_83">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_79">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string> 预训练轮次：</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="preTrainEpochEdit">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>50</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>50</width>
+                        <height>22</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_26">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -3578,8 +3644,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>306</width>
-             <height>281</height>
+             <width>743</width>
+             <height>589</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3785,8 +3851,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>98</width>
-                        <height>28</height>
+                        <width>342</width>
+                        <height>405</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4564,7 +4630,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="minimumSize">

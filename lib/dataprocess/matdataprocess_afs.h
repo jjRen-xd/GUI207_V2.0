@@ -14,10 +14,10 @@ public:
     ~MatDataProcess_afs(){};
     void oneNormalization(std::vector<float> &list);
 
-    void getAllDataFromMat(std::string matPath,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen);
+    void getAllDataFromMat(std::string matPath,bool dataProcess,std::vector<std::vector<float>> &data,std::vector<int> &labels,int label,int inputLen,std::vector<int> &eachClassQuantity);
     void loadAllDataFromFolder(std::string datasetPath,std::string type,bool dataProcess,
                                 std::vector<std::vector<float>> &data,std::vector<int> &labels,
-                                std::map<std::string, int> &class2label,int inputLen);
+                                std::map<std::string, int> &class2label,int inputLen,std::vector<int> &eachClassQuantity);
     void getDataFromMat(std::string targetMatFile,int emIdx,bool dataProcess,float *data,int inputLen);
     
 private:

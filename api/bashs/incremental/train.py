@@ -16,7 +16,7 @@ from dataProcess import prepare_pretrain_data, prepare_increment_data, prepare_i
 from config import device, data_path, model_path
 import numpy as np
 import copy
-from utils import mutualInfo_ori, get_weight_by_linearProgram, getOneHot
+from utils import mutualInfo_ori, get_weight_by_linearProgram, getOneHot, show_confusion_matrix
 from sklearn.metrics import classification_report
 
 
@@ -143,7 +143,7 @@ class Pretrain:
 
 
 class IncrementTrain:
-    def __init__(self, memorySize, allClassNumber, newClassNumber, taskSize, incrementEpoch, batchSize, learningRate, bound, reduce_sample):
+    def __init__(self, memorySize, allClassNumber, newClassNumber, taskSize, incrementEpoch, batchSize, learningRate, bound, reduce_sample, work_dir, folder_names):
         super().__init__()
         self.memorySize = memorySize
         self.newClassNumber = newClassNumber
@@ -157,6 +157,8 @@ class IncrementTrain:
         self.learningRate = learningRate
         self.bound = bound
         self.reduce_sample = reduce_sample
+        self.work_dir = work_dir
+        self.folder_names=folder_names
 
     def compute_loss(self, model, signals, target, classNumber):
         output = model(signals)  # ( , 20)
@@ -194,20 +196,29 @@ class IncrementTrain:
     def test(self, testLoader):
         self.model.eval()
         correct, total = 0, 0
-        preds = []
+        confusion_matrix = np.zeros((self.allClassNumber, self.allClassNumber))
+
         for setp, (signals, labels) in enumerate(testLoader):
             signals = signals.type(torch.FloatTensor)
             signals, labels = signals.to(device), labels.to(device)
             with torch.no_grad():
                 outputs = self.model(signals)
             outputs = outputs.cpu()
-            preds.append(outputs)
             predicts = torch.max(outputs, dim=1)[1]
             correct += (predicts == labels.cpu()).sum()
             total += len(labels)
+            for i in range(0, len(predicts)):
+                confusion_matrix[labels[i], predicts[i]] += 1
+            # print("@@@@@@@@@@@signals.shape=",signals.shape)
+            # print("labels.shape=",labels.shape)
+            # print("outputs.shape=",outputs.shape)
+            # print("predicts.shape=",predicts.shape)
+            # print("labels=",labels)
+            # print("predicts=",predicts)
+            #exit()
         accuracy = 100. * correct / total
         self.model.train()
-        return accuracy, preds
+        return accuracy, confusion_matrix
 
     def increment_linearProgram(self, old_class, task, train_dataset):
         classNumber = task[-1] + 1
@@ -313,6 +324,7 @@ class IncrementTrain:
                     for p in optimizer.param_groups:
                         p['lr'] = self.learningRate / 16.
                 for step, (data, label) in enumerate(train_dataloader):
+                    #print("label==",label)
                     data = data.type(torch.FloatTensor)
                     data, label = data.to(device), label.to(device)
                     optimizer.zero_grad()
@@ -323,12 +335,14 @@ class IncrementTrain:
                 loss = np.mean(loss)
                 print("epoch:{}, loss_value: {}. The best accuray is {}".format(i + 1, loss, best_acc))
                 if (i + 1) % 2 == 0:
-                    test_accuracy, _ = self.test(test_dataloader)
+                    test_accuracy, confusion_matrix = self.test(test_dataloader)
                     if test_accuracy > best_acc:
                         best_acc = test_accuracy
                         state = {'model': self.model.state_dict()}
                         # best_model = '{}_{}_model.pt'.format(i + 1, '%.3f' % best_acc)
                         torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
+                        torch.save(state, self.work_dir + "/model/"+"increment_" + str(num_class) + ".pt")
+                        show_confusion_matrix(self.folder_names,confusion_matrix,self.work_dir)
                     print('epoch: {} is finished. accuracy is: {}'.format(i + 1, test_accuracy))
             # torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
 

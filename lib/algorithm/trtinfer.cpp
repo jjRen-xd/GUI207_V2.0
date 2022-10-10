@@ -84,7 +84,7 @@ void TrtInfer::testOneSample(
         std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
         int *predIdx,std::vector<float> &degrees,std::string flag)
 {
-    //emIndex=;
+    qDebug()<<"(TrtInfer::testOneSample)modelPath="<<QString::fromStdString(modelPath);
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::testOneSample)tensorRT engine created failed." ;
     context = engine->createExecutionContext();
@@ -125,17 +125,22 @@ void TrtInfer::testOneSample(
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
     if(flag=="FEA_RELE"){
-        MatDataProcess_afs matDataPrcs(dataOrder,modelIdx);
-        matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
+        std::string theClassPath=targetPath.substr(0,targetPath.rfind("/"));
+        std::string theClass=theClassPath.substr(theClassPath.rfind("/")+1,theClassPath.size());
+        std::string dataset_path=theClassPath.substr(0,theClassPath.rfind("/"));
+
+        CustomDataset test_dataset_for_afs = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
+        test_dataset_for_afs.getDataSpecifically(theClass,emIndex,indata);
+
     }
     else{
         MatDataProcess matDataPrcs;
         matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
     }
     // std::cout<<"(TrtInfer::testOneSample) print data[0]:"<<std::endl;
-    // for(int i=0;i<128;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
+    //for(int i=0;i<128;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
 
-    //qDebug()<<"indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
+    qDebug()<<"(TrtInfer::testOneSample)indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
     doInference(*context, indata, outdata, 1);
     std::vector<float> output_vec;
     std::cout << "(TrtInfer::testOneSample)outdata:  ";
@@ -201,7 +206,7 @@ bool TrtInfer::testAllSample(
     // LOAD DataSet
     clock_t start,end;
     start = clock();
-    auto test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
+    CustomDataset test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
 
     qDebug()<<"(TrtInfer::testAllSample) test_dataset.data.size()==="<<test_dataset.data.size();
     qDebug()<<"(TrtInfer::testAllSample) test_dataset.label.size()==="<<test_dataset.labels.size();

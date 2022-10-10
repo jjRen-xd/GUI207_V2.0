@@ -6,12 +6,11 @@ import tensorflow.compat.v1 as tfv1
 import tensorflow.keras as keras
 import numpy as np
 import afs_model
-from data_process import read_mat, storage_characteristic_matrix
+from data_process import read_mat, storage_characteristic_matrix, data_normalization
 from data_process import show_feature_selection, show_confusion_matrix
 from utils import BatchCreate
 
 theone="39"
-# from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 tfv1.compat.v1.disable_eager_execution()
 
 sys.path.append("..")
@@ -37,7 +36,7 @@ def test(train_X, train_Y, test_X, test_Y, epoch, output_size, fea_num, work_dir
         keras.layers.Flatten(),
         keras.layers.Dense(500, activation='relu'),
         keras.layers.Dense(output_size, activation='softmax')])
-    train_model.compile(loss='binary_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
+    train_model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
 
     # 建立存储保存后的模型的文件夹
     if not os.path.exists(work_dir):
@@ -93,6 +92,7 @@ def run_train(sess, train_X, train_Y, train_step, batch_size):
 
 def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_dir, model_name):
     train_X, train_Y, test_X, test_Y, class_label = read_mat(data_path)
+    train_X, test_X = data_normalization(train_X), data_normalization(test_X)
     Train_Size = len(train_X)
     total_batch = Train_Size / batchsize
     afs_model.build(total_batch, len(train_X[0]), len(train_Y[0]))
@@ -123,22 +123,28 @@ def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_
 
 
 if __name__ == '__main__':
-    try:
-        args = parse_args()
-        path = args.data_dir
-        datasetName = args.data_dir.split("/")[-1].split("_")[0]
-        args.work_dir = args.work_dir+"/"+args.time+'-AFS-'+datasetName
-        if not os.path.exists(args.work_dir):
-            os.makedirs(args.work_dir)
-            os.makedirs(args.work_dir + '/model')
+    # try:
+    args = parse_args()
+    path = args.data_dir
+    datasetName = args.data_dir.split("/")[-1].split("_")[0]
+    args.work_dir = args.work_dir+"/"+args.time+'-AFS-'+datasetName
+    #args.work_dir="D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-09-10-17-15-AFS-fea39"
+    if not os.path.exists(args.work_dir):
+        os.makedirs(args.work_dir)
+        os.makedirs(args.work_dir + '/model')
 
-        args.modelid=1
-        args.schedule=0
-        inference(path,int(args.max_epochs), int(args.batch_size), 1, 39, 1, args.work_dir, args.model_name)
-        print("theone==",theone)
-        os.system("python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name + "--afsmode_Idx" + theone)
-        #python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir D:/lyh/GUI207_V2.0/db/trainLogs/2022-09-28-13-51-11-AFS-falseHRRPmat --model_name trttest --afsmode_Idx 39
-
-        print("Train Ended:")
-    except Exception as re:
-        print("Train Failed:",re)
+    args.modelid=1
+    args.schedule=0
+    inference(path,int(args.max_epochs), int(args.batch_size), 1, 39, 1, args.work_dir, args.model_name)
+    print("theone==",theone)
+    #debug#os.system("python ../hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name+" --afsmode_Idx " + theone)
+    #debug#cmd="python ../hdf52trt.py --model_type AFS --work_dir D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-09-10-17-15-AFS-fea39/ --model_name fea --afsmode_Idx " + theone;
+    
+    cmd="python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name+" --afsmode_Idx " + theone
+    os.system(cmd)
+    #python ../../api/bashs/hdf52trt.py --model_type AFS --work_dir D:/lyh/GUI207_V2.0/db/trainLogs/2022-09-28-13-51-11-AFS-falseHRRPmat --model_name trttest --afsmode_Idx 39
+    #convert_hdf5_to_trt('AFS', args.work_dir, args.model_name,theone)
+    #os.system("python D:/lyh/GUI207_V2.0/api/bashs/afs/test.py")
+    print("Train Ended:")
+    # except Exception as re:
+    #     print("Train Failed:",re)

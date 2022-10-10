@@ -3,6 +3,7 @@ import numpy as np
 import scipy.io as sio
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+from sklearn.preprocessing import MinMaxScaler
 
 
 # 从.mat文件读取数据并预处理
@@ -15,7 +16,7 @@ def read_mat(read_path):
         # 判断文件夹与文件
         if os.path.isdir(folder_path+'/'+file_name[i]) and file_name[i]!="model_saving":
             folder_name.append(file_name[i])
-    # folder_name.sort()  # 按文件夹名进行排序
+    folder_name.sort()  # 按文件夹名进行排序
 
     # 读取单个文件夹下的内容
     for i in range(0, len(folder_name)):
@@ -25,17 +26,15 @@ def read_mat(read_path):
         matrix_name = os.path.splitext(matrix_base)[0]  # 获取去除扩展名的.mat文件名称
         class_data = sio.loadmat(class_path)[matrix_name].T  # 读入.mat文件，并转置
 
-        class_data_normalization = data_normalization(class_data)  # 归一化处理
-
         # 设置标签
-        label = np.zeros((len(class_data_normalization), len(folder_name)))
+        label = np.zeros((len(class_data), len(folder_name)))
         label[:, i] = 1
 
         # 划分训练数据集和测试数据集
-        x_train = class_data_normalization[:int(len(class_data_normalization)/2), :]
-        x_test = class_data_normalization[int(len(class_data_normalization)/2):, :]
-        y_train = label[:int(len(class_data_normalization)/2), :]
-        y_test = label[int(len(class_data_normalization)/2):, :]
+        x_train = class_data[:int(len(class_data)/2), :]
+        x_test = class_data[int(len(class_data)/2):, :]
+        y_train = label[:int(len(class_data)/2), :]
+        y_test = label[int(len(class_data)/2):, :]
 
         if i == 0:
             train_x = x_train
@@ -58,24 +57,16 @@ def read_mat(read_path):
 
 # 数据归一化
 def data_normalization(data):
-    DATA = []
-    for i in range(0, len(data)):
-        data_max = max(data[i])
-        data_min = min(data[i])
-        data_norm = []
-        for j in range(0, len(data[i])):
-            data_one = (data[i][j] - data_min) / (data_max - data_min)
-            data_norm.append(data_one)
-        DATA.append(data_norm)
-    DATA = np.array(DATA)
-    return DATA
+    minmax = MinMaxScaler()
+    X = minmax.fit_transform(data)
+    return X
 
 
 # 特征矩阵存储
 def storage_characteristic_matrix(result, test_Y, output_size):
     characteristic_matrix = np.zeros((output_size, output_size))
     for i in range(0, len(result)):
-        characteristic_matrix[result[i], test_Y[i]] += 1
+        characteristic_matrix[test_Y[i], result[i]] += 1
     single_class_sum = np.zeros(output_size)
     pre_right_sum = np.zeros(output_size)
     for i in range(0, output_size):

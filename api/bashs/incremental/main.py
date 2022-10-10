@@ -7,10 +7,10 @@ import argparse
 
 argparser = argparse.ArgumentParser()
 
-argparser.add_argument('--qa', type=str, help='the directory where the traing dataset')
+argparser.add_argument('--raw_data_path', type=str, help='the directory where the traing dataset')
 argparser.add_argument('--snr', type=int,  help='-2 -4 ... 16 18', default=2)
-argparser.add_argument('--pretrain_epoch', type=int,  help='preTrain epoch number', default=0)
-argparser.add_argument('--increment_epoch', type=int,  help='train new model epoch number', default=50)
+argparser.add_argument('--pretrain_epoch', type=int,  help='preTrain epoch number', default=3)
+argparser.add_argument('--increment_epoch', type=int,  help='train new model epoch number', default=5)
 argparser.add_argument('--learning_rate', type=float, help='preTrain learning rate', default=1e-4)
 argparser.add_argument('--task_size', type=int, help='number of incremental class', default=1)
 argparser.add_argument('--old_class', type=int, help='number of old class', default=5)
@@ -22,30 +22,39 @@ argparser.add_argument('--random_seed', type=int, help='numpy random seed', defa
 argparser.add_argument('--reduce_sample', type=float, help='reduce the number of sample to n%', default=1.0)
 argparser.add_argument('--data_dimension', type=int,  help='[39, 128, 256]', default=128)
 argparser.add_argument('--test_ratio', type=float, help='the ratio of test dataset', default=0.5)
-
+argparser.add_argument('--work_dir', help='the directory of the training data',default="../../../db/trainLogs")
+argparser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
+argparser.add_argument('--model_name', help='the directory of the training data',default="model")
 args = argparser.parse_args()
 
 if __name__ == '__main__':
     import  os
-
     current_path = os.path.dirname(__file__)
-
     os.chdir(current_path)
-
-
     create_dir()
+
+    # 读取路径下所有文件夹的名称并保存
+    folder_path = args.raw_data_path # 所有文件夹所在路径
+    file_name = os.listdir(folder_path)  # 读取所有文件夹，将文件夹名存在列表中
+    folder_names = []
+    for i in range(0, len(file_name)):
+        # 判断文件夹与文件
+        if os.path.isdir(folder_path+'/'+file_name[i]):
+            folder_names.append(file_name[i])
+    folder_names.sort()  # 按文件夹名进行排序
 
     if args.data_dimension == 39:
         read_mat_39(args.raw_data_path)
     if args.data_dimension == 128:
-        read_mat_128_new(args.raw_data_path)
+        read_mat_128_new(args.raw_data_path,folder_names)
     if args.data_dimension == 256:
         read_mat_256_new(args.raw_data_path)
 
-    # txt文件转为npy文件
-    read_txt(args.raw_data_path, args.class_name, args.snr)
-    # 分割训练集和测试集
-    split_test_and_train(args.test_ratio, args.random_seed)
+    datasetName = args.raw_data_path.split("/")[-1]
+    args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName+'-'+args.model_name
+    if not os.path.exists(args.work_dir):
+        os.makedirs(args.work_dir)
+        os.makedirs(args.work_dir + '/model')
 
     # 开始旧类训练
     pretrain_start = time.time()
@@ -58,7 +67,7 @@ if __name__ == '__main__':
     # 开始增量训练
     increment_start = time.time()
     if args.increment_epoch != 0:
-        incrementTrain = IncrementTrain(args.memory_size, args.all_class, args.all_class-args.old_class, args.task_size, args.increment_epoch, args.batch_size, args.learning_rate, args.bound, args.reduce_sample)
+        incrementTrain = IncrementTrain(args.memory_size, args.all_class, args.all_class-args.old_class, args.task_size, args.increment_epoch, args.batch_size, args.learning_rate, args.bound, args.reduce_sample, args.work_dir, folder_names)
         incrementTrain.train()
     increment_end = time.time()
     print("pretrain_consume_time:", increment_end-increment_start)

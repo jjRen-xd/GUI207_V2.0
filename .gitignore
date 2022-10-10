@@ -3,6 +3,7 @@
 /db/datasets/*
 /db/trainLogs/*
 /db/models/*
+/db/models_old/*
 /db/bashs/incremental/data/*
 /lib/TRANSFER/ToHrrp_mcr/*
 /lib/guiLogic/tools/__pycache__/*

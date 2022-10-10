@@ -58,7 +58,7 @@ private:
     //AFS(39)推理在读数据上需要的参数
     int modelIdx;
     std::vector<int> dataOrder;
-
+    //CustomDataset test_dataset_for_afs;
 };
 
 #endif // TRTINFER_H

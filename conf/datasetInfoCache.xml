@@ -20,9 +20,22 @@
         </falseHRRPmat_1x128>
         <falseHRRPmat_1x128_real nameID="3">
             <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real</PATH>
+            <azimuthAngle>未定义</azimuthAngle>
+            <claNum>6</claNum>
+            <datasetName>HRRP_128</datasetName>
+            <freq>未定义</freq>
+            <incidentMode>未定义</incidentMode>
+            <note>未定义</note>
+            <pitchAngle>未定义</pitchAngle>
+            <samplingNum>未定义</samplingNum>
+            <targetNumEachCla>100</targetNumEachCla>
         </falseHRRPmat_1x128_real>
     </HRRP>
     <IMAGE typeID="3" />
-    <RADIO typeID="4" />
+    <RADIO typeID="4" >
+        <radiomat_1x101 nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
+        </radiomat_1x101>
+    </RADIO>
     <RCS typeID="5" />
 </globalDatasetInfo>
