@@ -311,6 +311,7 @@ void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, 
     *predIdx=pred;
 
 }
+//InferThread::run里调用
 void TrtInfer::createEngine(std::string modelPath){
     if (readTrtFile(modelPath,modelStream, engine)) qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created successfully." ;
     else qDebug()<< "(TrtInfer::realTimeInfer)tensorRT engine created failed." ;

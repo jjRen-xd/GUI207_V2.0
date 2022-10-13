@@ -341,3 +341,15 @@ def show_confusion_matrix(classes, confusion_matrix, work_dir):
     plt.tight_layout()
     plt.savefig(work_dir+'/confusion_matrix.jpg', dpi=300)
     # plt.show()
+
+def show_accplot(epoch, acc, work_dir):
+    x = np.arange(epoch+1)[1:]
+    plt.figure()
+    plt.plot(x, acc)
+    plt.scatter(x, acc)
+    plt.grid()
+    plt.title('Training accuracy', fontsize=16)
+    plt.ylabel('Accuracy', fontsize=16)
+    plt.xlabel('Epoch', fontsize=16)
+    plt.tight_layout()
+    plt.savefig(work_dir+'/training_accuracy.jpg', dpi=300)

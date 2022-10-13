@@ -9,8 +9,8 @@ argparser = argparse.ArgumentParser()
 
 argparser.add_argument('--raw_data_path', type=str, help='the directory where the traing dataset')
 argparser.add_argument('--snr', type=int,  help='-2 -4 ... 16 18', default=2)
-argparser.add_argument('--pretrain_epoch', type=int,  help='preTrain epoch number', default=3)
-argparser.add_argument('--increment_epoch', type=int,  help='train new model epoch number', default=5)
+argparser.add_argument('--pretrain_epoch', type=int,  help='preTrain epoch number,must biger than 1', default=3)
+argparser.add_argument('--increment_epoch', type=int,  help='train new model epoch number,must biger than 1', default=5)
 argparser.add_argument('--learning_rate', type=float, help='preTrain learning rate', default=1e-4)
 argparser.add_argument('--task_size', type=int, help='number of incremental class', default=1)
 argparser.add_argument('--old_class', type=int, help='number of old class', default=5)
@@ -87,6 +87,9 @@ if __name__ == '__main__':
                   "Old_OA:" + str(old_oa) + "\n" +
                   "New_OA:" + str(new_oa) + "\n" +
                   "All_OA:" + str(all_oa) + "\n\n" + str(metric))
+    if(1):
+        cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+str(args.data_dimension)+"x1 --optShapes=input:20x1x"+str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+str(args.data_dimension)+"x1 --onnx="+args.work_dir + "/incrementModel.onnx "+" --saveEngine="+args.work_dir + "/incrementModel.trt --fp16"
+        os.system("tree /f")
     print("Train Ended")
 
 

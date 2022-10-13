@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="5">
-    <FEA_OPTI typeID="2" />
-    <FEA_RELE typeID="3">
-        <fea_feature_1.trt nameID="2">
+<globalModelInfo datasetTypeNum="4">
+    <FEA_OPTI typeID="1" />
+    <FEA_RELE typeID="2">
+        <fea_feature_1.trt nameID="1">
             <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-10-13-47-27-AFS-fea39/fea_feature_1.trt</PATH>
         </fea_feature_1.trt>
     </FEA_RELE>
-    <INCRE typeID="4">
-        <increment_6_128_save_reduce_512.trt nameID="3">
+    <INCRE typeID="3">
+        <increment_6_128_save_reduce_512.trt nameID="2">
             <PATH>D:/lyh/GUI207_V2.0/db/models/increment_6_128_save_reduce_512.trt</PATH>
         </increment_6_128_save_reduce_512.trt>
+        <temp.trt nameID="3">
+            <PATH>D:/lyh/temp.trt</PATH>
+        </temp.trt>
     </INCRE>
-    <TRA_DL typeID="5">
+    <TRA_DL typeID="4">
         <densenet121.trt nameID="4">
             <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-04-11-58-54-HRRP-falseHRRPmat_1x128_real-densenet121/densenet121.trt</PATH>
             <accuracy>未定义</accuracy>

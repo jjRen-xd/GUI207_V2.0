@@ -85,17 +85,17 @@ void ModelTrainPage::startTrain(){
         }
         uiInitial();
         switch(trainModelType){
-            case 0:cmd = "activate tf23 && python ../../api/bashs/hrrp_densenet121/train.py --data_dir "+choicedDatasetPATH+ \
+            case 0:cmd = "activate tf24 && python ../../api/bashs/hrrp_densenet121/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 1:cmd = "activate tf23 && python ../../api/bashs/hrrp_vgg16/train.py --data_dir "+choicedDatasetPATH+ \
+            case 1:cmd = "activate tf24 && python ../../api/bashs/hrrp_vgg16/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 2:cmd = "activate tf23 && python ../../api/bashs/hrrp_mobilenet/train.py --data_dir "+choicedDatasetPATH+ \
+            case 2:cmd = "activate tf24 && python ../../api/bashs/hrrp_mobilenet/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 3:cmd = "activate tf23 && python ../../api/bashs/hrrp_resnet101/train.py --data_dir "+choicedDatasetPATH+ \
+            case 3:cmd = "activate tf24 && python ../../api/bashs/hrrp_resnet101/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 4:cmd = "activate tf23 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+            case 4:cmd = "activate tf24 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 5:cmd = "activate tf23 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
+            case 5:cmd = "activate tf24 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
         }
     }
@@ -209,7 +209,7 @@ void ModelTrainPage::showTrianResult(){
                 ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
             }
             else if(trainModelType==6){
-//                ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
+                ui->val_img->setPixmap(QPixmap(wordir+"/training_accuracy.jpg"));
                 ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
             }
         }

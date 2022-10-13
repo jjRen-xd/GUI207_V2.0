@@ -23,9 +23,9 @@ sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") fo
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--data_dir', help='the directory of the training data',default="../../../db/datasets/falseHRRPmat_1x128")
+    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128")
     parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
-    parser.add_argument('--work_dir', help='the directory of the training data',default="../../../db/trainLogs")
+    parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
     parser.add_argument('--model_name', help='the directory of the training data',default="model")
     parser.add_argument('--batch_size', help='the number of batch size',default=32)
     parser.add_argument('--max_epochs', help='the number of epochs',default=4)

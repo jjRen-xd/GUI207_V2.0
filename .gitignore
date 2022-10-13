@@ -8,6 +8,8 @@
 /lib/TRANSFER/ToHrrp_mcr/*
 /lib/guiLogic/tools/__pycache__/*
 /db/bashs/incremental/__pycache__/*
+/api/bashs/incremental/__pycache__/*
+/api/bashs/incremental/data/*
 db/bashs/incremental/__pycache__/*
 db/bashs/afs/__pycache__/*
 lib/TRANSFER/ToHrrp_mcr/*

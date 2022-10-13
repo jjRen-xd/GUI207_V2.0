@@ -16,7 +16,7 @@ from dataProcess import prepare_pretrain_data, prepare_increment_data, prepare_i
 from config import device, data_path, model_path
 import numpy as np
 import copy
-from utils import mutualInfo_ori, get_weight_by_linearProgram, getOneHot, show_confusion_matrix
+from utils import mutualInfo_ori, get_weight_by_linearProgram, getOneHot, show_confusion_matrix, show_accplot
 from sklearn.metrics import classification_report
 
 
@@ -308,6 +308,7 @@ class IncrementTrain:
             self.model.to(device)
             self.model.train()
             best_acc = 0
+            acc_list = []
             optimizer = optim.Adam(params=self.model.parameters(), lr=self.learningRate, weight_decay=0.001)
             for i in range(self.incrementEpoch):
                 loss = []
@@ -333,6 +334,7 @@ class IncrementTrain:
                     loss.append(loss_value.item())
                     optimizer.step()
                 loss = np.mean(loss)
+                
                 print("epoch:{}, loss_value: {}. The best accuray is {}".format(i + 1, loss, best_acc))
                 if (i + 1) % 2 == 0:
                     test_accuracy, confusion_matrix = self.test(test_dataloader)
@@ -342,10 +344,23 @@ class IncrementTrain:
                         # best_model = '{}_{}_model.pt'.format(i + 1, '%.3f' % best_acc)
                         torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
                         torch.save(state, self.work_dir + "/model/"+"increment_" + str(num_class) + ".pt")
+                        #TODO 动态批量
+                        onnx_save_path = self.work_dir + "/model/"+"incrementModel.onnx"
+                        example_tensor = torch.randn(1, 1, 128, 1).to(device)
+                        torch.onnx.export(self.model,  # model being run
+                            example_tensor,  # model input (or a tuple for multiple inputs)
+                            onnx_save_path,
+                            verbose=False,  # store the trained parameter weights inside the model file
+                            training=False,
+                            do_constant_folding=True,
+                            input_names=['input'],
+                            output_names=['output']
+                            )
                         show_confusion_matrix(self.folder_names,confusion_matrix,self.work_dir)
                     print('epoch: {} is finished. accuracy is: {}'.format(i + 1, test_accuracy))
+                    acc_list.append(test_accuracy)
             # torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
-
+            show_accplot(self.incrementEpoch/2,acc_list,self.work_dir)
             # res = torch.load(model_path + "/pretrain_" + str(oldClassNumber) + ".pt")
             # model.load_state_dict(res['model'])
             self.save_memory(train_dataset, num_class, self.memorySize)
