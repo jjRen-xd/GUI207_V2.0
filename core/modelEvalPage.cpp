@@ -43,7 +43,7 @@ void ModelEvalPage::refreshGlobalInfo(){
     // 基本信息更新
     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
-    ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
+//    ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
     this->choicedModelPATH = modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     // 单样本测试下拉框刷新
@@ -197,8 +197,8 @@ void ModelEvalPage::testAllSample(){
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
         for(int i=0;i<5;i++){
             for(int j=0;j<5;j++){
-                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
-                valuelabel->setText(QString::number(confusion_matrix[i][j]));
+//                QLabel *valuelabel = ui->confusion_matrix->findChild<QLabel *>("cfmx_"+QString::number(i)+QString::number(j));
+//                valuelabel->setText(QString::number(confusion_matrix[i][j]));
             }
         }
     }

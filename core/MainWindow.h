@@ -9,6 +9,9 @@
 #include "./core/modelChoicePage.h"
 #include "./core/modelEvalPage.h"
 
+#include "./core/modelVisPage.h"
+#include "./core/modelCAMPage.h"
+
 //#include "./lib/guiLogic/modelEval.h"
 // 悬浮窗部件类
 #include "./core/datasetsWindow/datasetDock.h"
@@ -50,6 +53,9 @@ class MainWindow: public QMainWindow{
         SenseSetPage *senseSetPage;
         ModelChoicePage *modelChoicePage;
         ModelEvalPage *modelEvalPage;
+        
+        ModelVisPage *modelVisPage;
+        ModelCAMPage *modelCAMPage;
 
         DatasetInfo *globalDatasetInfo;
         ModelInfo *globalModelInfo;
