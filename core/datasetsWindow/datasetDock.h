@@ -7,7 +7,7 @@
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/datasetInfo.h"
 #include "core/datasetsWindow/chart.h"
-#include "./lib/TRANSFER/ToHrrp.h"
+
 #include "./lib/guiLogic/tools/searchFolder.h"
 #include <mat.h>
 class DatasetDock:public QObject{

@@ -1153,3 +1153,45 @@ All_OA:tensor(36.6667)
     accuracy                           0.37       300
    macro avg       0.20      0.37      0.25       300
 weighted avg       0.20      0.37      0.25       300
+
+2022-10-17 18:17:16
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=20, learning_rate=0.0001, memory_size=2000, model_name='cilTest', old_class=5, pretrain_epoch=30, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=0.9, snr=2, task_size=1, test_ratio=0.5, time='2022-10-17-18-13-28', work_dir='../../../db/trainLogs/2022-10-17-18-13-28-HRRP-falseHRRPmat_1x128_real-cilTest')
+pretrain_consume_time: 121.38982033729553
+increment_consume_time: 83.83908247947693
+Old_OA:tensor(37.6000)
+New_OA:tensor(32.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.20      0.20      0.20        50
+           3       0.50      0.68      0.58        50
+           4       0.40      1.00      0.57        50
+           5       0.35      0.32      0.33        50
+
+    accuracy                           0.37       300
+   macro avg       0.24      0.37      0.28       300
+weighted avg       0.24      0.37      0.28       300
+
+2022-10-17 18:21:40
+Namespace(all_class=6, batch_size=32, bound=0.3, data_dimension=128, increment_epoch=20, learning_rate=0.0001, memory_size=2000, model_name='cilTest', old_class=5, pretrain_epoch=30, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real', reduce_sample=0.9, snr=2, task_size=1, test_ratio=0.5, time='2022-10-17-18-18-07', work_dir='../../../db/trainLogs/2022-10-17-18-18-07-HRRP-falseHRRPmat_1x128_real-cilTest')
+pretrain_consume_time: 120.93210482597351
+increment_consume_time: 80.6305661201477
+Old_OA:tensor(24.8000)
+New_OA:tensor(96.)
+All_OA:tensor(36.6667)
+
+              precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        50
+           1       0.00      0.00      0.00        50
+           2       0.15      0.20      0.17        50
+           3       0.50      0.04      0.07        50
+           4       0.40      1.00      0.57        50
+           5       0.50      0.96      0.66        50
+
+    accuracy                           0.37       300
+   macro avg       0.26      0.37      0.25       300
+weighted avg       0.26      0.37      0.25       300

@@ -41,6 +41,8 @@ ModelEvalPage::~ModelEvalPage(){
 }
 
 void ModelEvalPage::refreshGlobalInfo(){
+    label2class.clear();
+    class2label.clear();
     // 单样本测试下拉框刷新
     vector<string> comboBoxContents = datasetInfo->selectedClassNames;
     ui->comboBox_sampleType->clear();
@@ -60,9 +62,10 @@ void ModelEvalPage::refreshGlobalInfo(){
     ui->label_mE_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
     ui->label_mE_model->setText(QString::fromStdString(modelInfo->selectedName));
     //ui->label_mE_batch->setText(QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "batch")));
-    choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=choicedModelPATH){//保证模型切换后trt对象重新构建
+    if((modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=choicedModelPATH)||
+    (datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")!=choicedDatasetPATH)){//保证模型切换后trt对象重新构建
         trtInfer = new TrtInfer(class2label);
+        choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
         choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
 }

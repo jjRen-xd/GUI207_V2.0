@@ -10,35 +10,13 @@
         <increment_6_128_save_reduce_512.trt nameID="2">
             <PATH>D:/lyh/GUI207_V2.0/db/models/increment_6_128_save_reduce_512.trt</PATH>
         </increment_6_128_save_reduce_512.trt>
-        <temp.trt nameID="3">
-            <PATH>D:/lyh/temp.trt</PATH>
-        </temp.trt>
     </INCRE>
     <TRA_DL typeID="4">
-        <densenet121.trt nameID="4">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-04-11-58-54-HRRP-falseHRRPmat_1x128_real-densenet121/densenet121.trt</PATH>
-            <accuracy>未定义</accuracy>
-            <algorithm>未定义</algorithm>
-            <batch>4</batch>
-            <framework>densenet121</framework>
-            <name>densenet121</name>
-            <note>未定义</note>
-            <other>未定义</other>
-            <trainDataset>83.3%</trainDataset>
-            <trainEpoch>150</trainEpoch>
-            <trainLR>未定义</trainLR>
-        </densenet121.trt>
-        <efficientnetB0.trt nameID="5">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-02-21-46-17-HRRP-falseHRRPmat_1x128_real-efficientnetB0/efficientnetB0.trt</PATH>
-        </efficientnetB0.trt>
-        <mobilenet.trt nameID="6">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-03-15-33-23-HRRP-falseHRRPmat_1x128_real-mobilenet/mobilenet.trt</PATH>
-        </mobilenet.trt>
-        <resnet101.trt nameID="7">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-03-19-39-05-HRRP-falseHRRPmat_1x128_real-resnet101/resnet101.trt</PATH>
-        </resnet101.trt>
-        <vgg16.trt nameID="8">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-03-16-58-37-HRRP-falseHRRPmat_1x128_real-vgg16/vgg16.trt</PATH>
-        </vgg16.trt>
+        <densenet121_6class.trt nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-19-17-49-26-HRRP-falseHRRPmat_1x128_6-asdf/densenet121_6class.trt</PATH>
+        </densenet121_6class.trt>
+        <densenet_5class.trt nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-19-13-22-24-HRRP-falseHRRPmat_1x128_5-densenet_5class/densenet_5class.trt</PATH>
+        </densenet_5class.trt>
     </TRA_DL>
 </globalModelInfo>

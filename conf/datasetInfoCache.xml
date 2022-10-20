@@ -6,8 +6,8 @@
         </fea39>
     </FEATURE>
     <HRRP typeID="2">
-        <falseHRRPmat_1x128 nameID="2">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128</PATH>
+        <falseHRRPmat_1x128_4 nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_4</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
             <datasetName>未定义</datasetName>
@@ -17,23 +17,20 @@
             <pitchAngle>0</pitchAngle>
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
-        </falseHRRPmat_1x128>
-        <falseHRRPmat_1x128_real nameID="3">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_real</PATH>
-            <azimuthAngle>未定义</azimuthAngle>
-            <claNum>6</claNum>
-            <datasetName>HRRP_128</datasetName>
-            <freq>未定义</freq>
-            <incidentMode>未定义</incidentMode>
-            <note>未定义</note>
-            <pitchAngle>未定义</pitchAngle>
-            <samplingNum>未定义</samplingNum>
-            <targetNumEachCla>100</targetNumEachCla>
-        </falseHRRPmat_1x128_real>
+        </falseHRRPmat_1x128_4>
+        <falseHRRPmat_1x128_5 nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_5</PATH>
+        </falseHRRPmat_1x128_5>
+        <falseHRRPmat_1x128_6 nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_6</PATH>
+        </falseHRRPmat_1x128_6>
+        <falseHRRPmat_1x256 nameID="5">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x256</PATH>
+        </falseHRRPmat_1x256>
     </HRRP>
     <IMAGE typeID="3" />
-    <RADIO typeID="4" >
-        <radiomat_1x101 nameID="4">
+    <RADIO typeID="4">
+        <radiomat_1x101 nameID="6">
             <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
         </radiomat_1x101>
     </RADIO>

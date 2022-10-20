@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <time.h>
-
+#include "./lib/TRANSFER/ToHrrp.h"
 
 #pragma comment(lib,"ToHrrp.lib")
 

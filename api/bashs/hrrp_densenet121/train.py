@@ -78,7 +78,7 @@ def read_mat(read_path):
         class_data_picture = []
         for j in range(0, len(class_data_normalization)):
             class_data_one = class_data_normalization[j]
-            empty = np.zeros((len(class_data_one), 64))
+            empty = np.zeros((len(class_data_one), 16))
             for k in range(0, len(class_data_one)):
                 empty[k, :] = class_data_one[k]
             class_data_picture.append(empty)
@@ -89,10 +89,10 @@ def read_mat(read_path):
         label[:, i] = 1
 
         # 划分训练数据集和测试数据集
-        x_train = class_data_picture[:int(len(class_data_picture)/2), :]
-        x_test = class_data_picture[int(len(class_data_picture)/2):, :]
-        y_train = label[:int(len(class_data_picture)/2), :]
-        y_test = label[int(len(class_data_picture)/2):, :]
+        x_train = class_data_picture[:int(len(class_data_picture)*4/5), :]
+        x_test = class_data_picture[int(len(class_data_picture)*4/5):, :]
+        y_train = label[:int(len(class_data_picture)*4/5), :]
+        y_test = label[int(len(class_data_picture)*4/5):, :]
         print("x_trian.shape=",x_train.shape)
         print("x_test.shape=",x_test.shape)
         if i == 0:

@@ -1,5 +1,5 @@
 # coding=utf-8
-import torch
+import torch,sys
 from torch import optim
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
@@ -107,6 +107,7 @@ class Pretrain:
                 optimizer.step()
             loss = np.mean(loss)
             print("epoch:{}, loss_value: {}. The best accuray is {}".format(i + 1, loss, best_acc))
+            sys.stdout.flush()
             if (i + 1) % 2 == 0:
                 test_accuracy, _ = self.test(testLoader=test_dataloader)
                 if test_accuracy > best_acc:
@@ -115,6 +116,7 @@ class Pretrain:
                     # best_model = '{}_{}_model.pt'.format(i + 1, '%.3f' % best_acc)
                     torch.save(state, model_path + "pretrain_" + str(self.oldClassNumber) + ".pt")
                 print('epoch: {} is finished. accuracy is: {}'.format(i + 1, test_accuracy))
+                sys.stdout.flush()
         state = {'model': self.model.state_dict()}
         torch.save(state, model_path + "pretrain_" + str(self.oldClassNumber) + ".pt")
         # res = torch.load(model_path + "/pretrain_" + str(oldClassNumber) + ".pt")
@@ -276,6 +278,7 @@ class IncrementTrain:
         classes = self.get_all_task_newClassNumber(old_class)
 
         print("classes:", classes)
+        sys.stdout.flush()
         # 更换模型
         featureExtractor = IncrementalModel()
 
@@ -336,6 +339,7 @@ class IncrementTrain:
                 loss = np.mean(loss)
                 
                 print("epoch:{}, loss_value: {}. The best accuray is {}".format(i + 1, loss, best_acc))
+                sys.stdout.flush()
                 if (i + 1) % 2 == 0:
                     test_accuracy, confusion_matrix = self.test(test_dataloader)
                     if test_accuracy > best_acc:
@@ -358,6 +362,7 @@ class IncrementTrain:
                             )
                         show_confusion_matrix(self.folder_names,confusion_matrix,self.work_dir)
                     print('epoch: {} is finished. accuracy is: {}'.format(i + 1, test_accuracy))
+                    sys.stdout.flush()
                     acc_list.append(test_accuracy)
             # torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
             show_accplot(self.incrementEpoch/2,acc_list,self.work_dir)
@@ -429,6 +434,7 @@ class Evaluation:
 
     def evaluate(self):
         print("evaluate...")
+        sys.stdout.flush()
         old_dataset = EvalDataset(data_type="old")
         new_dataset = EvalDataset(data_type="new")
         observed_dataset = EvalDataset(data_type="observed")

@@ -68,6 +68,7 @@ def run_test(A, train_X, train_Y, test_X, test_Y, epoch, output_size, f_start, f
         characteristic_matrix, accuracy_every_class, accuracy = storage_characteristic_matrix(predicted_class, label_class, output_size)
 
         print('Using Top {} features| accuracy:{:.4f}'.format(K, accuracy))
+        sys.stdout.flush()
         all_characteristic_matrix.append(characteristic_matrix)
         ac_score_list.append(accuracy)
 
@@ -85,6 +86,7 @@ def run_train(sess, train_X, train_Y, train_step, batch_size):
             # val_loss, val_accuracy = sess.run(tfv1.get_collection('validate_ops'), feed_dict={X: val_X, Y: val_Y})
 
             print('[%4d] AFS-loss:%.12f AFS-accuracy:%.6f' % (step, val_loss, val_accuracy))
+            sys.stdout.flush()
         xs, ys = Iterator.next_batch(batch_size)
         _, A = sess.run(tfv1.get_collection('train_ops'), feed_dict={X: xs, Y: ys})
     return A
@@ -99,8 +101,10 @@ def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_
     with tfv1.Session() as sess:  # 创建上下文
         tfv1.global_variables_initializer().run()  # 初始化模型参数
         print('== Get feature weight by using AFS ==')
+        sys.stdout.flush()
         A = run_train(sess, train_X, train_Y, train_step, batchsize)
     print('==  The Evaluation of AFS ==')
+    sys.stdout.flush()
     at = A.mean(0)
     A_wight_rank = list(np.argsort(at))[::-1]
     save_A_path = work_dir + '/model/'+'attention.txt'
@@ -114,10 +118,12 @@ def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_
     optimal_result = ac_score_list.index(max(ac_score_list))
     show_confusion_matrix(class_label, characteristic_matrix_summary[optimal_result], work_dir)#hh
     print(optimal_result)
+    sys.stdout.flush()
     attention_weights = open(save_A_path, 'a', encoding='utf-8')
     attention_weights.write(str(ac_score_list.index(max(ac_score_list))+1)+'\n')
     attention_weights.close()
     print(max(ac_score_list))
+    sys.stdout.flush()
     global theone
     theone=str(ac_score_list.index(max(ac_score_list))+1)
 
@@ -137,6 +143,7 @@ if __name__ == '__main__':
     args.schedule=0
     inference(path,int(args.max_epochs), int(args.batch_size), 1, 39, 1, args.work_dir, args.model_name)
     print("theone==",theone)
+    sys.stdout.flush()
     #debug#os.system("python ../hdf52trt.py --model_type AFS --work_dir "+args.work_dir+" --model_name "+args.model_name+" --afsmode_Idx " + theone)
     #debug#cmd="python ../hdf52trt.py --model_type AFS --work_dir D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-09-10-17-15-AFS-fea39/ --model_name fea --afsmode_Idx " + theone;
     
@@ -146,5 +153,6 @@ if __name__ == '__main__':
     #convert_hdf5_to_trt('AFS', args.work_dir, args.model_name,theone)
     #os.system("python D:/lyh/GUI207_V2.0/api/bashs/afs/test.py")
     print("Train Ended:")
+    sys.stdout.flush()  
     # except Exception as re:
     #     print("Train Failed:",re)

@@ -111,11 +111,20 @@ void SenseSetPage::confirmDataset(bool notDialog = false){
         updateAttriLabel();
 
         // 绘制类别图
+        for(int i = 0; i<6; i++){
+            imgGroup[i]->clear();
+            imgInfoGroup[i]->clear();
+        }
         drawClassImage();
 
         ui->progressBar->setValue(40);
 
         // 绘制曲线
+        for(int i=0;i<6;i++){
+            if(!chartGroup[i]->layout()) delete chartGroup[i]->layout();
+            chartInfoGroup[i]->clear();
+            chartGroup[i]->clear();
+        }
         nextBatchChart();
 
         // 绘制表格 TODO

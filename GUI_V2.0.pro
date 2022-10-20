@@ -41,7 +41,7 @@ HEADERS += \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/guithreadrun.h \
     lib/guiLogic/tools/searchFolder.h \
-    lib/TRANSFER/ToHRRP.h \
+    lib/TRANSFER/ToHrrp.h \
     lib/guiLogic/tools/socketclient.h \
     lib/guiLogic/tools/socketserver.h
 

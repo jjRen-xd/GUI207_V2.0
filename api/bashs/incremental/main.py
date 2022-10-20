@@ -1,5 +1,5 @@
 # coding=utf-8
-import time
+import time,sys
 from config import log_path
 from dataProcess import read_txt, split_test_and_train, prepare_pretrain_data, prepare_increment_data, create_dir, read_mat_39, read_mat_256, read_mat_128_new
 from train import Pretrain, IncrementTrain, Evaluation
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         preTrain.train()
     pretrain_end = time.time()
     print("pretrain_consume_time:", pretrain_end-pretrain_start)
-
+    sys.stdout.flush()
     # 开始增量训练
     increment_start = time.time()
     if args.increment_epoch != 0:
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         incrementTrain.train()
     increment_end = time.time()
     print("pretrain_consume_time:", increment_end-increment_start)
-
+    sys.stdout.flush()
     # 测试
     evaluation = Evaluation(args.all_class, args.all_class - args.old_class, args.batch_size)
     old_oa, new_oa, all_oa, metric = evaluation.evaluate()
@@ -87,9 +87,9 @@ if __name__ == '__main__':
                   "Old_OA:" + str(old_oa) + "\n" +
                   "New_OA:" + str(new_oa) + "\n" +
                   "All_OA:" + str(all_oa) + "\n\n" + str(metric))
-    if(1):
-        cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+str(args.data_dimension)+"x1 --optShapes=input:20x1x"+str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+str(args.data_dimension)+"x1 --onnx="+args.work_dir + "/incrementModel.onnx "+" --saveEngine="+args.work_dir + "/incrementModel.trt --fp16"
-        os.system("tree /f")
+    
+    cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+str(args.data_dimension)+"x1 --optShapes=input:20x1x"+str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+str(args.data_dimension)+"x1 --onnx="+args.work_dir + "/incrementModel.onnx "+" --saveEngine="+args.work_dir + "/incrementModel.trt --fp16")
+    os.system(cmd_onnx2trt)
     print("Train Ended")
-
+    sys.stdout.flush()
 
