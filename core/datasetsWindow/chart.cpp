@@ -41,6 +41,14 @@ Chart::~Chart(){
 //    download_btn=NULL;
 }
 
+void Chart::drawHRRPimage(QLabel* chartLabel){
+    readHRRPtxt();
+    setAxis("Range/cm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
+    buildChart(points);
+    showChart(chartLabel);
+}
+
+
 void Chart::drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx){
 
     QString dataFileFormat=filefullpath.split(".").last();

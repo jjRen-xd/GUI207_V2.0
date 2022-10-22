@@ -21,11 +21,11 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
 {   
     // 刷新模型、数据集信息
 
-    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "mmlab";
-    this->pythonApiPath = "../api/HRRP_vis/vis_cam.py";
-    this->choicedDatasetPATH = "../api/HRRP_vis/dataset/HRRP_20220508";
-    this->choicedModelPATH = "../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
+//    this->condaPath = "/home/z840/anaconda3/bin/activate";
+    this->condaEnvName = "207_base";
+    this->pythonApiPath = "../../api/HRRP_vis/vis_cam.py";
+    this->choicedDatasetPATH = "../../api/HRRP_vis/dataset/HRRP_20220508";
+    this->choicedModelPATH = "../../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
     refreshGlobalInfo();
 
     // 下拉框信号槽绑定
@@ -79,11 +79,10 @@ void ModelCAMPage::confirmVis(){
     }
     // QString output;
     // 激活conda python环境
-    QString activateEnv = "source "+this->condaPath+" "+this->condaEnvName+"&&";
-    QString command = activateEnv + \
-        "python " + this->pythonApiPath+ \ 
+    QString activateEnv = "conda activate "+this->condaEnvName+"&&";
+    QString command = activateEnv + "python " + this->pythonApiPath+ \
         " --checkpoint="        + this->modelCheckpointPath+ \
-        " --visualize_layer="   + this->targetVisLayer+ \ 
+        " --visualize_layer="   + this->targetVisLayer+ \
         " --signal_path="       + this->choicedSamplePATH+ \
         " --cam_method="        + this->choicedCamMethod+ \
         " --save_path="         + this->camImgsSavePath;
@@ -100,7 +99,7 @@ void ModelCAMPage::execuCmdProcess(QString cmd){
         processVis->kill();
     }
     processVis->setProcessChannelMode(QProcess::MergedChannels);
-    processVis->start(this->terminal->bashApi);
+    processVis->start("cmd.exe");
     ui->progressBar_CAM->setMaximum(0);
     ui->progressBar_CAM->setValue(0);
     processVis->write(cmd.toLocal8Bit() + '\n');

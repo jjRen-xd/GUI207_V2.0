@@ -43,7 +43,7 @@ HEADERS += \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
     lib/guiLogic/tools/convertTools.h \
-    lib/guiLogic/tools/searchFolder.h
+    lib/guiLogic/tools/searchFolder.h \
     lib/guiLogic/tools/guithreadrun.h \
     lib/guiLogic/tools/searchFolder.h \
     lib/TRANSFER/ToHrrp.h \

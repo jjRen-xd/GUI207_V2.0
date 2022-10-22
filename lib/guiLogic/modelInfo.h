@@ -40,7 +40,6 @@ class ModelInfo{
         std::map<std::string, std::string> var2TypeName;
         std::map<std::string, std::string> typeName2Var;
 
-        bool checkMap(std::string type, std::string name="NULL", std::string attri="NULL");
 
 
     private:

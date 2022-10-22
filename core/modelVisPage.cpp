@@ -20,11 +20,11 @@ ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
     modelInfo(globalModelInfo)
 {   
     // 刷新模型、数据集信息
-    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "mmlab";
-    this->pythonApiPath = "../api/HRRP_vis/vis_fea.py";
-    this->choicedDatasetPATH = "../api/HRRP_vis/dataset/HRRP_20220508";
-    this->choicedModelPATH = "../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
+//    this->condaPath = "/home/z840/anaconda3/bin/activate";
+    this->condaEnvName = "207_base";
+    this->pythonApiPath = "../../api/HRRP_vis/vis_fea.py";
+    this->choicedDatasetPATH = "../../api/HRRP_vis/dataset/HRRP_20220508";
+    this->choicedModelPATH = "../../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
     refreshGlobalInfo();
 
     // 下拉框信号槽绑定
@@ -66,9 +66,8 @@ void ModelVisPage::confirmVis(){
         return;
     }
     // 激活conda python环境
-    QString activateEnv = "source "+this->condaPath+" "+this->condaEnvName+"&&";
-    QString command = activateEnv + \
-        "python " + this->pythonApiPath+ \ 
+    QString activateEnv = "conda activate "+this->condaEnvName+"&&";
+    QString command = activateEnv + "python " + this->pythonApiPath+ \
         " --checkpoint="        +this->modelCheckpointPath+ \
         " --visualize_layer="   +this->targetVisLayer+ \
         " --signal_path="       +this->choicedSamplePATH+ \
@@ -86,7 +85,7 @@ void ModelVisPage::execuCmdProcess(QString cmd){
         processVis->kill();
     }
     processVis->setProcessChannelMode(QProcess::MergedChannels);
-    processVis->start(this->terminal->bashApi);
+    processVis->start("cmd.exe");
     ui->progressBar_mV_visFea->setMaximum(0);
     ui->progressBar_mV_visFea->setValue(0);
     processVis->write(cmd.toLocal8Bit() + '\n');

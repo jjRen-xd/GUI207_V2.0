@@ -46,6 +46,7 @@ class Chart : public QWidget{
         void setAxis(QString _xname, qreal _xmin, qreal _xmax, int _xtickc, \
                      QString _yname, qreal _ymin, qreal _ymax, int _ytickc);
         void readHRRPtxt();
+        void drawHRRPimage(QLabel* chartLabel);
         void readHRRPmat(int emIndex);
         void readRadiomat(int emIndex);
         void readFeaturemat(int emIndex);
