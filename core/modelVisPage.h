@@ -10,7 +10,7 @@
 #include <map>
 
 #include "ui_MainWindow.h"
-
+#include <opencv2/opencv.hpp>
 #include "./lib/guiLogic/bashTerminal.h"
 #include "./lib/guiLogic/tools/searchFolder.h"
 #include "./lib/guiLogic/modelInfo.h"
@@ -72,6 +72,7 @@ private:
 
     // 选择的数据集、模型、样本信息
     std::string choicedDatasetPATH;
+    std::string choicedModelPATH;
     QString choicedModelName;
     QString choicedModelType;
     QString choicedSamplePATH;
@@ -79,12 +80,12 @@ private:
     // 选择模型结构的xml文件、预览图像路径 // FIXME 后期需要结合系统
     std::string modelStructXmlPath;
     QString modelStructImgPath;
-    QString modelConfigPath;
     QString modelCheckpointPath;
 
     QString feaImgsSavePath;
     QString condaPath;
     QString condaEnvName;
+    QString pythonApiPath;
 
 
     std::map<std::string, std::string> choicedLayer;

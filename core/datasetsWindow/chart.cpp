@@ -58,7 +58,7 @@ void Chart::readHRRPtxt(){
         QStringList strList = str.split(" ");
 //        if(!(strList.filter("Range").length()&&strList.filter("HRRP").length()))
 //            return;
-        file.readLine();
+        // file.readLine();
         points.clear();
         while(!file.atEnd()){
             QByteArray line = file.readLine();
@@ -79,6 +79,7 @@ void Chart::readHRRPtxt(){
         ymin = y_min-3; ymax = y_max+3;
     }
     else{
+        qDebug() << "txt files open filed! ";
     }
 }
 

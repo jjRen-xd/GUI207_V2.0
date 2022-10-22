@@ -2,6 +2,7 @@
 
 #include "./lib/guiLogic/tinyXml/tinyxml.h"
 #include "./lib/guiLogic/tools/convertTools.h"
+#include "./core/datasetsWindow/chart.h"
 #include <QGraphicsScene>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -19,9 +20,13 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
     modelInfo(globalModelInfo)
 {   
     // 刷新模型、数据集信息
-    refreshGlobalInfo();
+
     this->condaPath = "/home/z840/anaconda3/bin/activate";
     this->condaEnvName = "mmlab";
+    this->pythonApiPath = "../api/HRRP_vis/vis_cam.py";
+    this->choicedDatasetPATH = "../api/HRRP_vis/dataset/HRRP_20220508";
+    this->choicedModelPATH = "../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
+    refreshGlobalInfo();
 
     // 下拉框信号槽绑定
     connect(ui->comboBox_CAM_L1, SIGNAL(textActivated(QString)), this, SLOT(on_comboBox_L1(QString)));
@@ -42,11 +47,11 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
 
     // 所支持的可视化方法初始化
     QStringList allCamMethods = {
-        "gradcam", "gradcam++", "xgradcam", "eigengradcam", "layercam",
-        "ablationcam", "eigencam", "featmapam",
+        "GradCAM", "GradCAMpp", "XGradCAM", "EigenGradCAM", "LayerCAM"
     };
     ui->comboBox_CAM_method->addItems(allCamMethods);
 
+    ui->pushButton_CAM_importImg->setEnabled(false);
 }
 
 ModelCAMPage::~ModelCAMPage(){
@@ -64,10 +69,6 @@ void ModelCAMPage::confirmVis(){
         QMessageBox::warning(NULL,"错误","未选择要可视化模型!");
         return;
     }
-    if(this->modelConfigPath.isEmpty()){
-        QMessageBox::warning(NULL,"错误","选择的模型没有配置文件，不支持可视化!");
-        return;
-    }
     if(this->targetVisLayer.isEmpty()){
         QMessageBox::warning(NULL,"错误","未选择可视化位置!");
         return;
@@ -80,13 +81,12 @@ void ModelCAMPage::confirmVis(){
     // 激活conda python环境
     QString activateEnv = "source "+this->condaPath+" "+this->condaEnvName+"&&";
     QString command = activateEnv + \
-        "python "+"../api/modelVis/vis_cam.py"+ \ 
-        " --img="           +this->choicedSamplePATH+ \
-        " --config="        +this->modelConfigPath+ \
-        " --checkpoint="    +this->modelCheckpointPath+ \
-        " --target-layers=" +this->targetVisLayer+ \ 
-        " --out-dir="       +this->camImgsSavePath+ \
-        " --method="        +this->choicedCamMethod;
+        "python " + this->pythonApiPath+ \ 
+        " --checkpoint="        + this->modelCheckpointPath+ \
+        " --visualize_layer="   + this->targetVisLayer+ \ 
+        " --signal_path="       + this->choicedSamplePATH+ \
+        " --cam_method="        + this->choicedCamMethod+ \
+        " --save_path="         + this->camImgsSavePath;
     // 执行python脚本
     this->terminal->print(command);
     this->execuCmdProcess(command);
@@ -125,7 +125,7 @@ void ModelCAMPage::processVisFinished(){
             recvShowPicSignal(QPixmap(this->camImgsSavePath+"/CAM_output.png"), ui->graphicsView_CAM_camImg);
 
         }
-        if(logs.contains("Error")){
+        if(logs.contains("Error") || logs.contains("Errno")){
             terminal->print("可视化失败！");
             QMessageBox::warning(NULL,"错误","所选隐层不支持决策可视化!");
             ui->progressBar_CAM->setMaximum(100);
@@ -136,66 +136,68 @@ void ModelCAMPage::processVisFinished(){
 
 void ModelCAMPage::refreshGlobalInfo(){
     // 基本信息更新
-    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
-        this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
-        ui->label_CAM_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    }
-    else{
-        this->choicedDatasetPATH = "";
-        ui->label_CAM_dataset->setText("空");
-    }
-    if(!modelInfo->selectedName.empty() && modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "PATH")){
-        ui->label_CAM_model->setText( QString::fromStdString(modelInfo->selectedName));
-        // python可解释接口所需要的路径更新
-        QString choicedModelPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "PATH"));
-        QString modelBasePath = choicedModelPath.split(".mar").first();
-        this->modelStructXmlPath    = modelBasePath.toStdString() + "_struct.xml";
-        this->modelStructImgPath    = modelBasePath + "_structImage";
-        this->modelConfigPath       = modelBasePath + "_config.py";
-        this->modelCheckpointPath   = modelBasePath + "_checkpoint.pth";
+    // if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
+    //     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
+    //     ui->label_CAM_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+    // }
+    // else{
+    //     this->choicedDatasetPATH = "";
+    //     ui->label_CAM_dataset->setText("空");
+    // }
+    // if(!modelInfo->selectedName.empty() && modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "PATH")){
+    //     ui->label_CAM_model->setText( QString::fromStdString(modelInfo->selectedName));
+    //     // python可解释接口所需要的路径更新
+    //     QString choicedModelPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "PATH"));
+    ui->label_CAM_dataset->setText("HRRP512_Simulation");
+    ui->label_CAM_model->setText("HRRP512_vis");
+    QString modelBasePath = QString::fromStdString(this->choicedModelPATH).split(".pth").first();
+    this->modelCheckpointPath   = QString::fromStdString(this->choicedModelPATH);
+    this->modelStructXmlPath    = modelBasePath.toStdString() + "_struct.xml";
+    this->modelStructImgPath    = modelBasePath + "_structImage";
+    this->camImgsSavePath       = modelBasePath + "_modelCAMOutput";
 
-        this->camImgsSavePath       = modelBasePath + "_modelCAMOutput";
-
-        clearComboBox();
-    }
-    else{
-        ui->label_CAM_model->setText( QString::fromStdString("空"));
-    }
+    clearComboBox();
+    // }
+    // else{
+    //     ui->label_CAM_model->setText( QString::fromStdString("空"));
+    // }
 }
 
 
 void ModelCAMPage::clearComboBox(){
-    if(!modelInfo->selectedName.empty()){
-        // 初始化第一个下拉框
-        QStringList L1Layers;
-        loadModelStruct_L1(L1Layers);
-        ui->comboBox_CAM_L1->clear();
-        ui->comboBox_CAM_L1->addItems(L1Layers);
-        ui->comboBox_CAM_L2->clear();
-        ui->comboBox_CAM_L3->clear();
-        ui->comboBox_CAM_L4->clear();
-        ui->comboBox_CAM_L5->clear();
+    // if(!modelInfo->selectedName.empty()){
+    //     // 初始化第一个下拉框
+    QStringList L1Layers;
+    loadModelStruct_L1(L1Layers);
+    ui->comboBox_CAM_L1->clear();
+    ui->comboBox_CAM_L1->addItems(L1Layers);
+    ui->comboBox_CAM_L2->clear();
+    ui->comboBox_CAM_L3->clear();
+    ui->comboBox_CAM_L4->clear();
+    ui->comboBox_CAM_L5->clear();
 
-        this->choicedLayer["L1"] = "NULL";
-        this->choicedLayer["L2"] = "NULL";
-        this->choicedLayer["L3"] = "NULL";
-        this->choicedLayer["L4"] = "NULL";
-        this->choicedLayer["L5"] = "NULL";
+    this->choicedLayer["L1"] = "NULL";
+    this->choicedLayer["L2"] = "NULL";
+    this->choicedLayer["L3"] = "NULL";
+    this->choicedLayer["L4"] = "NULL";
+    this->choicedLayer["L5"] = "NULL";
 
-        refreshVisInfo();
-    }
+    refreshVisInfo();
+    // }
 }
 
 
 void ModelCAMPage::refreshVisInfo(){
     // 提取目标层信息的特定格式
     QString targetVisLayer = "";
-    vector<string> tmpList = {"L1", "L2", "L3", "L4", "L5"};
+    // vector<string> tmpList = {"L1", "L2", "L3", "L4", "L5"};
+    vector<string> tmpList = {"L2", "L3"};
     for(auto &layer : tmpList){
         if(this->choicedLayer[layer] == "NULL"){
             continue;
         }
-        if(layer == "L1"){
+        // if(layer == "L1"){
+        if(layer == "L2"){
             targetVisLayer += QString::fromStdString(this->choicedLayer[layer]);
         }
         else{
@@ -229,56 +231,41 @@ int ModelCAMPage::randomImage(){
         QMessageBox::warning(NULL,"错误","未选择数据集!");
         return -1;
     }
-    // 获取所有子文件夹，并判断是否是图片、标注文件夹
+    
+    // 获取所有子文件夹
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, choicedDatasetPATH);
-    vector<string> targetKeys = {"images","labelTxt"};
-    for (auto &targetKey: targetKeys){
-        if(!(std::find(allSubDirs.begin(), allSubDirs.end(), targetKey) != allSubDirs.end())){
-            // 目标路径不存在目标文件夹
-            QMessageBox::warning(NULL,"错误","该数据集路径下不存在"+QString::fromStdString(targetKey)+"文件夹！");
-            return -1;
-        }
-    }
+    string choicedSubDir = allSubDirs[(rand())%allSubDirs.size()];
     // 获取图片文件夹下的所有图片文件名
-    vector<string> imageFileNames;
-    dirTools->getFiles(imageFileNames, ".png", choicedDatasetPATH+"/images");
-    
-    // 随机选取一张图片作为预览图片
+    vector<string> txtFileNames;
+    dirTools->getFiles(txtFileNames, ".txt", choicedDatasetPATH+"/"+choicedSubDir);
+    // 随机选取一个信号作为预览
     srand((unsigned)time(NULL));
-    string choicedImageFile = imageFileNames[(rand())%imageFileNames.size()];
-    string choicedImagePath = choicedDatasetPATH+"/images/"+choicedImageFile;
-    this->choicedSamplePATH = QString::fromStdString(choicedImagePath);
+    string choicedTxtFile = txtFileNames[(rand())%txtFileNames.size()];
+    string choicedTxtPath = choicedDatasetPATH+"/"+choicedSubDir+"/"+choicedTxtFile;
+    this->choicedSamplePATH = QString::fromStdString(choicedTxtPath);
 
-    // 读取图片
-    cv::Mat imgSrc = cv::imread(choicedImagePath.c_str(), cv::IMREAD_COLOR);
+    // 绘制样本
+    // qDebug()<<choicedSamplePATH;
+    Chart *previewChart = new Chart(ui->label_CAM_choicedImg,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",choicedSamplePATH);
+    previewChart->drawHRRPimage(ui->label_CAM_choicedImg);
 
-    // 读取GroundTruth，包含四个坐标和类别信息
-    std::vector<std::vector<cv::Point>> points_GT;
-    std::vector<std::string> labels_GT;
-    string labelPath = choicedDatasetPATH+"/labelTxt/"+choicedImageFile.substr(0,choicedImageFile.size()-4)+".txt";
-    dirTools->getGroundTruth(labels_GT, points_GT, labelPath);
+    ui->label_CAM_choicedImgName->setText(QString::fromStdString(choicedSubDir)+"/"+choicedSamplePATH.split("/").last());
 
-    // 在图片上画出GroundTruth的矩形框
-    cv::drawContours(imgSrc, points_GT, -1, cv::Scalar(16, 124, 16), 2);
-    // 绘制类别标签到图片上
-    for(size_t i = 0; i<labels_GT.size(); i++){
-        cv::putText(imgSrc, labels_GT[i], points_GT[i][1], cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(0, 204, 0), 1);
-    }
-    // 将图片显示到界面上
-    recvShowPicSignal(CVS::cvMatToQPixmap(imgSrc), ui->graphicsView_CAM_choicedImg);
-    ui->label_CAM_choicedImgName->setText(choicedSamplePATH.split("/").last());
+    return 1;
 }
 
 
 int ModelCAMPage::importImage(){
-    QString filePath = QFileDialog::getOpenFileName(NULL, "导入图片", "./", "Image Files (*.png *.jpg *.bmp *.tiff *.raw)");
+    QString filePath = QFileDialog::getOpenFileName(NULL, "导入图片", "./", "Image Files (*.txt)");
     if(filePath.isEmpty()){
         return -1;
     }
     this->choicedSamplePATH = filePath;
-    recvShowPicSignal(QPixmap(filePath), ui->graphicsView_CAM_choicedImg);
+    // recvShowPicSignal(QPixmap(filePath), ui->graphicsView_CAM_choicedImg);
     ui->label_CAM_choicedImgName->setText(choicedSamplePATH.split("/").last());
+
+    return 1;
 }
 
 

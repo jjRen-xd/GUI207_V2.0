@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>904</height>
+    <height>905</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,7 +99,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>721</width>
+             <width>493</width>
              <height>1109</height>
             </rect>
            </property>
@@ -2759,7 +2759,7 @@
              <x>0</x>
              <y>0</y>
              <width>761</width>
-             <height>574</height>
+             <height>358</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3679,8 +3679,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>733</width>
-             <height>588</height>
+             <width>296</width>
+             <height>270</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3888,8 +3888,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>335</width>
-                        <height>386</height>
+                        <width>117</width>
+                        <height>68</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4026,7 +4026,7 @@
              <x>0</x>
              <y>0</y>
              <width>719</width>
-             <height>1123</height>
+             <height>1073</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4088,19 +4088,38 @@
              </layout>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_86">
+             <layout class="QHBoxLayout" name="horizontalLayout_77">
               <item>
                <widget class="QGraphicsView" name="graphicsView_mV_modelImg">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>300</height>
+                  <height>250</height>
                  </size>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QGraphicsView" name="graphicsView_mV_choicedImg"/>
+               <widget class="QLabel" name="label_mV_choicedImg">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>250</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -4214,124 +4233,14 @@
               <layout class="QVBoxLayout" name="verticalLayout_62">
                <item>
                 <layout class="QGridLayout" name="gridLayout_mV">
-                 <item row="6" column="0">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea9"/>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea1"/>
-                 </item>
                  <item row="2" column="2">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea3"/>
-                 </item>
-                 <item row="6" column="2">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea11"/>
-                 </item>
-                 <item row="7" column="3">
-                  <widget class="QLabel" name="label_mV_fea12">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="3">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea12"/>
-                 </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="label_mV_fea9">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QLabel" name="label_mV_fea2">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
                   <widget class="QGraphicsView" name="graphicsView_mV_fea2"/>
                  </item>
-                 <item row="7" column="2">
-                  <widget class="QLabel" name="label_mV_fea11">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="1">
-                  <widget class="QLabel" name="label_mV_fea10">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="1">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea10"/>
-                 </item>
-                 <item row="4" column="0">
+                 <item row="6" column="0">
                   <widget class="QGraphicsView" name="graphicsView_mV_fea5"/>
                  </item>
-                 <item row="3" column="3">
-                  <widget class="QLabel" name="label_mV_fea4">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="2">
-                  <widget class="QLabel" name="label_mV_fea7">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="3">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea4"/>
-                 </item>
-                 <item row="5" column="3">
-                  <widget class="QLabel" name="label_mV_fea8">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="1">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea14"/>
-                 </item>
-                 <item row="4" column="2">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea7"/>
-                 </item>
-                 <item row="8" column="0">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea13"/>
-                 </item>
-                 <item row="8" column="3">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea16"/>
+                 <item row="4" column="0">
+                  <widget class="QGraphicsView" name="graphicsView_mV_fea3"/>
                  </item>
                  <item row="0" column="2">
                   <layout class="QHBoxLayout" name="horizontalLayout_117">
@@ -4369,9 +4278,19 @@
                      </property>
                     </widget>
                    </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_mV_nextPage">
+                     <property name="text">
+                      <string>下一页</string>
+                     </property>
+                    </widget>
+                   </item>
                   </layout>
                  </item>
-                 <item row="5" column="1">
+                 <item row="6" column="2">
+                  <widget class="QGraphicsView" name="graphicsView_mV_fea6"/>
+                 </item>
+                 <item row="7" column="2">
                   <widget class="QLabel" name="label_mV_fea6">
                    <property name="text">
                     <string>-</string>
@@ -4381,7 +4300,10 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="2">
+                 <item row="2" column="0">
+                  <widget class="QGraphicsView" name="graphicsView_mV_fea1"/>
+                 </item>
+                 <item row="5" column="0">
                   <widget class="QLabel" name="label_mV_fea3">
                    <property name="text">
                     <string>-</string>
@@ -4391,21 +4313,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="1">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea6"/>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QPushButton" name="pushButton_mV_nextPage">
-                   <property name="text">
-                    <string>下一页</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="2">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea15"/>
-                 </item>
-                 <item row="5" column="0">
-                  <widget class="QLabel" name="label_mV_fea5">
+                 <item row="5" column="2">
+                  <widget class="QLabel" name="label_mV_fea4">
                    <property name="text">
                     <string>-</string>
                    </property>
@@ -4424,41 +4333,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="3">
-                  <widget class="QGraphicsView" name="graphicsView_mV_fea8"/>
-                 </item>
-                 <item row="9" column="3">
-                  <widget class="QLabel" name="label_mV_fea16">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="2">
-                  <widget class="QLabel" name="label_mV_fea15">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="1">
-                  <widget class="QLabel" name="label_mV_fea14">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="0">
-                  <widget class="QLabel" name="label_mV_fea13">
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="label_mV_fea5">
                    <property name="text">
                     <string>-</string>
                    </property>
@@ -4471,6 +4347,19 @@
                   <widget class="QProgressBar" name="progressBar_mV_visFea">
                    <property name="value">
                     <number>0</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="2">
+                  <widget class="QGraphicsView" name="graphicsView_mV_fea4"/>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QLabel" name="label_mV_fea2">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
@@ -4542,9 +4431,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-239</y>
              <width>719</width>
-             <height>703</height>
+             <height>923</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_77">
@@ -4687,16 +4576,6 @@
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLabel" name="label_228">
-                <property name="text">
-                 <string>-</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
             <item>
@@ -4710,9 +4589,6 @@
                  </size>
                 </property>
                </widget>
-              </item>
-              <item>
-               <widget class="QGraphicsView" name="graphicsView"/>
               </item>
              </layout>
             </item>
@@ -4728,7 +4604,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>380</height>
+                <height>600</height>
                </size>
               </property>
               <property name="title">
@@ -4794,7 +4670,10 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_119">
+                <layout class="QHBoxLayout" name="horizontalLayout_119"/>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_69">
                  <item>
                   <widget class="QLabel" name="label_CAM_choicedImgName">
                    <property name="text">
@@ -4802,6 +4681,25 @@
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_CAM_choicedImg">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
                    </property>
                   </widget>
                  </item>
@@ -4815,39 +4713,12 @@
                    </property>
                   </widget>
                  </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_120">
-                 <item>
-                  <widget class="QGraphicsView" name="graphicsView_CAM_choicedImg">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>200</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>300</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_225">
-                   <property name="text">
-                    <string>&gt;&gt;&gt;</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item>
                   <widget class="QGraphicsView" name="graphicsView_CAM_camImg">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>200</height>
+                     <height>300</height>
                     </size>
                    </property>
                    <property name="maximumSize">
@@ -5515,9 +5386,6 @@
      <height>176</height>
     </size>
    </property>
-   <property name="features">
-    <set>QDockWidget::AllDockWidgetFeatures</set>
-   </property>
    <property name="windowTitle">
     <string>调试输出</string>
    </property>
@@ -5597,6 +5465,9 @@
     <addaction name="action_ModelTrain"/>
     <addaction name="separator"/>
     <addaction name="action_Monitor"/>
+    <addaction name="separator"/>
+    <addaction name="action_ModelVis"/>
+    <addaction name="action_ModelCAM"/>
    </widget>
    <widget class="QMenu" name="menu_dataset">
     <property name="title">
@@ -5981,6 +5852,24 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="action_ModelVis">
+   <property name="icon">
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/model_vis.png</normaloff>:/icon/model_vis.png</iconset>
+   </property>
+   <property name="text">
+    <string> 隐层可视化</string>
+   </property>
+  </action>
+  <action name="action_ModelCAM">
+   <property name="icon">
+    <iconset resource="../sources/MainWindow_sources.qrc">
+     <normaloff>:/icon/model_CAM.png</normaloff>:/icon/model_CAM.png</iconset>
+   </property>
+   <property name="text">
+    <string>决策可解释</string>
    </property>
   </action>
  </widget>

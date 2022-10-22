@@ -1,6 +1,9 @@
 #include "searchFolder.h"
+#include "qdebug.h"
 #include <string.h>
 #include <string>
+#include <fstream>
+#include <QObject>
 using namespace std;
 
 // 为了兼容win与linux双平台
@@ -92,3 +95,10 @@ bool SearchFolder::getDirs(vector<string> &dirs, string folderPath){
 }
 
 #endif
+
+
+
+bool SearchFolder::exist(const std::string& name) {
+  struct stat buffer;
+  return (stat (name.c_str(), &buffer) == 0);
+}

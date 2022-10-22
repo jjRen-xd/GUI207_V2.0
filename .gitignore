@@ -13,5 +13,7 @@
 !/lib\algorithm\code_here
 !/lib\guiLogic\code_here
 !/api\api_here
+
 conf/libtorch.pri
+/api/HRRP_vis
 

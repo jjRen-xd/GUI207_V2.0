@@ -1,23 +1,25 @@
 <RCC>
-    <qresource prefix="/">
-        <file>icon/cut.png</file>
-        <file>icon/dele_data.png</file>
-        <file>icon/dele_model.png</file>
-        <file>icon/evaluate.png</file>
-        <file>icon/file-text-o.png</file>
-        <file>icon/folder-open.png</file>
-        <file>icon/fullscreen.png</file>
-        <file>icon/import_data.png</file>
-        <file>icon/import_model.png</file>
-        <file>icon/models.png</file>
-        <file>icon/paste.png</file>
-        <file>icon/refresh.png</file>
-        <file>icon/remove.png</file>
-        <file>icon/reply.png</file>
-        <file>icon/rotate-left.png</file>
-        <file>icon/rotate-right.png</file>
-        <file>icon/save.png</file>
-        <file>icon/sense.png</file>
-        <file>icon/share.png</file>
-    </qresource>
+  <qresource prefix="/">
+    <file>icon/model_vis.png</file>
+    <file>icon/model_CAM.png</file>
+    <file>icon/cut.png</file>
+    <file>icon/dele_data.png</file>
+    <file>icon/dele_model.png</file>
+    <file>icon/evaluate.png</file>
+    <file>icon/file-text-o.png</file>
+    <file>icon/folder-open.png</file>
+    <file>icon/fullscreen.png</file>
+    <file>icon/import_data.png</file>
+    <file>icon/import_model.png</file>
+    <file>icon/models.png</file>
+    <file>icon/paste.png</file>
+    <file>icon/refresh.png</file>
+    <file>icon/remove.png</file>
+    <file>icon/reply.png</file>
+    <file>icon/rotate-left.png</file>
+    <file>icon/rotate-right.png</file>
+    <file>icon/save.png</file>
+    <file>icon/sense.png</file>
+    <file>icon/share.png</file>
+  </qresource>
 </RCC>

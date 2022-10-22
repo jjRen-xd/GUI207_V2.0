@@ -20,18 +20,25 @@ HEADERS += \
     core/MainWindow.h \
     core/datasetsWindow/chart.h \
     core/datasetsWindow/datasetDock.h \
+    core/modelCAMPage.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
+    core/modelVisPage.h \
     core/modelsWindow/modelDock.h \
     core/sensePage.h \
     lib/algorithm/libtorchTest.h \
     lib/guiLogic/bashTerminal.h \
+    lib/guiLogic/customWidget/imagewidget.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
+    lib/guiLogic/tools/convertTools.h \
     lib/guiLogic/tools/searchFolder.h
 SOURCES += \
+    core/modelCAMPage.cpp \
+    core/modelVisPage.cpp \
+    lib/guiLogic/customWidget/imagewidget.cpp \
     main.cpp \
     conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \

@@ -215,6 +215,23 @@ void ModelInfo::deleteItem(string type, string name){
     this->infoMap[type].erase(name);
 }
 
+
+bool ModelInfo::checkMap(string type, string name, string attri){
+    if(this->infoMap.count(type) == 0){
+        return false;
+        if(name!="NULL"){
+            if(this->infoMap[type].count(name) == 0){
+                return false;
+            }
+            if(attri!="NULL"){
+                if(this->infoMap[type][name].count(attri) == 0){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
 //infoMap example
 //map<QString, map<QString, map<QString,QString>>> infoMap = {
 //    {"HRRP",{

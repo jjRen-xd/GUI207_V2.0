@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <map>
-
+#include <opencv2/opencv.hpp>
 #include "ui_MainWindow.h"
 
 #include "./lib/guiLogic/bashTerminal.h"
@@ -73,6 +73,7 @@ private:
 
     // 选择的数据集、模型、样本信息
     std::string choicedDatasetPATH;
+    std::string choicedModelPATH;
     QString choicedModelName;
     QString choicedModelType;
     QString choicedSamplePATH;
@@ -81,12 +82,12 @@ private:
     // 选择模型结构的xml文件、预览图像路径 // FIXME 后期需要结合系统
     std::string modelStructXmlPath;
     QString modelStructImgPath;
-    QString modelConfigPath;
     QString modelCheckpointPath;
 
     QString camImgsSavePath;
     QString condaPath;
     QString condaEnvName;
+    QString pythonApiPath;
 
 
     std::map<std::string, std::string> choicedLayer;
