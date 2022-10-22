@@ -31,3 +31,7 @@ GUI_V2.0.pro.user
 !/api\api_here
 conf/libtorch.pri
 
+
+api/HRRP_vis
+
+GUI_V2.0.pro.user.1ae1144
