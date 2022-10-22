@@ -13,6 +13,8 @@
 #include <vector>
 #include <stdio.h>
 
+#include <time.h>
+
 #include "./lib/guiLogic/tools/searchFolder.h"
 
 //#include "./lib/guiLogic/bashTerminal.h"
@@ -34,7 +36,7 @@ class LibtorchTest: public QObject{
         ~LibtorchTest();
 
     public slots:
-        int testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree);
+        int testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree, double &predTime);
         void testAllSample(std::string hrrpdataset_path,std::string hrrpmodel_path,float &Acc,std::vector<std::vector<int>> &confusion_matrix);
     private:
 //        BashTerminal *terminal;

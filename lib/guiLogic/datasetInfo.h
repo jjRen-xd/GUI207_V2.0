@@ -33,6 +33,8 @@ class DatasetInfo{
 
         void modifyAttri(std::string Type, std::string Name, std::string Attri, std::string AttriValue);   //修改某一数据集的属性
 
+        bool checkMap(std::string type, std::string name="NULL", std::string attri="NULL");
+
     private:
 
         // 所有数据集核心数据Map

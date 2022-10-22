@@ -14,6 +14,13 @@ class BashTerminal: public QObject{
         BashTerminal(QLineEdit *inWidget, QTextEdit *outWidget);
         ~BashTerminal();
 
+        // 为了兼容win与linux双平台
+        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+        QString bashApi = "powershell";            // "Windows" or "Linux"
+        #else
+        QString bashApi = "bash";            // "Windows" or "Linux"
+        #endif
+
     public slots:
         void print(QString msg);        // 开放在终端打印str的接口
         void runCommand(QString cmd);   // 开放在终端运行命令接口
@@ -25,12 +32,7 @@ class BashTerminal: public QObject{
         QProcess *process_bash;
         QLineEdit *bashInEdit;      // 终端命令行输入
         QTextEdit *bashOutShow;     // 终端命令行输出
-        // 为了兼容win与linux双平台
-        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-        QString bashApi = "powershell";            // "Windows" or "Linux"
-        #else
-        QString bashApi = "bash";            // "Windows" or "Linux"
-        #endif
+
 
 
     private slots:
@@ -39,3 +41,6 @@ class BashTerminal: public QObject{
 };
 
 #endif // BASHTERMINAL_H
+
+
+

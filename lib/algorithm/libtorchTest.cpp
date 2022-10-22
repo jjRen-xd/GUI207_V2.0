@@ -74,7 +74,7 @@ struct Net: torch::nn::Module
 };
 
 
-int LibtorchTest::testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree){
+int LibtorchTest::testOneSample(std::string targetPath, std::string modelPath, std::vector<float> &degree, double &predTime){
     // model;
     torch::Device device(torch::kCPU);
     Net model;
@@ -84,19 +84,27 @@ int LibtorchTest::testOneSample(std::string targetPath, std::string modelPath, s
     model.load(archive);
     model.eval();
     std::cout << "Model Load Successfully"<<std::endl;
+
+    clock_t start_time, end_time;
+    start_time = clock();
+
     // dataset
     torch::Tensor data_tensor = getTensorFromTXT(targetPath);   //[CPUFloatType [2, 512]]
     auto data = data_tensor.to(device);
     data = data.to(torch::kFloat32).unsqueeze(0);
-    data.print();
-
+//    data.print();
     // forward
     auto output_tensor = model.forward(data);
     output_tensor = torch::softmax(output_tensor, 1).flatten();
     auto pred_tensor = output_tensor.argmax(0);
 
-    std::cout<<output_tensor<<std::endl;
-    std::cout<<pred_tensor<<std::endl;
+    end_time = clock();
+    predTime = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    
+    std::cout << "Predict Time: " << predTime << std::endl;
+
+//    std::cout<<output_tensor<<std::endl;
+//    std::cout<<pred_tensor<<std::endl;
 
     std::vector<float> output(output_tensor.data_ptr<float>(),output_tensor.data_ptr<float>()+output_tensor.numel());
     degree = output;

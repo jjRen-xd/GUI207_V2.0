@@ -11,6 +11,9 @@
 #include "./core/modelTrainPage.h"
 #include "./core/monitorPage.h"
 
+#include "./core/modelVisPage.h"
+#include "./core/modelCAMPage.h"
+
 //#include "./lib/guiLogic/modelEval.h"
 // 悬浮窗部件类
 #include "./core/datasetsWindow/datasetDock.h"
@@ -54,6 +57,9 @@ class MainWindow: public QMainWindow{
         ModelEvalPage *modelEvalPage;
         ModelTrainPage *modelTrainPage;
         MonitorPage *monitorPage;
+        
+        ModelVisPage *modelVisPage;
+        ModelCAMPage *modelCAMPage;
 
         DatasetInfo *globalDatasetInfo;
         ModelInfo *globalModelInfo;

@@ -21,5 +21,7 @@
         <file>icon/share.png</file>
         <file>icon/train.png</file>
         <file>icon/monitor.png</file>
-    </qresource>
+    <file>icon/model_vis.png</file>
+    <file>icon/model_CAM.png</file>
+  </qresource>
 </RCC>

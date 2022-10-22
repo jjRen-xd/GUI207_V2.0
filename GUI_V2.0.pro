@@ -20,9 +20,11 @@ HEADERS += \
     core/MainWindow.h \
     core/datasetsWindow/chart.h \
     core/datasetsWindow/datasetDock.h \
+    core/modelCAMPage.h \
     core/modelChoicePage.h \
     core/modelEvalPage.h \
     core/modelTrainPage.h \
+    core/modelVisPage.h \
     core/modelsWindow/modelDock.h \
     core/monitorPage.h \
     core/sensePage.h \
@@ -35,10 +37,13 @@ HEADERS += \
     lib/dataprocess/customdataset.h \
     lib/dataprocess/matdataprocess_afs.h \
     lib/guiLogic/bashTerminal.h \
+    lib/guiLogic/customWidget/imagewidget.h \
     lib/guiLogic/datasetInfo.h \
     lib/guiLogic/modelInfo.h \
     lib/guiLogic/tinyXml/tinystr.h \
     lib/guiLogic/tinyXml/tinyxml.h \
+    lib/guiLogic/tools/convertTools.h \
+    lib/guiLogic/tools/searchFolder.h
     lib/guiLogic/tools/guithreadrun.h \
     lib/guiLogic/tools/searchFolder.h \
     lib/TRANSFER/ToHrrp.h \
@@ -46,6 +51,9 @@ HEADERS += \
     lib/guiLogic/tools/socketserver.h
 
 SOURCES += \
+    core/modelCAMPage.cpp \
+    core/modelVisPage.cpp \
+    lib/guiLogic/customWidget/imagewidget.cpp \
     lib/algorithm/inferthread.cpp \
     lib/guiLogic/tools/socketclient.cpp \
     lib/guiLogic/tools/socketserver.cpp \

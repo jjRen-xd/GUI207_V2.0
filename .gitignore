@@ -17,6 +17,7 @@ lib/TRANSFER/ToHrrp_mcr/*
 GUI_V1.0.pro.user
 /.qt_for_python/*
 /temp
+/GUI_V2.0.pro.user
 
 GUI_V2.0.pro.user
 
@@ -29,7 +30,9 @@ GUI_V2.0.pro.user
 !/lib\algorithm\code_here
 !/lib\guiLogic\code_here
 !/api\api_here
+
 conf/libtorch.pri
+/api/HRRP_vis
 
 
 api/HRRP_vis

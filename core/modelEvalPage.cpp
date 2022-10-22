@@ -180,6 +180,7 @@ void  ModelEvalPage::testOneSample(){
         // 可视化结果
         ui->label_predClass->setText(predClass);
         ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+        ui->label_predTime->setText(QString("%1").arg(predTime));
         QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
         ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
 

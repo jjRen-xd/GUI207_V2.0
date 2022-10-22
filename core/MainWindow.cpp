@@ -23,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     connect(ui->action_ModelTrain, &QAction::triggered, this, &MainWindow::switchPage);
     connect(ui->action_Monitor, &QAction::triggered, this, &MainWindow::switchPage);
 
+    connect(ui->action_ModelVis, &QAction::triggered, this, &MainWindow::switchPage);
+    connect(ui->action_ModelCAM, &QAction::triggered, this, &MainWindow::switchPage);
+
+
     // 视图设置
 	connect(ui->actionFullScreen, &QAction::triggered, this, &MainWindow::fullScreen);
 
@@ -45,6 +49,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     this->modelTrainPage = new ModelTrainPage(this->ui, this->terminal,this->globalDatasetInfo, this->globalModelInfo, this->modelDock);
 
     this->monitorPage = new MonitorPage(this->ui, this->terminal,this->globalDatasetInfo,this->globalModelInfo);
+
+    this->modelVisPage = new ModelVisPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
+    this->modelCAMPage = new ModelCAMPage(this->ui, this->terminal, this->globalDatasetInfo, this->globalModelInfo);
+
 }
 
 
@@ -70,6 +78,15 @@ void MainWindow::switchPage(){
     else if(action==ui->action_Monitor){
         ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_monitor);
         this->monitorPage->refresh();
+    }
+    
+    else if(action==ui->action_ModelVis){
+        ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelVis);
+        this->modelVisPage->refreshGlobalInfo();
+    }
+    else if(action==ui->action_ModelCAM){
+        ui->stackedWidget_MultiPage->setCurrentWidget(ui->page_modelCAM);
+        this->modelCAMPage->refreshGlobalInfo();
     }
 }
 
