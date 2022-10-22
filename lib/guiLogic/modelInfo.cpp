@@ -56,11 +56,12 @@ map<string,string> ModelInfo::getAllAttri(string Type, string Name){
 
 
 string ModelInfo::getAttri(string type, string name, string attri){
+    if (!checkMap(type,name,attri)) return "";
     return this->infoMap[type][name][attri];
 }
 
 void ModelInfo::modifyAttri(string Type, string Name, string Attri, string AttriValue){
-    this->infoMap[Type][Name][Attri] = AttriValue;
+        this->infoMap[Type][Name][Attri] = AttriValue;
 }
 
 
@@ -212,7 +213,26 @@ int ModelInfo::addItemFromXML(string xmlPath){
 
 
 void ModelInfo::deleteItem(string type, string name){
-    this->infoMap[type].erase(name);
+    if(checkMap(type, name)){
+        this->infoMap[type].erase(name);
+    }
+}
+
+bool ModelInfo::checkMap(string type, string name, string attri){
+    if(!this->infoMap.count(type)){
+        return false;
+    }
+    else{
+        if(name!="NULL" && !this->infoMap[type].count(name)){
+            return false;
+        }
+        else{
+            if(attri!="NULL" && !this->infoMap[type][name].count(attri)){
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 //infoMap example

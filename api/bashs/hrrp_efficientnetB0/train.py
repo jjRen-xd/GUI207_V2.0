@@ -23,12 +23,13 @@ sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") fo
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128")
+    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128_6s")
     parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
     parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
     parser.add_argument('--model_name', help='the directory of the training data',default="model")
     parser.add_argument('--batch_size', help='the number of batch size',default=32)
     parser.add_argument('--max_epochs', help='the number of epochs',default=4)
+    parser.add_argument('--net', help="network frame", default="DenseNet121")
 
 
     args = parser.parse_args()
@@ -215,7 +216,18 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir,
     y_test = y_test[test_shuffle, :]
 
     model = tf.keras.models.Sequential()
-    model.add(tf.keras.applications.efficientnet.EfficientNetB0(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+
+    if (args.net == "DenseNet121"):
+        model.add(tf.keras.applications.densenet.DenseNet121(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    elif (args.net == "EfficientNetB0"):
+        model.add(tf.keras.applications.efficientnet.EfficientNetB0(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    elif (args.net == "VGG16"):
+        model.add(tf.keras.applications.vgg16.VGG16(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    elif (args.net == "ResNet101"):
+        model.add(tf.keras.applications.resnet.ResNet101(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    elif (args.net == "MobileNet"):
+        model.add(tf.keras.applications.mobilenet.MobileNet(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    
     model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
     learning_rate_reduction = tf.keras.callbacks.ReduceLROnPlateau(monitor='lr', patience=3, verbose=1,factor=0.99, min_lr=0.00001)
     
@@ -234,7 +246,7 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir,
     labels = folder_name 
     characteristic_matrix, accuracy_every_class = storage_characteristic_matrix(y_pred, Y_test, class_num)
     show_confusion_matrix(labels, characteristic_matrix, work_dir)
-    print(classification_report(Y_test, y_pred))
+    print(classification_report(Y_test, y_pred, digits=4))
 
 def convert_h5to_pb(h5Path,pbPath):
     model = tf.keras.models.load_model(h5Path,compile=False)

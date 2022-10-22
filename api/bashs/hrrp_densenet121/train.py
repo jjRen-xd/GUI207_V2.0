@@ -23,7 +23,7 @@ sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") fo
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128")
+    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128_6s")
     parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
     parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
     parser.add_argument('--model_name', help='the directory of the training data',default="model")
@@ -78,7 +78,7 @@ def read_mat(read_path):
         class_data_picture = []
         for j in range(0, len(class_data_normalization)):
             class_data_one = class_data_normalization[j]
-            empty = np.zeros((len(class_data_one), 16))
+            empty = np.zeros((len(class_data_one), 64))
             for k in range(0, len(class_data_one)):
                 empty[k, :] = class_data_one[k]
             class_data_picture.append(empty)
@@ -89,10 +89,10 @@ def read_mat(read_path):
         label[:, i] = 1
 
         # 划分训练数据集和测试数据集
-        x_train = class_data_picture[:int(len(class_data_picture)*4/5), :]
-        x_test = class_data_picture[int(len(class_data_picture)*4/5):, :]
-        y_train = label[:int(len(class_data_picture)*4/5), :]
-        y_test = label[int(len(class_data_picture)*4/5):, :]
+        x_train = class_data_picture[:int(len(class_data_picture)/2), :]
+        x_test = class_data_picture[int(len(class_data_picture)/2):, :]
+        y_train = label[:int(len(class_data_picture)/2), :]
+        y_test = label[int(len(class_data_picture)/2):, :]
         print("x_trian.shape=",x_train.shape)
         print("x_test.shape=",x_test.shape)
         if i == 0:

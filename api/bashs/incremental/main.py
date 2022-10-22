@@ -88,7 +88,7 @@ if __name__ == '__main__':
                   "New_OA:" + str(new_oa) + "\n" +
                   "All_OA:" + str(all_oa) + "\n\n" + str(metric))
     
-    cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+str(args.data_dimension)+"x1 --optShapes=input:20x1x"+str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+str(args.data_dimension)+"x1 --onnx="+args.work_dir + "/incrementModel.onnx "+" --saveEngine="+args.work_dir + "/incrementModel.trt --fp16")
+    cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+str(args.data_dimension)+"x1 --optShapes=input:20x1x"+str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+str(args.data_dimension)+"x1 --onnx="+args.work_dir + "/model/incrementModel.onnx "+" --saveEngine="+args.work_dir + "/incrementModel.trt --fp16"
     os.system(cmd_onnx2trt)
     print("Train Ended")
     sys.stdout.flush()

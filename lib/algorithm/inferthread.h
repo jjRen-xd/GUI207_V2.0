@@ -25,7 +25,7 @@ public:
     QMutex *lock;
 signals:
     void sigInferResult(int,QVariant);
-
+    void modelAlready();
 private:
     //trtInfer需要的参数
     std::string inferMode="";

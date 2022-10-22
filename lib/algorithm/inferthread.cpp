@@ -8,6 +8,7 @@ InferThread::InferThread(QSemaphore *s,std::queue<std::vector<float>>* sharedQ,Q
 void InferThread::run(){
     if(inferMode=="real_time_infer"){
         trtInfer->createEngine(modelPath);
+        emit modelAlready();
         while(true){
             qDebug()<<"(InferThread::run)  hewrewrwiewrhew";
             sem->acquire(1);

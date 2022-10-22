@@ -142,8 +142,9 @@ void removeLayout(QLayout *layout){
 
 
 void  ModelEvalPage::testOneSample(){
-
-    if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()){
+    struct stat buffer; 
+    int modelfileExist=(stat (choicedModelPATH.c_str(), &buffer) == 0);
+    if(!choicedModelPATH.empty() && !choicedSamplePATH.empty()&& (modelfileExist==1)){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
         //classnum==(datasetInfo->selectedClassNames.size())
@@ -187,7 +188,7 @@ void  ModelEvalPage::testOneSample(){
 
     }
     else{
-        QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！");
+        QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！(检查模型路径是否存在)");
     }
 }
 

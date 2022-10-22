@@ -33,6 +33,7 @@ public:
 
 public slots:
     void showInferResult(int,QVariant);
+    void enableSimulateSignal();
     void showColorMap();
     void showRealClass(int);
 private:

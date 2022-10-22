@@ -30,6 +30,7 @@ class ModelInfo{
         std::string getAttri(std::string type, std::string name, std::string attri);    // 获取指定模型指定属性的值
 
         void modifyAttri(std::string Type, std::string Name, std::string Attri, std::string AttriValue);   //修改指定数据集的指定属性
+        bool checkMap(std::string type, std::string name="NULL", std::string attri="NULL");
 
 
         std::string selectedType;

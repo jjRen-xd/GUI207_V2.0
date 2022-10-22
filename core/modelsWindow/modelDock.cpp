@@ -93,6 +93,9 @@ void ModelDock::importModel(string type){
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
+    }else if(modelPath.split('.').last()!="trt"){
+        QMessageBox::warning(NULL, "提示", "文件格式不为trt!");
+        return;
     }
     QString modelName = modelPath.split('/').last();
     string savePath = modelPath.toStdString();

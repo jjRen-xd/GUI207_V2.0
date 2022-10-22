@@ -15,14 +15,16 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
-
+    ui->simulateSignal->setEnabled(false);
+    ui->stopListen->setEnabled(false);
     QSemaphore sem;
     QMutex lock;
     inferThread =new InferThread(&sem,&sharedQue,&lock);//推理线程
     inferThread->setInferMode("real_time_infer");
     //connect(inferThread, &InferThread::sigInferResult,this,&MonitorPage::showInferResult);
     connect(inferThread, SIGNAL(sigInferResult(int,QVariant)),this,SLOT(showInferResult(int,QVariant)));
-    
+    connect(inferThread, SIGNAL(modelAlready()),this,SLOT(enableSimulateSignal()));
+
     server = new SocketServer(&sem,&sharedQue,&lock,terminal);//监听线程
     connect(server, SIGNAL(sigColorMap()),this,SLOT(showColorMap()));
 
@@ -102,6 +104,11 @@ void MonitorPage::showInferResult(int predIdx,QVariant qv){
     removeLayout2(ui->horizontalLayout_degreeChart2);
     ui->horizontalLayout_degreeChart2->addWidget(tempWidget);
     ui->jcLabel->setText(QString::fromStdString(label2class[predIdx]));
+}
+
+void MonitorPage::enableSimulateSignal(){
+    terminal->print("模型已载入可以开始模拟发送");
+    ui->simulateSignal->setEnabled(true);
 }
 
 void MonitorPage::showColorMap(){

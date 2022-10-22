@@ -99,7 +99,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>728</width>
+             <width>480</width>
              <height>1056</height>
             </rect>
            </property>
@@ -1415,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>745</width>
-             <height>586</height>
+             <width>605</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -3644,8 +3644,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>743</width>
-             <height>589</height>
+             <width>277</width>
+             <height>253</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3851,8 +3851,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>342</width>
-                        <height>405</height>
+                        <width>109</width>
+                        <height>69</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4653,9 +4653,9 @@
     <addaction name="separator"/>
     <addaction name="action_ModelChoice"/>
     <addaction name="separator"/>
-    <addaction name="action_Evaluate"/>
-    <addaction name="separator"/>
     <addaction name="action_ModelTrain"/>
+    <addaction name="separator"/>
+    <addaction name="action_Evaluate"/>
     <addaction name="separator"/>
     <addaction name="action_Monitor"/>
    </widget>
@@ -4875,7 +4875,7 @@
      <normaloff>:/icon/dele_data.png</normaloff>:/icon/dele_data.png</iconset>
    </property>
    <property name="text">
-    <string>删除数据库</string>
+    <string>删除数据集</string>
    </property>
    <property name="toolTip">
     <string>删除</string>

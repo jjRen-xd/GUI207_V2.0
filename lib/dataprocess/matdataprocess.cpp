@@ -34,8 +34,8 @@ void MatDataProcess::getAllDataFromMat(std::string matPath,bool dataProcess,std:
     int M = mxGetM(pMxArray);  //行数
     int N = mxGetN(pMxArray);  //列数
 
-    for(int i=0;i<N/2;i++){
-    //for(int i=N/2;i<N;i++){
+    //for(int i=0;i<N/2;i++){
+    for(int i=N/2;i<N;i++){
         std::vector<float> onesmp;//存当前遍历的一个样本
         for(int j=0;j<M;j++){
             onesmp.push_back(matdata[i*M+j]);
