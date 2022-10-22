@@ -12,7 +12,7 @@ ModelInfo::ModelInfo(string xmlPath):
     this->selectedName = "";
 
     // 中文名称对照表
-    var2TypeName["TRA_DL"] = "传统深度学习模型";
+    var2TypeName["TRA_DL"] = "深度学习模型";
     var2TypeName["FEA_RELE"] = "特征关联模型";
     var2TypeName["FEA_OPTI"] = "特征优化模型";
     var2TypeName["INCRE"] = "小样本增量学习模型";
