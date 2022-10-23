@@ -3,5 +3,9 @@
     <FEA_OPTI typeID="1" />
     <FEA_RELE typeID="2" />
     <INCRE typeID="3" />
-    <TRA_DL typeID="4" />
+    <TRA_DL typeID="4">
+        <resnet101_55_16_130.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-22-17-55-29-HRRP-falseHRRPmat_1x128_6s-resnet101_55_16_130/resnet101_55_16_130.trt</PATH>
+        </resnet101_55_16_130.trt>
+    </TRA_DL>
 </globalModelInfo>

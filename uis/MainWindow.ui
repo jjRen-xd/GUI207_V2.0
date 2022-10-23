@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>493</width>
-             <height>1109</height>
+             <width>480</width>
+             <height>1056</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1415,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>622</width>
-             <height>587</height>
+             <width>581</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2275,8 +2275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>265</width>
-               <height>246</height>
+               <width>259</width>
+               <height>235</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2438,8 +2438,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>395</width>
-               <height>593</height>
+               <width>398</width>
+               <height>584</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2758,8 +2758,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
-             <height>358</height>
+             <width>760</width>
+             <height>342</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3679,8 +3679,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>296</width>
-             <height>270</height>
+             <width>277</width>
+             <height>253</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3780,7 +3780,6 @@
                    <property name="font">
                     <font>
                      <pointsize>13</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -3825,7 +3824,6 @@
                    <property name="font">
                     <font>
                      <pointsize>15</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -3888,8 +3886,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>117</width>
-                        <height>68</height>
+                        <width>98</width>
+                        <height>28</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4025,8 +4023,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>719</width>
-             <height>1073</height>
+             <width>572</width>
+             <height>1072</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4431,9 +4429,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-239</y>
-             <width>719</width>
-             <height>923</height>
+             <y>0</y>
+             <width>726</width>
+             <height>921</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_77">
@@ -5460,8 +5458,6 @@
     <addaction name="separator"/>
     <addaction name="action_ModelChoice"/>
     <addaction name="separator"/>
-    <addaction name="action_ModelTrain"/>
-    <addaction name="separator"/>
     <addaction name="action_Evaluate"/>
     <addaction name="separator"/>
     <addaction name="action_ModelTrain"/>
@@ -5469,6 +5465,7 @@
     <addaction name="action_Monitor"/>
     <addaction name="separator"/>
     <addaction name="action_ModelVis"/>
+    <addaction name="separator"/>
     <addaction name="action_ModelCAM"/>
    </widget>
    <widget class="QMenu" name="menu_dataset">
@@ -5814,7 +5811,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../sources/MainWindow_sources.qrc">
      <normaloff>:/icon/train.png</normaloff>:/icon/train.png</iconset>
    </property>
    <property name="text">
@@ -5843,7 +5840,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../sources/MainWindow_sources.qrc">
      <normaloff>:/icon/monitor.png</normaloff>:/icon/monitor.png</iconset>
    </property>
    <property name="text">

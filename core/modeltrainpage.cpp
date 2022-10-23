@@ -85,17 +85,17 @@ void ModelTrainPage::startTrain(){
         }
         uiInitial();
         switch(trainModelType){
-            case 0:cmd = "activate tf24 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+            case 0:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net DenseNet121";break;
-            case 1:cmd = "activate tf24 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+            case 1:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"VGG16";break;
-            case 2:cmd = "activate tf24 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+            case 2:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"MobileNet";break;
-            case 3:cmd = "activate tf24 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+            case 3:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"ResNet101";break;
-            case 4:cmd = "activate tf24 && python ../../api/bashs/hrrp_efficientnetB0/train.py --data_dir "+choicedDatasetPATH+ \
+            case 4:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"EfficientNetB0";break;
-            case 5:cmd = "activate tf24 && python ../../api/bashs/afs/train.py --data_dir "+choicedDatasetPATH+ \
+            case 5:cmd = "activate tf24 && python ../../api/bashs/abfc/train.py --data_dir "+choicedDatasetPATH+ \
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
         }
     }
