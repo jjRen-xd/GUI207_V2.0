@@ -1,7 +1,7 @@
 # coding=utf-8
 import time,sys
 from config import log_path
-from dataProcess import read_txt, split_test_and_train, prepare_pretrain_data, prepare_increment_data, create_dir, read_mat_39, read_mat_256, read_mat_128_new
+from dataProcess import read_txt, split_test_and_train, prepare_pretrain_data, prepare_increment_data, create_dir, read_mat_new
 from train import Pretrain, IncrementTrain, Evaluation
 import argparse
 
@@ -43,12 +43,8 @@ if __name__ == '__main__':
             folder_names.append(file_name[i])
     folder_names.sort()  # 按文件夹名进行排序
 
-    if args.data_dimension == 39:
-        read_mat_39(args.raw_data_path)
-    if args.data_dimension == 128:
-        read_mat_128_new(args.raw_data_path,folder_names)
-    if args.data_dimension == 256:
-        read_mat_256_new(args.raw_data_path)
+    read_mat_new(args.raw_data_path,folder_names)
+
 
     datasetName = args.raw_data_path.split("/")[-1]
     args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName+'-'+args.model_name
@@ -59,7 +55,7 @@ if __name__ == '__main__':
     # 开始旧类训练
     pretrain_start = time.time()
     if args.pretrain_epoch != 0:
-        preTrain = Pretrain(args.old_class, args.memory_size, args.pretrain_epoch, args.batch_size, args.learning_rate)
+        preTrain = Pretrain(args.old_class, args.memory_size, args.pretrain_epoch, args.batch_size, args.learning_rate, args.data_dimension)
         preTrain.train()
     pretrain_end = time.time()
     print("pretrain_consume_time:", pretrain_end-pretrain_start)
@@ -67,13 +63,14 @@ if __name__ == '__main__':
     # 开始增量训练
     increment_start = time.time()
     if args.increment_epoch != 0:
-        incrementTrain = IncrementTrain(args.memory_size, args.all_class, args.all_class-args.old_class, args.task_size, args.increment_epoch, args.batch_size, args.learning_rate, args.bound, args.reduce_sample, args.work_dir, folder_names)
+        incrementTrain = IncrementTrain(args.memory_size, args.all_class, args.all_class-args.old_class, args.task_size, \
+        args.increment_epoch, args.batch_size, args.learning_rate, args.bound, args.reduce_sample, args.work_dir, folder_names, args.data_dimension)
         incrementTrain.train()
     increment_end = time.time()
     print("pretrain_consume_time:", increment_end-increment_start)
     sys.stdout.flush()
     # 测试
-    evaluation = Evaluation(args.all_class, args.all_class - args.old_class, args.batch_size)
+    evaluation = Evaluation(args.all_class, args.all_class - args.old_class, args.batch_size, args.data_dimension)
     old_oa, new_oa, all_oa, metric = evaluation.evaluate()
 
     timeArray = time.localtime(time.time())

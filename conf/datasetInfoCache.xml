@@ -6,34 +6,7 @@
         </fea_shuffle>
     </FEATURE>
     <HRRP typeID="2">
-        <falseHRRPmat_1x128_4 nameID="2">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_4</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
-            <datasetName>未定义</datasetName>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>未定义</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>512</samplingNum>
-            <targetNumEachCla>未定义001</targetNumEachCla>
-        </falseHRRPmat_1x128_4>
-        <falseHRRPmat_1x128_5 nameID="3">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_5</PATH>
-        </falseHRRPmat_1x128_5>
-        <falseHRRPmat_1x128_6 nameID="4">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_6</PATH>
-            <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
-            <datasetName>未定义</datasetName>
-            <freq>10GHz</freq>
-            <incidentMode>水平入射</incidentMode>
-            <note>未定义</note>
-            <pitchAngle>0</pitchAngle>
-            <samplingNum>512</samplingNum>
-            <targetNumEachCla>未定义001</targetNumEachCla>
-        </falseHRRPmat_1x128_6>
-        <falseHRRPmat_1x128_6s nameID="5">
+        <falseHRRPmat_1x128_6s nameID="2">
             <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_6s</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
             <claNum>5</claNum>
@@ -45,13 +18,19 @@
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
         </falseHRRPmat_1x128_6s>
-        <falseHRRPmat_1x256 nameID="6">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x256</PATH>
-        </falseHRRPmat_1x256>
+        <hrrp_1x128 nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/hrrp_1x128</PATH>
+        </hrrp_1x128>
+        <hrrp_1x128_100 nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/hrrp_1x128_100</PATH>
+        </hrrp_1x128_100>
+        <theta128 nameID="5">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/theta128</PATH>
+        </theta128>
     </HRRP>
     <IMAGE typeID="3" />
     <RADIO typeID="4">
-        <radiomat_1x101 nameID="7">
+        <radiomat_1x101 nameID="6">
             <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
         </radiomat_1x101>
     </RADIO>

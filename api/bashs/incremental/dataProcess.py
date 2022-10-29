@@ -110,7 +110,7 @@ def read_mat_256(raw_data_path):
     np.save(data_path + "test/label.npy", test_label)
 
 
-def read_mat_128_new(raw_data_path,folder_names):
+def read_mat_new(raw_data_path,folder_names):
     g = os.walk(raw_data_path)
     data_list = []
     label_list = []

@@ -130,7 +130,7 @@ int ModelInfo::loadFromXML(string xmlPath){
     TiXmlDocument datasetInfoDoc(xmlPath.c_str());   //xml文档对象
     bool loadOk=datasetInfoDoc.LoadFile();                  //加载文档
     if(!loadOk){
-        cout<<"Could not load the datasetInfo file.Error:"<<datasetInfoDoc.ErrorDesc()<<endl;
+        cout<<"Could not load the modelInfo file.Error:"<<datasetInfoDoc.ErrorDesc()<<endl;
         exit(1);
     }
 

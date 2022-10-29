@@ -26,6 +26,11 @@ ModelTrainPage::ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_termin
 
 
 void ModelTrainPage::refreshGlobalInfo(){
+    ui->cil_data_dimension_box->clear();
+    ui->cil_data_dimension_box->addItem(QString::number(256));
+    ui->cil_data_dimension_box->addItem(QString::number(128));
+    ui->cil_data_dimension_box->addItem(QString::number(39));
+
     if(QString::fromStdString(datasetInfo->selectedName)!=""){
         ui->choosedDataText->setText(QString::fromStdString(datasetInfo->selectedName));
         this->choicedDatasetPATH = QString::fromStdString(datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH"));
@@ -55,7 +60,7 @@ void ModelTrainPage::changeTrainType(){
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
     }
    else if(modelType==6){
-       ui->tabWidget->addTab(ui->tab_2,"Acc");
+       ui->tabWidget->addTab(ui->tab_2,"验证集准确率");
        ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
        ui->fewShotWidget->setVisible(true);
    }
@@ -77,7 +82,8 @@ void ModelTrainPage::startTrain(){
     old_class_num = ui->oldClassNumEdit->text();
     reduce_sample = ui->dataNumPercentEdit->text();
     pretrain_epoch = ui->preTrainEpochEdit->text(); 
-
+    cil_data_dimension = ui->cil_data_dimension_box->currentText();
+    
     if(trainModelType<6){
         if(batchSize=="" || epoch=="" || saveModelName==""){
             QMessageBox::warning(NULL,"错误","请检查各项文本框中训练参数是否正确配置!");
@@ -99,11 +105,18 @@ void ModelTrainPage::startTrain(){
                          " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
         }
     }
-    else if(trainModelType==6){
+    else if(trainModelType==6){     //小样本增量模型训练
         if(reduce_sample=="")reduce_sample="1.0";
         if(old_class_num=="")old_class_num="5";
         if(pretrain_epoch=="")pretrain_epoch="1";
-        cmd="activate PT && python ../../api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+" --time "+time+" --old_class "+old_class_num+" --reduce_sample "+reduce_sample+" --pretrain_epoch "+pretrain_epoch+" --increment_epoch "+epoch+" --model_name "+saveModelName;
+        cmd="activate PTyes && python ../../api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+ \
+        " --time "              + time + \
+        " --old_class "         + old_class_num + \
+        " --reduce_sample "     + reduce_sample + \
+        " --pretrain_epoch "    + pretrain_epoch + \
+        " --increment_epoch "   + epoch + \
+        " --model_name "        + saveModelName + \
+        " --data_dimension "    + cil_data_dimension;
     }
     execuCmd(cmd);
 }
@@ -220,13 +233,9 @@ void ModelTrainPage::editModelFile(){
     int modelType=ui->modelTypeBox->currentIndex();
     QString modelFilePath;
     switch(modelType){
-        case 0:modelFilePath="../../api/bashs/hrrp_densenet121/train.py";break;
-        case 1:modelFilePath="../../api/bashs/hrrp_vgg16/train.py";break;
-        case 2:modelFilePath="../../api/bashs/hrrp_mobilenet/train.py";break;
-        case 3:modelFilePath="../../api/bashs/hrrp_resnet101/train.py";break;
-        case 4:modelFilePath="../../api/bashs/hrrp_effcientnet80/train.py";break;
-        case 5:modelFilePath="../../api/bashs/afs/train.py";break;
+        case 5:modelFilePath="../../api/bashs/abfc/train.py";break;
         case 6:modelFilePath="../../api/bashs/incremental/model.py";break;
+        default:modelFilePath="../../api/bashs/hrrp_TRImodel/train.py";
     }
     QString commd="gvim " + modelFilePath;
     system(commd.toStdString().c_str());

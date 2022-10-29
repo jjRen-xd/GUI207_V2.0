@@ -5,7 +5,7 @@ import argparse
 import tensorflow.compat.v1 as tfv1
 import tensorflow.keras as keras
 import numpy as np
-import abfc_model
+import afs_model
 from data_process import read_mat, storage_characteristic_matrix, data_normalization
 from data_process import show_feature_selection, show_confusion_matrix
 from utils import BatchCreate
@@ -97,7 +97,7 @@ def inference(data_path,train_step, batchsize, f_start, f_end, f_interval, work_
     train_X, test_X = data_normalization(train_X), data_normalization(test_X)
     Train_Size = len(train_X)
     total_batch = Train_Size / batchsize
-    abfc_model.build(total_batch, len(train_X[0]), len(train_Y[0]))
+    afs_model.build(total_batch, len(train_X[0]), len(train_Y[0]))
     with tfv1.Session() as sess:  # 创建上下文
         tfv1.global_variables_initializer().run()  # 初始化模型参数
         print('== Get feature weight by using AFS ==')

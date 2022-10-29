@@ -37,7 +37,8 @@ public:
     QString old_class_num = "";
     QString reduce_sample = "";
     QString pretrain_epoch = "";
-
+    QString cil_data_dimension = "";
+    
     ModelTrainPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,
                    ModelInfo *globalModelInfo, ModelDock *modelDock);
     void refreshGlobalInfo();
@@ -63,7 +64,7 @@ public slots:
     void editModelFile();
 //    void chooseOldClass();
 
-signals:
+
 
 private:
 //    QString dataDir;

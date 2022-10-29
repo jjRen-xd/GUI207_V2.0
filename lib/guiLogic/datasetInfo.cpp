@@ -56,6 +56,7 @@ map<string,string> DatasetInfo::getAllAttri(string Type, string Name){
 
 
 string DatasetInfo::getAttri(string type, string name, string attri){
+    if (!checkMap(type,name,attri)) return "";
     return this->infoMap[type][name][attri];
 }
 
@@ -211,26 +212,29 @@ int DatasetInfo::addItemFromXML(string xmlPath){    //根据对应的xml将数�
 
 
 void DatasetInfo::deleteItem(string type, string name){
-    this->infoMap[type].erase(name);
+    if(checkMap(type, name)){
+        this->infoMap[type].erase(name);
+    }
 }
 
 
 bool DatasetInfo::checkMap(string type, string name, string attri){
-    if(this->infoMap.count(type) == 0){
+    if(!this->infoMap.count(type)){
         return false;
-        if(name!="NULL"){
-            if(this->infoMap[type].count(name) == 0){
+    }
+    else{
+        if(name!="NULL" && !this->infoMap[type].count(name)){
+            return false;
+        }
+        else{
+            if(attri!="NULL" && !this->infoMap[type][name].count(attri)){
                 return false;
-            }
-            if(attri!="NULL"){
-                if(this->infoMap[type][name].count(attri) == 0){
-                    return false;
-                }
             }
         }
     }
     return true;
 }
+
 //infoMap example
 //map<QString, map<QString, map<QString,QString>>> infoMap = {
 //    {"HRRP",{

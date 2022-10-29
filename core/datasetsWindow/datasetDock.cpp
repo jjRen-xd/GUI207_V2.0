@@ -322,7 +322,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                 }
             }
             else{
-                qDebug()<<dataFileFormat<<"没有对应此种数据文件类型的解析！";///////////////////////////////
+                qDebug()<<dataFileFormat<<"(DatasetDock::treeItemClicked)没有对应此种数据文件类型的解析！";
                 QMessageBox::information(NULL, "数据集错误", "没有对应此种数据文件类型的解析！");
             }
         }

@@ -6,9 +6,9 @@ import torch.nn.functional as F
 # from model import IncrementalModel, vgg_16, AlexNet
 
 # 三种不同维度的数据，导入对应的模型
-# from model import AlexNet_256 as IncrementalModel
-from model import AlexNet_128 as IncrementalModel
-# from model import AlexNet_39 as IncrementalModel
+from model import AlexNet_256 as IncrementalModel_256
+from model import AlexNet_128 as IncrementalModel_128
+from model import AlexNet_39 as IncrementalModel_39
 
 from myNetwork import Network
 from signalDataset import PretrainSignalDataset, IncrementSignalDataset, EvalDataset
@@ -21,7 +21,7 @@ from sklearn.metrics import classification_report
 
 
 class Pretrain:
-    def __init__(self, oldClassNumber, memorySize, preTrainEpoch, batch_size, learningRate):
+    def __init__(self, oldClassNumber, memorySize, preTrainEpoch, batch_size, learningRate, dataDimension):
         super().__init__()
         self.oldClassNumber = oldClassNumber
         self.memorySize = memorySize
@@ -29,6 +29,7 @@ class Pretrain:
         self.preTrainEpoch = preTrainEpoch
         self.batchSize = batch_size
         self.learningRate = learningRate
+        self.dataDimension = dataDimension
 
     def compute_loss(self, signals, target, classNumber):
         output = self.model(signals)
@@ -69,9 +70,16 @@ class Pretrain:
             # return test_accuracy
 
         prepare_pretrain_data(self.oldClassNumber)
-
-        featureExtractor = IncrementalModel()
-
+        if (self.dataDimension == 256):
+            featureExtractor = IncrementalModel_256()
+        elif (self.dataDimension == 128):
+            featureExtractor = IncrementalModel_128()
+        elif (self.dataDimension == 39):
+            featureExtractor = IncrementalModel_39()
+        else:
+            print("Data dimention is invaild!")
+            sys.stdout.flush()
+            
         self.model = Network(self.oldClassNumber, featureExtractor)
 
         train_dataset = PretrainSignalDataset(data_type="train")
@@ -145,7 +153,7 @@ class Pretrain:
 
 
 class IncrementTrain:
-    def __init__(self, memorySize, allClassNumber, newClassNumber, taskSize, incrementEpoch, batchSize, learningRate, bound, reduce_sample, work_dir, folder_names):
+    def __init__(self, memorySize, allClassNumber, newClassNumber, taskSize, incrementEpoch, batchSize, learningRate, bound, reduce_sample, work_dir, folder_names, dataDimension):
         super().__init__()
         self.memorySize = memorySize
         self.newClassNumber = newClassNumber
@@ -161,6 +169,7 @@ class IncrementTrain:
         self.reduce_sample = reduce_sample
         self.work_dir = work_dir
         self.folder_names=folder_names
+        self.dataDimension = dataDimension
 
     def compute_loss(self, model, signals, target, classNumber):
         output = model(signals)  # ( , 20)
@@ -280,8 +289,16 @@ class IncrementTrain:
         print("classes:", classes)
         sys.stdout.flush()
         # 更换模型
-        featureExtractor = IncrementalModel()
-
+        if (self.dataDimension == 256):
+            featureExtractor = IncrementalModel_256()
+        elif (self.dataDimension == 128):
+            featureExtractor = IncrementalModel_128()
+        elif (self.dataDimension == 39):
+            featureExtractor = IncrementalModel_39()
+        else:
+            print("Data dimention is invaild!")
+            sys.stdout.flush()
+            
         self.model = Network(old_class, featureExtractor)
         res = torch.load(model_path + "pretrain_" + str(old_class) + ".pt")
         self.model.load_state_dict(res['model'])
@@ -340,32 +357,35 @@ class IncrementTrain:
                 
                 print("epoch:{}, loss_value: {}. The best accuray is {}".format(i + 1, loss, best_acc))
                 sys.stdout.flush()
+
+
+                test_accuracy, confusion_matrix = self.test(test_dataloader)
+                if test_accuracy > best_acc:
+                    best_acc = test_accuracy
+                    state = {'model': self.model.state_dict()}
+                    # best_model = '{}_{}_model.pt'.format(i + 1, '%.3f' % best_acc)
+                    torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
+                    torch.save(state, self.work_dir + "/model/"+"increment_" + str(num_class) + ".pt")
+
+                    onnx_save_path = self.work_dir + "/model/"+"incrementModel.onnx"
+                    example_tensor = torch.randn(1, 1, self.dataDimension, 1).to(device)
+                    torch.onnx.export(self.model,  # model being run
+                        example_tensor,  # model input (or a tuple for multiple inputs)
+                        onnx_save_path,
+                        verbose=False,  # store the trained parameter weights inside the model file
+                        training=False,
+                        do_constant_folding=True,
+                        input_names=['input'],
+                        output_names=['output']
+                        )
+                    show_confusion_matrix(self.folder_names,confusion_matrix,self.work_dir)
                 if (i + 1) % 2 == 0:
-                    test_accuracy, confusion_matrix = self.test(test_dataloader)
-                    if test_accuracy > best_acc:
-                        best_acc = test_accuracy
-                        state = {'model': self.model.state_dict()}
-                        # best_model = '{}_{}_model.pt'.format(i + 1, '%.3f' % best_acc)
-                        torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
-                        torch.save(state, self.work_dir + "/model/"+"increment_" + str(num_class) + ".pt")
-                        #TODO 动态批量
-                        onnx_save_path = self.work_dir + "/model/"+"incrementModel.onnx"
-                        example_tensor = torch.randn(1, 1, 128, 1).to(device)
-                        torch.onnx.export(self.model,  # model being run
-                            example_tensor,  # model input (or a tuple for multiple inputs)
-                            onnx_save_path,
-                            verbose=False,  # store the trained parameter weights inside the model file
-                            training=False,
-                            do_constant_folding=True,
-                            input_names=['input'],
-                            output_names=['output']
-                            )
-                        show_confusion_matrix(self.folder_names,confusion_matrix,self.work_dir)
                     print('epoch: {} is finished. accuracy is: {}'.format(i + 1, test_accuracy))
                     sys.stdout.flush()
-                    acc_list.append(test_accuracy)
+                acc_list.append(test_accuracy)
+
             # torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
-            show_accplot(self.incrementEpoch/2,acc_list,self.work_dir)
+            show_accplot(len(acc_list),acc_list,self.work_dir)
             # res = torch.load(model_path + "/pretrain_" + str(oldClassNumber) + ".pt")
             # model.load_state_dict(res['model'])
             self.save_memory(train_dataset, num_class, self.memorySize)
@@ -392,12 +412,13 @@ class IncrementTrain:
 
 
 class Evaluation:
-    def __init__(self, all_class, new_class, batch_size):
+    def __init__(self, all_class, new_class, batch_size, data_dimension):
         super().__init__()
         self.new_class = new_class
         self.model = None
         self.batch_size = batch_size
         self.all_class = all_class
+        self.data_dimension = data_dimension
 
     def get_one_hot(self, target, num_class):
         one_hot = torch.zeros(target.shape[0], num_class).to(device)
@@ -443,8 +464,16 @@ class Evaluation:
         new_dataloader = DataLoader(new_dataset, shuffle=False, batch_size=self.batch_size, num_workers=1)
         observed_dataloader = DataLoader(observed_dataset, shuffle=False, batch_size=self.batch_size, num_workers=1)
 
-        feature_extractor = IncrementalModel()
-        
+        if (self.data_dimension == 256):
+            feature_extractor = IncrementalModel_256()
+        elif (self.data_dimension == 128):
+            feature_extractor = IncrementalModel_128()
+        elif (self.data_dimension == 39):
+            feature_extractor = IncrementalModel_39()
+        else:
+            print("Data dimention is invaild!")
+            sys.stdout.flush()
+
         self.model = Network(self.all_class, feature_extractor)
         res = torch.load(model_path + "increment_" + str(self.all_class) + ".pt")
         # res = torch.load(model_path + "increment_" + str(self.all_class) + "_256_save.pt")

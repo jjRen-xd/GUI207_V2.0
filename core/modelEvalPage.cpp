@@ -1,6 +1,6 @@
 #include "modelEvalPage.h"
 #include <QMessageBox>
-
+#include <QGraphicsScene>
 #include <QChart>
 #include <QBarSeries>
 #include <QBarSet>
@@ -209,7 +209,7 @@ void ModelEvalPage::testAllSample(){
 
         bool dataProcess=true;
         std::string flag="";
-        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是没做预处理的
+        if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是不做预处理的
 
         if(modelInfo->selectedType=="FEA_RELE"){
             int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
@@ -220,8 +220,6 @@ void ModelEvalPage::testAllSample(){
                 dataOrder.push_back(std::stoi(line));
     	        //cout<<std::stoi(line)<<endl;
 	        }infile.close();
-            //for(int i=0;i<39;i++) dataOrder.push_back(i);
-            //TODO读取模型文件附近的txt，初始化dataOrder[] 和 modelIdx
             trtInfer->setParmsOfAFS(modelIdx, dataOrder);
             flag="FEA_RELE";
         }
@@ -252,7 +250,16 @@ void ModelEvalPage::testAllSample(){
         delete [ ] numpyptr;
         qDebug()<<"(ModelEvalPage::testAllSample) python done";
         QString imgPath = QString::fromStdString("D:/confusion_matrix.jpg");
-        ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(QSize(576,432), Qt::KeepAspectRatio));
+
+        if(all_Images[ui->graphicsView_3_evalpageMatrix]){ //delete 原来的图
+            qgraphicsScene->removeItem(all_Images[ui->graphicsView_3_evalpageMatrix]);
+            delete all_Images[ui->graphicsView_3_evalpageMatrix]; //空悬指针
+            all_Images[ui->graphicsView_3_evalpageMatrix]=NULL;
+        }
+        if(this->dirTools->exist(imgPath.toStdString())){
+            recvShowPicSignal(QPixmap(imgPath), ui->graphicsView_3_evalpageMatrix);
+        }
+        //ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(QSize(576,432), Qt::KeepAspectRatio));
         //ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(ui->label_evalpageMatrix->size(), Qt::KeepAspectRatio));
         /*************************Draw******************************/
         QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
@@ -304,3 +311,14 @@ void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees
     QMessageBox::information(NULL, "单样本测试", "识别成果，结果已输出！");
 }
 
+void ModelEvalPage::recvShowPicSignal(QPixmap image, QGraphicsView *graphicsView){
+    //QGraphicsScene *qgraphicsScene = new QGraphicsScene; //要用QGraphicsView就必须要有QGraphicsScene搭配着用
+    all_Images[graphicsView] = new ImageWidget(&image);  //实例化类ImageWidget的对象m_Image，该类继承自QGraphicsItem，是自定义类
+    int nwith = graphicsView->width()*0.95;              //获取界面控件Graphics View的宽度
+    int nheight = graphicsView->height()*0.95;           //获取界面控件Graphics View的高度
+    all_Images[graphicsView]->setQGraphicsViewWH(nwith, nheight);//将界面控件Graphics View的width和height传进类m_Image中
+    qgraphicsScene->addItem(all_Images[graphicsView]);           //将QGraphicsItem类对象放进QGraphicsScene中
+    graphicsView->setSceneRect(QRectF(-(nwith/2), -(nheight/2),nwith,nheight));//使视窗的大小固定在原始大小，不会随图片的放大而放大（默认状态下图片放大的时候视窗两边会自动出现滚动条，并且视窗内的视野会变大），防止图片放大后重新缩小的时候视窗太大而不方便观察图片
+    graphicsView->setScene(qgraphicsScene); //Sets the current scene to scene. If scene is already being viewed, this function does nothing.
+    graphicsView->setFocus();               //将界面的焦点设置到当前Graphics View控件
+}

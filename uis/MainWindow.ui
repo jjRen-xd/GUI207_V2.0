@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1366</width>
-    <height>905</height>
+    <width>1520</width>
+    <height>1026</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>480</width>
-             <height>1056</height>
+             <width>576</width>
+             <height>1157</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1414,9 +1414,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>581</width>
-             <height>533</height>
+             <y>-2</y>
+             <width>866</width>
+             <height>623</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1999,11 +1999,7 @@
                      </layout>
                     </item>
                     <item>
-                     <widget class="QLabel" name="label_modelImg">
-                      <property name="text">
-                       <string/>
-                      </property>
-                     </widget>
+                     <widget class="QGraphicsView" name="graphicsView_2_modelImg"/>
                     </item>
                    </layout>
                   </item>
@@ -2275,8 +2271,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>259</width>
-               <height>235</height>
+               <width>409</width>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2315,24 +2311,6 @@
                   </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_48">
-                   <item>
-                    <widget class="QProgressBar" name="progressBar_2">
-                     <property name="value">
-                      <number>24</number>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line_20">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <layout class="QVBoxLayout" name="verticalLayout_47">
                    <item>
                     <widget class="QLabel" name="label_2">
@@ -2351,6 +2329,18 @@
                     <layout class="QHBoxLayout" name="horizontalLayout_46">
                      <item>
                       <widget class="QLabel" name="label_testAllAcc">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>50</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>15</pointsize>
@@ -2366,6 +2356,18 @@
                      </item>
                      <item>
                       <widget class="QLabel" name="label_25">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>50</height>
+                        </size>
+                       </property>
                        <property name="font">
                         <font>
                          <pointsize>15</pointsize>
@@ -2403,11 +2405,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_evalpageMatrix">
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </widget>
+                    <widget class="QGraphicsView" name="graphicsView_3_evalpageMatrix"/>
                    </item>
                   </layout>
                  </item>
@@ -2437,9 +2435,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
-               <width>398</width>
-               <height>584</height>
+               <y>-93</y>
+               <width>459</width>
+               <height>620</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2758,8 +2756,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>760</width>
-             <height>342</height>
+             <width>885</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3125,6 +3123,23 @@
                     </item>
                     <item>
                      <widget class="QLabel" name="label_26">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_129">
+                      <property name="text">
+                       <string>数据维度：</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cil_data_dimension_box"/>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_133">
                       <property name="text">
                        <string/>
                       </property>
@@ -3519,7 +3534,7 @@
                       <enum>Qt::LeftToRight</enum>
                      </property>
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>1</number>
                      </property>
                      <widget class="QWidget" name="tab">
                       <attribute name="title">
@@ -3679,8 +3694,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>277</width>
-             <height>253</height>
+             <width>885</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3886,8 +3901,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>98</width>
-                        <height>28</height>
+                        <width>409</width>
+                        <height>365</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4023,8 +4038,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>572</width>
-             <height>1072</height>
+             <width>864</width>
+             <height>1095</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4430,8 +4445,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>726</width>
-             <height>921</height>
+             <width>714</width>
+             <height>943</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_77">
@@ -5434,8 +5449,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1366</width>
-     <height>22</height>
+     <width>1520</width>
+     <height>26</height>
     </rect>
    </property>
    <property name="minimumSize">

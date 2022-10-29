@@ -1,5 +1,6 @@
 #include "modelChoicePage.h"
 #include <QMessageBox>
+#include <QGraphicsScene>
 
 using namespace std;
 
@@ -33,6 +34,7 @@ ModelChoicePage::ModelChoicePage(Ui_MainWindow *main_ui, BashTerminal *bash_term
     attriLabelGroup["batch"] = ui->lineEdit_modelChoice_batch;
     attriLabelGroup["other"] = ui->lineEdit_modelChoice_other;
 
+    qgraphicsScene = new QGraphicsScene; //要用QGraphicsView就必须要有QGraphicsScene搭配着用
 }
 
 ModelChoicePage::~ModelChoicePage(){
@@ -68,14 +70,22 @@ void ModelChoicePage::confirmModel(bool notDialog = false){
     terminal->print("Selected Type: " + selectedType + ", Selected Name: " + selectedName);
 
     if(!selectedType.isEmpty() && !selectedName.isEmpty()){
+        if(all_Images[ui->graphicsView_2_modelImg]){ //delete 原来的图
+            qgraphicsScene->removeItem(all_Images[ui->graphicsView_2_modelImg]);
+            delete all_Images[ui->graphicsView_2_modelImg]; //空悬指针
+            all_Images[ui->graphicsView_2_modelImg]=NULL;
+            
+        }
         // 更新属性显示标签
         updateAttriLabel();
         // 网络图像展示
         QString rootPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH"));
         QString imgPath = rootPath.split(".trt").first()+".png";
         terminal->print(imgPath);
-        ui->label_modelImg->setPixmap(QPixmap(imgPath).scaled(QSize(400,400), Qt::KeepAspectRatio));
-
+        //ui->label_modelImg->setPixmap(QPixmap(imgPath).scaled(QSize(400,400), Qt::KeepAspectRatio));
+        if(this->dirTools->exist(imgPath.toStdString())){qDebug()<<"add....";
+            recvShowPicSignal(QPixmap(imgPath), ui->graphicsView_2_modelImg);
+        }
         if(!notDialog)
             QMessageBox::information(NULL, "模型切换提醒", "已成功切换模型为->"+selectedType+"->"+selectedName+"！");
     }
@@ -133,4 +143,16 @@ void ModelChoicePage::saveModelAttri(){
         terminal->print("模型："+QString::fromStdString(type)+"->"+QString::fromStdString(name)+"->属性修改无效");
     }
 
+}
+
+void ModelChoicePage::recvShowPicSignal(QPixmap image, QGraphicsView *graphicsView){
+    //QGraphicsScene *qgraphicsScene = new QGraphicsScene; //要用QGraphicsView就必须要有QGraphicsScene搭配着用
+    all_Images[graphicsView] = new ImageWidget(&image);  //实例化类ImageWidget的对象m_Image，该类继承自QGraphicsItem，是自定义类
+    int nwith = graphicsView->width()*0.95;              //获取界面控件Graphics View的宽度
+    int nheight = graphicsView->height()*0.95;           //获取界面控件Graphics View的高度
+    all_Images[graphicsView]->setQGraphicsViewWH(nwith, nheight);//将界面控件Graphics View的width和height传进类m_Image中
+    qgraphicsScene->addItem(all_Images[graphicsView]);           //将QGraphicsItem类对象放进QGraphicsScene中
+    graphicsView->setSceneRect(QRectF(-(nwith/2), -(nheight/2),nwith,nheight));//使视窗的大小固定在原始大小，不会随图片的放大而放大（默认状态下图片放大的时候视窗两边会自动出现滚动条，并且视窗内的视野会变大），防止图片放大后重新缩小的时候视窗太大而不方便观察图片
+    graphicsView->setScene(qgraphicsScene); //Sets the current scene to scene. If scene is already being viewed, this function does nothing.
+    graphicsView->setFocus();               //将界面的焦点设置到当前Graphics View控件
 }

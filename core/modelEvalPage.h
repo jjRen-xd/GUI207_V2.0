@@ -6,17 +6,16 @@
 #include <map>
 #include <QObject>
 #include <QThread>
+#include <QGraphicsView>
 #include "ui_MainWindow.h"
 #include "./lib/guiLogic/bashTerminal.h"
 
 #include "./lib/guiLogic/modelInfo.h"
 #include "./lib/guiLogic/datasetInfo.h"
 #include "./core/datasetsWindow/chart.h"
-
 #include "./lib/guiLogic/tools/searchFolder.h"
+#include "./lib/guiLogic/customWidget/imagewidget.h"
 
-#include "lib/algorithm/libtorchTest.h"
-#include "lib/algorithm/onnxinfer.h"
 #include "lib/algorithm/trtinfer.h"
 
 #undef slots
@@ -36,11 +35,6 @@ public:
     void disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames);
     void testOneSample_ui();
     friend void testOneSample_ui2(ModelEvalPage dv);
-    //推理需要的全局变量
-//    std::promise<int> predIdx_promise;
-//    std::promise<std::vector<float>> degrees_promise;
-//    std::future<int> predIdx_future;
-//    std::future<std::vector<float>> degrees_future;
     int emIndex{0};
 
     Ui_MainWindow *ui;
@@ -70,10 +64,12 @@ private:
     std::string choicedSamplePATH;
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
-
+    // 缩放图像组件
+    std::map<QGraphicsView*, ImageWidget*> all_Images;     // 防止内存泄露
+    void recvShowPicSignal(QPixmap image, QGraphicsView* graphicsView);
+    QGraphicsScene *qgraphicsScene = new QGraphicsScene; //要用QGraphicsView就必须要有QGraphicsScene搭配着用
+    
     //推理算法
-    LibtorchTest *libtorchTest;
-    OnnxInfer *onnxInfer;
     TrtInfer *trtInfer;
     QThread *qthread1;
 

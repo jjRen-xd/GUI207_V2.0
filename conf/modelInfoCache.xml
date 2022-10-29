@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalModelInfo datasetTypeNum="4">
     <FEA_OPTI typeID="1" />
-    <FEA_RELE typeID="2" />
+    <FEA_RELE typeID="2">
+        <fea_test_feature_25.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-23-11-38-40-AFS-fea/fea_test_feature_25.trt</PATH>
+        </fea_test_feature_25.trt>
+    </FEA_RELE>
     <INCRE typeID="3" />
     <TRA_DL typeID="4">
-        <resnet101_55_16_130.trt nameID="1">
+        <densenet_55_32_130.trt nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-22-16-13-55-HRRP-falseHRRPmat_1x128_6s-densenet_55_32_130/densenet_55_32_130.trt</PATH>
+            <accuracy>100%</accuracy>
+            <algorithm>xml载入测试</algorithm>
+            <framework>0</framework>
+            <name>densenet_55_32_130.trt</name>
+            <note>备注测试</note>
+            <trainDataset>falseHRRP_1x128_6s</trainDataset>
+            <trainEpoch>130轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </densenet_55_32_130.trt>
+        <resnet101_55_16_130.trt nameID="3">
             <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-10-22-17-55-29-HRRP-falseHRRPmat_1x128_6s-resnet101_55_16_130/resnet101_55_16_130.trt</PATH>
         </resnet101_55_16_130.trt>
     </TRA_DL>

@@ -1,4 +1,4 @@
-#include <torch/torch.h>
+//#include <torch/torch.h>
 #include "trtinfer.h"
 #include <QDebug>
 #include <QMessageBox>
