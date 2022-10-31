@@ -153,18 +153,21 @@ void  ModelEvalPage::testOneSample(){
         bool dataProcess=true;std::string flag="";
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         if(modelInfo->selectedType=="FEA_RELE"){
-            int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
             std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
-            std::ifstream infile(feaWeightTxtPath);
-            while (getline(infile, line)){
-                if(++tempi==40){modelIdx=std::stoi(line);break;}
-                dataOrder.push_back(std::stoi(line));
-    	        //cout<<std::stoi(line)<<endl;
-	        }infile.close();
-            //for(int i=0;i<39;i++) dataOrder.push_back(i);
-            //TODO读取模型文件附近的txt，初始化dataOrder[] 和modelIdx
-            trtInfer->setParmsOfAFS(modelIdx, dataOrder);
-            flag="FEA_RELE";
+            if(this->dirTools->exist(feaWeightTxtPath)){//判断是abfc还是atec,依据就是有没有attention文件
+                int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
+                std::ifstream infile(feaWeightTxtPath);
+                while (getline(infile, line)){
+                    if(++tempi==40){modelIdx=std::stoi(line);break;}
+                    dataOrder.push_back(std::stoi(line));
+                }infile.close();
+                trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+                flag="FEA_RELE_abfc";
+            }
+            else{
+                flag="FEA_RELE_atec";
+                dataProcess=false;
+            }
         }
         trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees, flag);
 
@@ -212,16 +215,22 @@ void ModelEvalPage::testAllSample(){
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是不做预处理的
 
         if(modelInfo->selectedType=="FEA_RELE"){
-            int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
             std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
-            std::ifstream infile(feaWeightTxtPath);
-            while (getline(infile, line)){
-                if(++tempi==40){modelIdx=std::stoi(line);break;}
-                dataOrder.push_back(std::stoi(line));
-    	        //cout<<std::stoi(line)<<endl;
-	        }infile.close();
-            trtInfer->setParmsOfAFS(modelIdx, dataOrder);
-            flag="FEA_RELE";
+            if(this->dirTools->exist(feaWeightTxtPath)){//判断是abfc还是atec,依据就是有没有attention文件
+                int modelIdx=1,tempi=0;std::vector<int> dataOrder;std::string line;
+                std::ifstream infile(feaWeightTxtPath);
+                while (getline(infile, line)){
+                    if(++tempi==40){modelIdx=std::stoi(line);break;}
+                    dataOrder.push_back(std::stoi(line));
+                    //cout<<std::stoi(line)<<endl;
+                }infile.close();
+                trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+                flag="FEA_RELE_abfc";
+            }
+            else{
+                flag="FEA_RELE_atec";
+                dataProcess=false;
+            }
         }
 
         if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH,inferBatch,dataProcess,acc,confusion_matrix,flag)){

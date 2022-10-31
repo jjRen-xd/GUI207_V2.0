@@ -1414,8 +1414,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-2</y>
-             <width>866</width>
+             <y>0</y>
+             <width>725</width>
              <height>623</height>
             </rect>
            </property>
@@ -2271,8 +2271,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>409</width>
-               <height>548</height>
+               <width>321</width>
+               <height>303</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2435,7 +2435,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-93</y>
+               <y>0</y>
                <width>459</width>
                <height>620</height>
               </rect>
@@ -2936,7 +2936,12 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>FeatureRelate</string>
+                     <string>ABFC_fearelate</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>ATEC_fearelate</string>
                     </property>
                    </item>
                    <item>
@@ -3694,8 +3699,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>885</width>
-             <height>587</height>
+             <width>341</width>
+             <height>307</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3901,8 +3906,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>409</width>
-                        <height>365</height>
+                        <width>137</width>
+                        <height>85</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4038,7 +4043,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>864</width>
+             <width>714</width>
              <height>1095</height>
             </rect>
            </property>

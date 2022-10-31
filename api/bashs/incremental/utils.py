@@ -352,4 +352,4 @@ def show_accplot(epoch, acc, work_dir):
     plt.ylabel('Accuracy', fontsize=16)
     plt.xlabel('Epoch', fontsize=16)
     plt.tight_layout()
-    plt.savefig(work_dir+'/training_accuracy.jpg', dpi=300)
+    plt.savefig(work_dir+'/verification_accuracy.jpg', dpi=300)

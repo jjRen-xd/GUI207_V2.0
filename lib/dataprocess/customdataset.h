@@ -14,7 +14,7 @@ public:
 
     CustomDataset(std::string dataSetPath, bool dataProcess, std::string type, std::map<std::string, int> class2label,int inputLen,std::string flag="TRA_DL",int modelIdx=1,std::vector<int> dataOrder=std::vector<int>())
         :class2label(class2label){
-        if(flag=="FEA_RELE"){
+        if(flag=="FEA_RELE_abfc"){
             MatDataProcess_afs matDataPrcs(dataOrder,modelIdx);
             matDataPrcs.loadAllDataFromFolder(dataSetPath, type,dataProcess, data, labels, class2label,inputLen,eachClassQuantity);
         }
@@ -39,7 +39,7 @@ public:
         for(int i=0;i<theClassIdx;i++){
             globalIndexOnValidationSet += eachClassQuantity[i];
         }
-        //TODO ÒªÁé»î Ö®ºó¸ù¾Ý±ÈÀýÀ´
+        //TODO Òªï¿½ï¿½ï¿½ Ö®ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½ï¿½
         if(emIndex>=50)emIndex-=50;
         globalIndexOnValidationSet += emIndex;
         for(int i=0;i<data[globalIndexOnValidationSet].size();i++){
