@@ -23,9 +23,9 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
 
 //    this->condaPath = "/home/z840/anaconda3/bin/activate";
     this->condaEnvName = "207_base";
-    this->pythonApiPath = "../../api/HRRP_vis/vis_cam.py";
-    this->choicedDatasetPATH = "../../api/HRRP_vis/dataset/HRRP_20220508";
-    this->choicedModelPATH = "../../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
+    this->pythonApiPath = "./api/HRRP_vis/vis_cam.py";
+    this->choicedDatasetPATH = "./api/HRRP_vis/dataset/HRRP_20220508";
+    this->choicedModelPATH = "./api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
     refreshGlobalInfo();
 
     // 下拉框信号槽绑定

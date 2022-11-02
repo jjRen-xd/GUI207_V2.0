@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<globalModelInfo datasetTypeNum="4">
+    <FEA_OPTI typeID="1" />
+    <FEA_RELE typeID="2">
+        <abfc_feature_24.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/trainLogs/2022-11-02-12-45-37-AFS-fea/abfc_feature_24.trt</PATH>
+        </abfc_feature_24.trt>
+    </FEA_RELE>
+    <INCRE typeID="3">
+        <incrementModel.trt nameID="2">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-10-22-19-27-47-HRRP-falseHRRPmat_1x128_6s-CIL_55_20_30/incrementModel.trt</PATH>
+        </incrementModel.trt>
+    </INCRE>
+    <TRA_DL typeID="4">
+        <dense_32_50.trt nameID="3">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-10-20-15-44-29-HRRP-falseHRRPmat_1x128_6s-densenet121_82_32_50/dense_32_50.trt</PATH>
+        </dense_32_50.trt>
+        <densenet_55_32_130.trt nameID="4">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-10-22-16-13-55-HRRP-falseHRRPmat_1x128_6s-densenet_55_32_130/densenet_55_32_130.trt</PATH>
+            <accuracy>100%</accuracy>
+            <algorithm>xml载入测试</algorithm>
+            <framework>0</framework>
+            <name>densenet_55_32_130.trt</name>
+            <note>备注测试</note>
+            <trainDataset>falseHRRP_1x128_6s</trainDataset>
+            <trainEpoch>130轮</trainEpoch>
+            <trainLR>0.001</trainLR>
+        </densenet_55_32_130.trt>
+    </TRA_DL>
+</globalModelInfo>

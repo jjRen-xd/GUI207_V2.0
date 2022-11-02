@@ -30,7 +30,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     _import_array();
     PyRun_SimpleString("import sys");
     //PyRun_SimpleString("sys.path.append('./')");
-    PyRun_SimpleString("sys.path.append('../../lib/guiLogic/tools/')");
+    PyRun_SimpleString("sys.path.append('./lib/guiLogic/tools/')");
     pModule = PyImport_ImportModule("EvalPageConfusionMatrix");
     pFunc = PyObject_GetAttrString(pModule, "draw_confusion_matrix");
 

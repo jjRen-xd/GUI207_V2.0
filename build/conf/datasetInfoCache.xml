@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<globalDatasetInfo datasetTypeNum="5">
+    <FEATURE typeID="1">
+        <fea_shuffle nameID="1">
+            <PATH>C:/Users/dell/Desktop/db/datasets/fea_shuffle</PATH>
+        </fea_shuffle>
+    </FEATURE>
+    <HRRP typeID="2">
+        <falseHRRPmat_1x128_6s nameID="3">
+            <PATH>C:/Users/dell/Desktop/db/datasets/falseHRRPmat_1x128_6s</PATH>
+            <azimuthAngle>[0, 90, 1]</azimuthAngle>
+            <claNum>5</claNum>
+            <datasetName>未定义</datasetName>
+            <freq>10GHz</freq>
+            <incidentMode>水平入射</incidentMode>
+            <note>未定义</note>
+            <pitchAngle>0</pitchAngle>
+            <samplingNum>512</samplingNum>
+            <targetNumEachCla>未定义001</targetNumEachCla>
+        </falseHRRPmat_1x128_6s>
+        <radiomat_1x101_HRRP nameID="4">
+            <PATH>C:/Users/dell/Desktop/db/datasets/radiomat_1x101_HRRP</PATH>
+        </radiomat_1x101_HRRP>
+    </HRRP>
+    <IMAGE typeID="3" />
+    <RADIO typeID="4">
+        <radiomat_1x101 nameID="5">
+            <PATH>C:/Users/dell/Desktop/db/datasets/radiomat_1x101</PATH>
+        </radiomat_1x101>
+    </RADIO>
+    <RCS typeID="5" />
+</globalDatasetInfo>

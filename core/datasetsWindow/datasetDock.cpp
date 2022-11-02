@@ -180,7 +180,7 @@ void DatasetDock::onActionExtractFea(){
     string clickedName = currItem->data(0).toString().toStdString();
     std::string sourceDataSetPath = datasetInfo->getAttri("HRRP", clickedName, "PATH");
     std::string destDataSetPath=sourceDataSetPath+"_FEATURE";
-    std::string commd="python ../../lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
+    std::string commd="python ./lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
     qDebug()<<QString::fromStdString(commd);
     qDebug()<<system(commd.c_str());
 //    Py_Initialize();

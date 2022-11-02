@@ -16,7 +16,7 @@ DEFINES += _CRT_SECURE_NO_WARNINGS #avoid monitorPage.cpp's localtime waring
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    conf/QRibbon/QRibbon.h \
+    build/conf/QRibbon/QRibbon.h \
     core/MainWindow.h \
     core/datasetsWindow/chart.h \
     core/datasetsWindow/datasetDock.h \
@@ -28,37 +28,35 @@ HEADERS += \
     core/modelsWindow/modelDock.h \
     core/monitorPage.h \
     core/sensePage.h \
-    #lib/algorithm/libtorchTest.h \
-    #lib/algorithm/onnxinfer.h \
-    lib/algorithm/inferthread.h \
-    lib/algorithm/logging.h \
-    lib/algorithm/trtinfer.h \
-    lib/dataprocess/matdataprocess.h \
-    lib/dataprocess/customdataset.h \
-    lib/dataprocess/matdataprocess_afs.h \
-    lib/guiLogic/bashTerminal.h \
-    lib/guiLogic/customWidget/imagewidget.h \
-    lib/guiLogic/datasetInfo.h \
-    lib/guiLogic/modelInfo.h \
-    lib/guiLogic/tinyXml/tinystr.h \
-    lib/guiLogic/tinyXml/tinyxml.h \
-    lib/guiLogic/tools/convertTools.h \
-    lib/guiLogic/tools/searchFolder.h \
-    lib/guiLogic/tools/guithreadrun.h \
-    lib/guiLogic/tools/searchFolder.h \
-    lib/TRANSFER/ToHrrp.h \
-    lib/guiLogic/tools/socketclient.h \
-    lib/guiLogic/tools/socketserver.h
+    build/lib/algorithm/inferthread.h \
+    build/lib/algorithm/logging.h \
+    build/lib/algorithm/trtinfer.h \
+    build/lib/dataprocess/matdataprocess.h \
+    build/lib/dataprocess/customdataset.h \
+    build/lib/dataprocess/matdataprocess_afs.h \
+    build/lib/guiLogic/bashTerminal.h \
+    build/lib/guiLogic/customWidget/imagewidget.h \
+    build/lib/guiLogic/datasetInfo.h \
+    build/lib/guiLogic/modelInfo.h \
+    build/lib/guiLogic/tinyXml/tinystr.h \
+    build/lib/guiLogic/tinyXml/tinyxml.h \
+    build/lib/guiLogic/tools/convertTools.h \
+    build/lib/guiLogic/tools/searchFolder.h \
+    build/lib/guiLogic/tools/guithreadrun.h \
+    build/lib/guiLogic/tools/searchFolder.h \
+    build/lib/TRANSFER/ToHrrp.h \
+    build/lib/guiLogic/tools/socketclient.h \
+    build/lib/guiLogic/tools/socketserver.h
 
 SOURCES += \
     core/modelCAMPage.cpp \
     core/modelVisPage.cpp \
-    lib/guiLogic/customWidget/imagewidget.cpp \
-    lib/algorithm/inferthread.cpp \
-    lib/guiLogic/tools/socketclient.cpp \
-    lib/guiLogic/tools/socketserver.cpp \
+    build/lib/guiLogic/customWidget/imagewidget.cpp \
+    build/lib/algorithm/inferthread.cpp \
+    build/lib/guiLogic/tools/socketclient.cpp \
+    build/lib/guiLogic/tools/socketserver.cpp \
     main.cpp \
-    conf/QRibbon/QRibbon.cpp \
+    build/conf/QRibbon/QRibbon.cpp \
     core/MainWindow.cpp \
     core/datasetsWindow/chart.cpp \
     core/datasetsWindow/datasetDock.cpp \
@@ -68,27 +66,25 @@ SOURCES += \
     core/monitorPage.cpp \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
-    lib/dataprocess/matdataprocess.cpp \
-    lib/dataprocess/matdataprocess_afs.cpp \
-    #lib/algorithm/libtorchTest.cpp \
-    #lib/algorithm/onnxinfer.cpp \
-    lib/algorithm/trtinfer.cpp \
-    lib/guiLogic/tools/guithreadrun.cpp \
-    lib/guiLogic/bashTerminal.cpp \
-    lib/guiLogic/datasetInfo.cpp \
-    lib/guiLogic/modelInfo.cpp \
-    lib/guiLogic/tinyXml/tinystr.cpp \
-    lib/guiLogic/tinyXml/tinyxml.cpp \
-    lib/guiLogic/tinyXml/tinyxmlerror.cpp \
-    lib/guiLogic/tinyXml/tinyxmlparser.cpp \
-    lib/guiLogic/tools/searchFolder.cpp
+    build/lib/dataprocess/matdataprocess.cpp \
+    build/lib/dataprocess/matdataprocess_afs.cpp \
+    build/lib/algorithm/trtinfer.cpp \
+    build/lib/guiLogic/tools/guithreadrun.cpp \
+    build/lib/guiLogic/bashTerminal.cpp \
+    build/lib/guiLogic/datasetInfo.cpp \
+    build/lib/guiLogic/modelInfo.cpp \
+    build/lib/guiLogic/tinyXml/tinystr.cpp \
+    build/lib/guiLogic/tinyXml/tinyxml.cpp \
+    build/lib/guiLogic/tinyXml/tinyxmlerror.cpp \
+    build/lib/guiLogic/tinyXml/tinyxmlparser.cpp \
+    build/lib/guiLogic/tools/searchFolder.cpp
 
 FORMS += \
-    ./conf/QRibbon/qribbon.ui \
+    ./build/conf/QRibbon/qribbon.ui \
     ./uis/MainWindow.ui
 
 TRANSLATIONS += \
-    ./conf/QRibbon_yue_CN.ts
+    ./build/conf/QRibbon_yue_CN.ts
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -96,12 +92,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    ./conf/QRibbon/QRibbon.qrc \
+    ./build/conf/QRibbon/QRibbon.qrc \
     ./sources/MainWindow_sources.qrc \
-    conf/QRibbon/QRibbon.qrc \
+    build/conf/QRibbon/QRibbon.qrc \
     sources/MainWindow_sources.qrc
 
-include("./conf/libtorch.pri")
+include("./build/conf/libtorch.pri")
 
 RC_ICONS = "./sources/LOGO.ico"
 

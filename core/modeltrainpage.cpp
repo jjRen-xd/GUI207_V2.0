@@ -98,21 +98,21 @@ void ModelTrainPage::startTrain(){
         }
         uiInitial();
         switch(trainModelType){
-            case 0:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
+            case 0:cmd = "activate tf24 && python ./api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net DenseNet121";break;
-            case 1:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
+            case 1:cmd = "activate tf24 && python ./api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"VGG16";break;
-            case 2:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
+            case 2:cmd = "activate tf24 && python ./api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"MobileNet";break;
-            case 3:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
+            case 3:cmd = "activate tf24 && python ./api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"ResNet101";break;
-            case 4:cmd = "activate tf24 && python ../../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
+            case 4:cmd = "activate tf24 && python ./api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net "+"EfficientNetB0";break;
-            case 5:cmd = "activate tf24 && python ../../api/bashs/abfc/train.py --data_dir "+choicedDatasetPATH+ \
+            case 5:cmd = "activate tf24 && python ./api/bashs/abfc/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 6:cmd = "activate tf24 && python ../../api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
+            case 6:cmd = "activate tf24 && python ./api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+ \
-                        " --new_data_dir "+"../../db/datasets/"+datasetName+"_FEATURE";break;break;
+                        " --new_data_dir "+"./db/datasets/"+datasetName+"_FEATURE";break;break;
                         
         }
     }
@@ -120,7 +120,7 @@ void ModelTrainPage::startTrain(){
         if(reduce_sample=="")reduce_sample="1.0";
         if(old_class_num=="")old_class_num="5";
         if(pretrain_epoch=="")pretrain_epoch="1";
-        cmd="activate PTyes && python ../../api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+ \
+        cmd="activate PTyes && python ./api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+ \
         " --time "              + time + \
         " --old_class "         + old_class_num + \
         " --reduce_sample "     + reduce_sample + \
@@ -218,11 +218,11 @@ void ModelTrainPage::showTrianResult(){
     ui->trainProgressBar->setMaximum(100);
     ui->trainProgressBar->setValue(100);
     //TODO
-    QDir dir("../../db/trainLogs");
+    QDir dir("./db/trainLogs");
     QStringList dirList = dir.entryList(QDir::Dirs);
     foreach (auto dir , dirList){
         if(dir.contains(time)){
-            QString wordir    = "../../db/trainLogs/"+dir;
+            QString wordir    = "./db/trainLogs/"+dir;
             if(trainModelType==5){      //abfc
                 ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
                 ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
@@ -249,10 +249,10 @@ void ModelTrainPage::editModelFile(){
     int modelType=ui->modelTypeBox->currentIndex();
     QString modelFilePath;
     switch(modelType){
-        case 5:modelFilePath="../../api/bashs/abfc/train.py";break;
-        case 6:modelFilePath="../../api/bashs/atec/net_fea.py";break;
-        case 7:modelFilePath="../../api/bashs/incremental/model.py";break;
-        default:modelFilePath="../../api/bashs/hrrp_TRImodel/train.py";
+        case 5:modelFilePath="./api/bashs/abfc/train.py";break;
+        case 6:modelFilePath="./api/bashs/atec/net_fea.py";break;
+        case 7:modelFilePath="./api/bashs/incremental/model.py";break;
+        default:modelFilePath="./api/bashs/hrrp_TRImodel/train.py";
     }
     QString commd="gvim " + modelFilePath;
     system(commd.toStdString().c_str());
