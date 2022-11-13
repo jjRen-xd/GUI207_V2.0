@@ -51,16 +51,16 @@ def convert_h5to_pb(h5Path,pbPath):
     return inputNodeName,outputNodeName,inputShape
 
 
-def convert_hdf5_to_trt(model_type, work_dir, model_name, afsmode_Idx, workspace='3072', optBatch='20', maxBatch='100'):
+def convert_hdf5_to_trt(model_type, work_dir, model_name, abfcmode_Idx, workspace='3072', optBatch='20', maxBatch='100'):
     if model_type=='HRRP':
         hdfPath = work_dir+"/model/"+model_name+".hdf5"
-    elif model_type=='AFS':
-        hdfPath = work_dir+"/model/"+model_name+"_feature_"+afsmode_Idx+".hdf5"
-        trtPath = work_dir+"/"+model_name+"_feature_"+afsmode_Idx+".trt"
+    elif model_type=='ABFC':
+        hdfPath = work_dir+"/model/"+model_name+"_feature_"+abfcmode_Idx+".hdf5"
+        trtPath = work_dir+"/"+model_name+"_feature_"+abfcmode_Idx+".trt"
     elif model_type=='FewShot':
         hdfPath = work_dir+"/model/"+model_name+".hdf5"
     elif model_type=='ATEC':
-        hdfPath = work_dir+"/model/"+model_name+".hdf5"
+        hdfPath = work_dir+"/model/fea_ada_trans.hdf5"
         trtPath = work_dir+"/"+model_name+".trt"
     pbPath  = work_dir+"/model/temp.pb"
     oxPath  = work_dir+"/model/temp.onnx"
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_type', help='the directory of the training data',default="HRRP")
     parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
     parser.add_argument('--model_name', help='the directory of the training data',default="model")
-    parser.add_argument('--afsmode_Idx', help='the model index that be choosed one ',default="39")
+    parser.add_argument('--abfcmode_Idx', help='the model index that be choosed one ',default="39")
     args = parser.parse_args()
 
-    convert_hdf5_to_trt(args.model_type, args.work_dir, args.model_name, args.afsmode_Idx)
+    convert_hdf5_to_trt(args.model_type, args.work_dir, args.model_name, args.abfcmode_Idx)

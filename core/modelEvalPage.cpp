@@ -70,7 +70,6 @@ void ModelEvalPage::refreshGlobalInfo(){
     }
 }
 
-
 void ModelEvalPage::randSample(){
     // 获取下拉框类别内容
     string selectedClass = ui->comboBox_sampleType->currentText().toStdString();
@@ -119,7 +118,6 @@ void ModelEvalPage::randSample(){
 
 }
 
-
 // 移除布局子控件
 void removeLayout(QLayout *layout){
     QLayoutItem *child;
@@ -139,7 +137,6 @@ void removeLayout(QLayout *layout){
         child = nullptr;
     }
 }
-
 
 void  ModelEvalPage::testOneSample(){
     struct stat buffer; 
@@ -161,7 +158,7 @@ void  ModelEvalPage::testOneSample(){
                     if(++tempi==40){modelIdx=std::stoi(line);break;}
                     dataOrder.push_back(std::stoi(line));
                 }infile.close();
-                trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+                trtInfer->setParmsOfABFC(modelIdx, dataOrder);
                 flag="FEA_RELE_abfc";
             }
             else{
@@ -169,24 +166,21 @@ void  ModelEvalPage::testOneSample(){
                 dataProcess=false;
             }
         }
-        trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees, flag);
-
+        QString inferTime=trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees, flag);
+        ui->label_predTime->setText(inferTime);
         /*************************把下面都当做对UI的操作***************************/
-        std::cout<<"(ModelEvalPage::testOneSample)degrees:";
-        for(int i=0;i<degrees.size();i++){
-            std::cout<<degrees[i]<<" ";
-        } 
         QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
-        terminal->print("识别结果： " + predClass);
-        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
 
         // 可视化结果
         ui->label_predClass->setText(predClass);
         ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-//        ui->label_predTime->setText(QString("%1").arg(predTime));
         QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
         ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
-
+        std::cout<<"(ModelEvalPage::testOneSample)degrees:";
+        for(int i=0;i<degrees.size();i++){
+            std::cout<<degrees[i]<<" ";
+            degrees[i]=round(degrees[i] * 100) / 100;
+        }
         // 绘制隶属度柱状图
         disDegreeChart(predClass, degrees, label2class);
 
@@ -195,7 +189,6 @@ void  ModelEvalPage::testOneSample(){
         QMessageBox::warning(NULL, "单样本测试", "数据或模型未指定！(检查模型路径是否存在)");
     }
 }
-
 
 // TODO 待优化
 void ModelEvalPage::testAllSample(){
@@ -224,7 +217,7 @@ void ModelEvalPage::testAllSample(){
                     dataOrder.push_back(std::stoi(line));
                     //cout<<std::stoi(line)<<endl;
                 }infile.close();
-                trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+                trtInfer->setParmsOfABFC(modelIdx, dataOrder);
                 flag="FEA_RELE_abfc";
             }
             else{
@@ -234,11 +227,10 @@ void ModelEvalPage::testAllSample(){
         }
 
         if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH,inferBatch,dataProcess,acc,confusion_matrix,flag)){
+            qDebug()<<"(modelEvalPage::testAllSample) trtInfer-testAll failed~";
             return ;
         }
-
         
-
         /*************************Draw******************************/
         int* numpyptr= new int[classNum*classNum];
         for(int i=0;i<classNum;i++){
@@ -255,10 +247,12 @@ void ModelEvalPage::testAllSample(){
         PyTuple_SetItem(args, 0, Py_BuildValue("s", stringparm.c_str()));
         PyTuple_SetItem(args, 1, PyArray);
         //函数调用
-        pRet = (PyArrayObject*)PyObject_CallObject(pFunc, args);
+        qDebug()<<"(modelEvalPage::testAllSample) AAAAAAAAAAAAAAAAAAA";
+        //pRet = (PyArrayObject*)PyObject_CallObject(pFunc, args);
+        qDebug()<<"(modelEvalPage::testAllSample) BBBBBBBBBBBBBBBBBBB";
         delete [ ] numpyptr;
         qDebug()<<"(ModelEvalPage::testAllSample) python done";
-        QString imgPath = QString::fromStdString("D:/confusion_matrix.jpg");
+        QString imgPath = QString::fromStdString("./confusion_matrix.jpg");
 
         if(all_Images[ui->graphicsView_3_evalpageMatrix]){ //delete 原来的图
             qgraphicsScene->removeItem(all_Images[ui->graphicsView_3_evalpageMatrix]);
@@ -280,7 +274,7 @@ void ModelEvalPage::testAllSample(){
 }
 
 void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
-    
+
     QChart *chart = new QChart;
     //qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
     std::map<QString, vector<float>> mapnum;

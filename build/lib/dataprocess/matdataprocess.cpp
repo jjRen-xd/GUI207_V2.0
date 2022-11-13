@@ -41,17 +41,13 @@ void MatDataProcess::getAllDataFromMat(std::string matPath,bool dataProcess,std:
             onesmp.push_back(matdata[i*M+j]);
         }
         if(dataProcess) oneNormalization(onesmp);//归一化
-        // if(matVariable=="Cone"&&i<51){
-        //     std::cout<<std::endl<<"(MatDataProcess::getAllDataFromMat)Cone.mat the "<<i<<"col data:"<<std::endl;
-        //     for(int p=0;p<onesmp.size();p++) std::cout<<onesmp[p]<<" ";
-        // }
         std::vector<float> temp;
         int numberOfcopies=inputLen/M; //复制次数=网络的输入长度/一个样本数据的长度
         for(int j=0;j<inputLen;j++){
-            //temp.push_back(onesmp[j%M]);//如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
-            temp.push_back(onesmp[j/numberOfcopies]);
+            //如果inputLen比N还小，不会报错，但显然数据集和模型是不对应的吧，得到的推理结果应会很难看
+            temp.push_back(onesmp[j/numberOfcopies]);//64*128,对应训练时(128,64,1)的输入维度
+            //temp.push_back(onesmp[j%M]);//128*64,对应训练时(64,128,1)的输入维度
         }
-        //std::cout<<&temp<<std::endl;
 
         data.push_back(temp);
         labels.push_back(label);
@@ -71,7 +67,7 @@ void MatDataProcess::loadAllDataFromFolder(std::string datasetPath,std::string t
         std::string subDirPath = datasetPath+"/"+subDir;
         dirTools->getFiles(fileNames, type, subDirPath);
         for(auto &fileName: fileNames){
-            qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
+            //qDebug()<<QString::fromStdString(subDirPath)<<"/"<<QString::fromStdString(fileName)<<" label:"<<class2label[subDir];
             getAllDataFromMat(subDirPath+"/"+fileName,dataProcess,data,labels,class2label[subDir],inputLen);
         }
     }

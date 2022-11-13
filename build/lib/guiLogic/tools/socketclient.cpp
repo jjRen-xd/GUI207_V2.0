@@ -1,10 +1,11 @@
+/*模拟信号发送的线程，是socketServer的生产者*/
 #include "socketclient.h"
 #pragma comment(lib,"ws2_32.lib")   // 库文件
 #define PORT 2287
 #define RECEIVE_BUF_SIZ 512
 
 SocketClient::SocketClient(){
-
+    //moveToThread(this); 
 }
 
 void SocketClient::initSocketClient() {
@@ -46,30 +47,28 @@ SOCKET SocketClient::createClientSocket(const char* ip){
 }
 
 void SocketClient::run(){
+    qDebug()<<"SocketClient::run is in thread:"<<QThread::currentThreadId();
+    m_flag = true;
     char send_buf[BUFSIZ];
     SOCKET s_server;
     initSocketClient();
     s_server = createClientSocket("127.0.0.1");
-
-    // std::map<int, std::string> label2class;
-    // std::map<std::string, int> class2label;
-    // label2class[0] ="DT";label2class[1] ="Moxiu"; label2class[2] ="WD";
-    // label2class[3] ="bigball"; label2class[4] ="sallball"; label2class[5] ="taper";
-    // for(auto &item: label2class){
-    //     class2label[item.second] = item.first;
-    // }
-    // std::string dataset_path="D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128";
-    // bool dataProcess=false;
     int inputLen=128;
-    for (auto const &pair: class2label) {
-        qDebug()<< "{" << QString::fromStdString(pair.first) << ": " << QString::number(pair.second) << "}";
-    }
-    qDebug()<<"(SocketClient::run)datasetlPath=="<<QString::fromStdString(datasetlPath);
+    // for (auto const &pair: class2label) {
+    //     qDebug()<< "{" << QString::fromStdString(pair.first) << ": " << QString::number(pair.second) << "}";
+    // }
+    //qDebug()<<"(SocketClient::run)datasetlPath=="<<QString::fromStdString(datasetlPath);
     auto mydataset = CustomDataset(datasetlPath, false, ".mat", class2label,inputLen);//发的数据不做归一化预处理。inputLen要和单一样本长度一致，而不能是可能更大的输入层数据长度
     int mydataset_size=mydataset.labels.size();
     int classIdx_rightnow=mydataset.labels[0];
-    qDebug()<<"(SocketClient::run)mydataset_size=="<<QString::number(mydataset.labels.size());
+    //qDebug()<<"(SocketClient::run)mydataset_size=="<<QString::number(mydataset.labels.size());
     for(int i=0;i<mydataset_size;i++){
+        if(isInterruptionRequested()) break;
+        while(!startOrstop){};//如果是0就卡在这里
+        // QMutexLocker lock(&m_lock);
+        // if(!m_flag) break;
+        // while(!m_flag){};//如果是0就卡在这里
+
         for(int j=0;j<inputLen;j++){
             float floatVariable = mydataset.data[i][j];
             std::string str = std::to_string(floatVariable);
@@ -87,7 +86,6 @@ void SocketClient::run(){
         if (i == 0){
             _sleep(2500);
             emit sigClassName(classIdx_rightnow);
-            //qDebug()<<"gonnnnnnnnnnnnnnnnnnnnnna  toooooooooooooooo  emit  "<<classIdx_rightnow;
         }
         qDebug()<< "==================Send "<<QString::number(inputLen)<<"==============="<< QString::number(i);
     }
@@ -101,3 +99,8 @@ void SocketClient::setParmOfRTI(std::string datasetP){
     datasetlPath=datasetP;
 }
 
+void SocketClient::startOrstop_slot(bool startorstop){
+    startOrstop=startorstop;
+    qDebug()<<"startOrstop="<<startOrstop;
+    qDebug()<<"startOrstop_slot function is in thread:"<<QThread::currentThreadId();
+}

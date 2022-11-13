@@ -70,7 +70,10 @@ void DatasetDock::importDataset(string type){
         return;
     }
     QString datasetName = rootPath.split('/').last();
-
+    if((datasetName[0]<='9'&&datasetName[0]>='0')||datasetName[0]=='-'){
+        QMessageBox::warning(NULL,"提示","数据集名称不能以数字或'-'开头!");
+        return;
+    }
     vector<string> allXmlNames;
     dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
     if (allXmlNames.empty()){
@@ -174,7 +177,6 @@ void DatasetDock::onTreeViewMenuRequestedRadio(const QPoint &pos){
 }
 
 void DatasetDock::onActionExtractFea(){
-    //system("python D:\\lyh\\GUI207_V2.0\\db\\datasets\\feature_extraction.py --data_path D:\\lyh\\GUI207_V2.0\\db\\datasets\\falseHRRPmat_1x128 --save_path D:\\lyh\\GUI207_V2.0\\db\\datasets\\fea_falseHRRPmat_1x128");
     QModelIndex curIndex = datasetTreeViewGroup["HRRP"]->currentIndex();
     QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["HRRP"]->model())->itemFromIndex(curIndex);
     string clickedName = currItem->data(0).toString().toStdString();
@@ -293,7 +295,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
             string choicedClass = subDirNames[(rand()+i)%subDirNames.size()];
             string classPath = rootPath +"/"+ choicedClass;
             // 随机选取数据
-            if(dataFileFormat==QString::fromStdString("txt")){//可以被淘汰的
+            if(dataFileFormat==QString::fromStdString("txt")){
                 vector<string> allTxtFile;
                 if(dirTools->getFiles(allTxtFile, ".txt", classPath)){
                     string choicedFile = allTxtFile[(rand())%allTxtFile.size()];
@@ -303,6 +305,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                     Chart *previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
                     previewChart->drawImage(chartGroup[i],"HRRP",0);
                     chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+choicedFile));
+                    //chartInfoGroup[i]->setText(QString::fromStdString(allMatFile[0]+":"+std::to_string(randomIdx)));
                 }
             }
             else if(dataFileFormat==QString::fromStdString("mat")){
@@ -318,7 +321,9 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                     else if (clickedType=="FEATURE") chartTitle="Feture Temporary Title";
                     Chart *previewChart = new Chart(chartGroup[i],chartTitle,matFilePath);
                     previewChart->drawImage(chartGroup[i],clickedType,randomIdx);
-                    chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));
+                    //chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));
+                    chartInfoGroup[i]->setText(QString::fromStdString(allMatFile[0]+":"+std::to_string(randomIdx)));
+                    
                 }
             }
             else{

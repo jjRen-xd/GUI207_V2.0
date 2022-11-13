@@ -33,7 +33,7 @@ HEADERS += \
     build/lib/algorithm/trtinfer.h \
     build/lib/dataprocess/matdataprocess.h \
     build/lib/dataprocess/customdataset.h \
-    build/lib/dataprocess/matdataprocess_afs.h \
+    build/lib/dataprocess/matdataprocess_abfc.h \
     build/lib/guiLogic/bashTerminal.h \
     build/lib/guiLogic/customWidget/imagewidget.h \
     build/lib/guiLogic/datasetInfo.h \
@@ -67,7 +67,7 @@ SOURCES += \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
     build/lib/dataprocess/matdataprocess.cpp \
-    build/lib/dataprocess/matdataprocess_afs.cpp \
+    build/lib/dataprocess/matdataprocess_abfc.cpp \
     build/lib/algorithm/trtinfer.cpp \
     build/lib/guiLogic/tools/guithreadrun.cpp \
     build/lib/guiLogic/bashTerminal.cpp \

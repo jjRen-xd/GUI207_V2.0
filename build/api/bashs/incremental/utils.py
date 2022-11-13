@@ -4,6 +4,7 @@ from sklearn import metrics
 from sklearn.manifold import TSNE
 from sklearn.metrics import confusion_matrix
 import torch
+import shutil,os
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import pandas as pd
@@ -321,7 +322,7 @@ def show_confusion_matrix(classes, confusion_matrix, work_dir):
     plt.imshow(proportion, interpolation='nearest', cmap=plt.cm.Blues) 
     plt.colorbar()
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, fontsize=12)
+    plt.xticks(tick_marks, classes, fontsize=12, rotation=20)
     plt.yticks(tick_marks, classes, fontsize=12)
 
     thresh = confusion_matrix.max() / 2.
@@ -353,3 +354,48 @@ def show_accplot(epoch, acc, work_dir):
     plt.xlabel('Epoch', fontsize=16)
     plt.tight_layout()
     plt.savefig(work_dir+'/verification_accuracy.jpg', dpi=300)
+
+def generator_model_documents(args):
+    from xml.dom.minidom import Document
+    doc = Document()  #创建DOM文档对象
+    root = doc.createElement('ModelInfo') #创建根元素
+    doc.appendChild(root)
+    
+    model_type = doc.createElement('INCRE')
+    #model_type.setAttribute('typeID','1')
+    root.appendChild(model_type)
+
+    model_item = doc.createElement(args.model_name+'.trt')
+    #model_item.setAttribute('nameID','1')
+    model_type.appendChild(model_item)
+
+    model_infos = {
+        'name':str(args.model_name),
+        'type':'INCRE',
+        'algorithm':'AlexNet',
+        'framework':'Pytorch',
+        'accuracy':str(args.accuracy),
+        'trainDataset':args.raw_data_path.split("/")[-1],
+        'inDataDimension':str(args.data_dimension),
+        'preTrainEpoch':str(args.pretrain_epoch),
+        'incrementEpoch':str(args.increment_epoch),
+        'oldClassNum':str(args.old_class),
+        'classNum':str(args.classNum),
+        'PATH':os.path.abspath(os.path.join(args.modeldir,args.model_name+'.trt')),
+        'batch':'32',
+        'note':'-'
+    } 
+
+    for key in model_infos.keys():
+        info_item = doc.createElement(key)
+        info_text = doc.createTextNode(model_infos[key]) #元素内容写入
+        info_item.appendChild(info_text)
+        model_item.appendChild(info_item)
+
+    with open(os.path.join(args.modeldir,args.model_name+'.xml'),'w') as f:
+        doc.writexml(f,indent = '\t',newl = '\n', addindent = '\t',encoding='utf-8')
+
+    shutil.copy(args.work_dir+"/"+args.model_name+".trt",os.path.join(args.modeldir,args.model_name+'.trt'))
+    shutil.copy(args.work_dir+"/model/incrementModel.pt",os.path.join(args.modeldir,args.model_name+'.pt'))
+    shutil.copy(args.work_dir+"/"+"confusion_matrix.jpg",os.path.join(args.modeldir,'confusion_matrix.jpg'))
+    shutil.copy(args.work_dir+"/"+"verification_accuracy.jpg",os.path.join(args.modeldir,'verification_accuracy.jpg'))

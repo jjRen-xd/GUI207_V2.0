@@ -2,29 +2,152 @@
 <globalModelInfo datasetTypeNum="4">
     <FEA_OPTI typeID="1" />
     <FEA_RELE typeID="2">
-        <abfc_feature_24.trt nameID="1">
-            <PATH>D:/lyh/GUI207_V2.0/build/db/trainLogs/2022-11-02-12-45-37-AFS-fea/abfc_feature_24.trt</PATH>
-        </abfc_feature_24.trt>
+        <FEATURE_36_ATEC_c6_keras.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-12-19-53-41-FEATURE_36_ATEC_c6_keras/FEATURE_36_ATEC_c6_keras.trt</PATH>
+            <accuracy>95.33</accuracy>
+            <algorithm>ATEC</algorithm>
+            <batch>16</batch>
+            <class>13</class>
+            <framework>keras</framework>
+            <name>FEATURE_36_ATEC_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>500</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>FEA_RELE</type>
+        </FEATURE_36_ATEC_c6_keras.trt>
+        <FEATURE_39_ABFC_c6_keras.trt nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-12-22-33-05-FEATURE_39_ABFC_c6_keras/FEATURE_39_ABFC_c6_keras.trt</PATH>
+            <accuracy>95.67</accuracy>
+            <algorithm>ABFC</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>FEATURE_39_ABFC_c6_keras</name>
+            <note>-</note>
+            <trainDataset>FEATURE_simualtepure_39xN_c6</trainDataset>
+            <trainEpoch>150</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>FEA_RELE</type>
+        </FEATURE_39_ABFC_c6_keras.trt>
     </FEA_RELE>
     <INCRE typeID="3">
-        <incrementModel.trt nameID="2">
-            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-10-22-19-27-47-HRRP-falseHRRPmat_1x128_6s-CIL_55_20_30/incrementModel.trt</PATH>
-        </incrementModel.trt>
+        <HRRP_128_INCRE_c6_pytorch.trt nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-10-20-40-04-HRRP_128_INCRE_c6_pytorch/HRRP_128_INCRE_c6_pytorch.trt</PATH>
+            <accuracy>96.67</accuracy>
+            <algorithm>AlexNet</algorithm>
+            <batch>32</batch>
+            <classNum>6</classNum>
+            <framework>Pytorch</framework>
+            <inDataDimension>128</inDataDimension>
+            <incrementEpoch>100</incrementEpoch>
+            <name>HRRP_128_INCRE_c6_pytorch</name>
+            <note>-</note>
+            <oldClassNum>5</oldClassNum>
+            <preTrainEpoch>50</preTrainEpoch>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <type>INCRE</type>
+        </HRRP_128_INCRE_c6_pytorch.trt>
     </INCRE>
     <TRA_DL typeID="4">
-        <dense_32_50.trt nameID="3">
-            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-10-20-15-44-29-HRRP-falseHRRPmat_1x128_6s-densenet121_82_32_50/dense_32_50.trt</PATH>
-        </dense_32_50.trt>
-        <densenet_55_32_130.trt nameID="4">
-            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-10-22-16-13-55-HRRP-falseHRRPmat_1x128_6s-densenet_55_32_130/densenet_55_32_130.trt</PATH>
-            <accuracy>100%</accuracy>
-            <algorithm>xml载入测试</algorithm>
-            <framework>0</framework>
-            <name>densenet_55_32_130.trt</name>
-            <note>备注测试</note>
-            <trainDataset>falseHRRP_1x128_6s</trainDataset>
-            <trainEpoch>130轮</trainEpoch>
+        <HRRP_128_baselineCNN_c6_keras.trt nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-10-14-00-23-HRRP_128_baselineCNN_c6_keras/HRRP_128_baselineCNN_c6_keras.trt</PATH>
+            <accuracy>62.33</accuracy>
+            <algorithm>CNN</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_baselineCNN_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_512xN_c6</trainDataset>
+            <trainEpoch>500</trainEpoch>
             <trainLR>0.001</trainLR>
-        </densenet_55_32_130.trt>
+            <type>TRA_DL</type>
+        </HRRP_128_baselineCNN_c6_keras.trt>
+        <HRRP_128_baselineDNN_c6_keras.trt nameID="5">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-13-11-05-24-HRRP_128_baselineDNN_c6_keras/HRRP_128_baselineDNN_c6_keras.trt</PATH>
+            <accuracy>-</accuracy>
+            <algorithm>DNN</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_baselineDNN_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>500</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </HRRP_128_baselineDNN_c6_keras.trt>
+        <HRRP_128_densenet121_c6_keras.trt nameID="6">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-10-16-32-20-HRRP_128_densenet121_c6_keras/HRRP_128_densenet121_c6_keras.trt</PATH>
+            <accuracy>93</accuracy>
+            <algorithm>DenseNet121</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_densenet121_c6_keras</name>
+            <note>-</note>
+            <other>未定义</other>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>150</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </HRRP_128_densenet121_c6_keras.trt>
+        <HRRP_128_efficientnetB0_c6_keras.trt nameID="7">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-10-21-46-14-HRRP_128_efficientnetB0_c6_keras/HRRP_128_efficientnetB0_c6_keras.trt</PATH>
+            <accuracy>-</accuracy>
+            <algorithm>EfficientNetB0</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_efficientnetB0_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>150</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </HRRP_128_efficientnetB0_c6_keras.trt>
+        <HRRP_128_mobilenet_c6_keras.trt nameID="8">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-10-21-14-25-HRRP_128_mobilenet_c6_keras/HRRP_128_mobilenet_c6_keras.trt</PATH>
+            <accuracy>-</accuracy>
+            <algorithm>MobileNet</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_mobilenet_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>150</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </HRRP_128_mobilenet_c6_keras.trt>
+        <HRRP_128_resnet101_c6_keras.trt nameID="9">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-10-21-22-37-HRRP_128_resnet101_c6_keras/HRRP_128_resnet101_c6_keras.trt</PATH>
+            <accuracy>-</accuracy>
+            <algorithm>ResNet101</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_resnet101_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>150</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </HRRP_128_resnet101_c6_keras.trt>
+        <HRRP_128_resnet50V2_c6_keras.trt nameID="10">
+            <PATH>D:/lyh/GUI207_V2.0/build/db/models/2022-11-12-21-43-45-HRRP_128_resnet50V2_c6_keras/HRRP_128_resnet50V2_c6_keras.trt</PATH>
+            <accuracy>-</accuracy>
+            <algorithm>ResNet50V2</algorithm>
+            <batch>32</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>HRRP_128_resnet50V2_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>150</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </HRRP_128_resnet50V2_c6_keras.trt>
     </TRA_DL>
 </globalModelInfo>

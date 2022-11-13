@@ -4,6 +4,7 @@ from config import log_path
 from dataProcess import read_txt, split_test_and_train, prepare_pretrain_data, prepare_increment_data, create_dir, read_mat_new
 from train import Pretrain, IncrementTrain, Evaluation
 import argparse
+from utils import generator_model_documents
 
 argparser = argparse.ArgumentParser()
 
@@ -22,9 +23,11 @@ argparser.add_argument('--random_seed', type=int, help='numpy random seed', defa
 argparser.add_argument('--reduce_sample', type=float, help='reduce the number of sample to n%', default=1.0)
 argparser.add_argument('--data_dimension', type=int,  help='[39, 128, 256]', default=128)
 argparser.add_argument('--test_ratio', type=float, help='the ratio of test dataset', default=0.5)
-argparser.add_argument('--work_dir', help='the directory of the training data',default="./db/trainLogs")
+argparser.add_argument('--work_dir', help='the directory of the training data',default="../../../db/trainLogs")
 argparser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
 argparser.add_argument('--model_name', help='the directory of the training data',default="model")
+argparser.add_argument('--modeldir', help="model saved path", default="../../../db/models")
+
 args = argparser.parse_args()
 
 if __name__ == '__main__':
@@ -42,12 +45,12 @@ if __name__ == '__main__':
         if os.path.isdir(folder_path+'/'+file_name[i]):
             folder_names.append(file_name[i])
     folder_names.sort()  # 按文件夹名进行排序
-
+    args.classNum=len(folder_names)
     read_mat_new(args.raw_data_path,folder_names)
 
 
     datasetName = args.raw_data_path.split("/")[-1]
-    args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName+'-'+args.model_name
+    args.work_dir = args.work_dir+'/'+args.time+'-'+datasetName+'-'+args.model_name
     if not os.path.exists(args.work_dir):
         os.makedirs(args.work_dir)
         os.makedirs(args.work_dir + '/model')
@@ -69,6 +72,8 @@ if __name__ == '__main__':
     increment_end = time.time()
     print("pretrain_consume_time:", increment_end-increment_start)
     sys.stdout.flush()
+    valacc=incrementTrain.result.item()
+    args.accuracy=round(valacc,2)    #增量训练在测试集上的最高准确率
     # 测试
     evaluation = Evaluation(args.all_class, args.all_class - args.old_class, args.batch_size, args.data_dimension)
     old_oa, new_oa, all_oa, metric = evaluation.evaluate()
@@ -85,8 +90,18 @@ if __name__ == '__main__':
                   "New_OA:" + str(new_oa) + "\n" +
                   "All_OA:" + str(all_oa) + "\n\n" + str(metric))
     
-    cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+str(args.data_dimension)+"x1 --optShapes=input:20x1x"+str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+str(args.data_dimension)+"x1 --onnx="+args.work_dir + "/model/incrementModel.onnx "+" --saveEngine="+args.work_dir + "/incrementModel.trt --fp16"
+    cmd_onnx2trt="trtexec.exe --explicitBatch --workspace=3072 --minShapes=input:1x1x"+\
+        str(args.data_dimension)+"x1 --optShapes=input:20x1x"+\
+        str(args.data_dimension)+"x1 --maxShapes=input:512x1x"+\
+        str(args.data_dimension)+"x1 --onnx="+args.work_dir + \
+        "/model/incrementModel.onnx "+" --saveEngine="+\
+        args.work_dir + "/"+ args.model_name+".trt --fp16"
     os.system(cmd_onnx2trt)
+
+    args.modeldir = args.modeldir+'/'+args.model_name
+    if not os.path.exists(args.modeldir):
+        os.makedirs(args.modeldir)
+    generator_model_documents(args)
     print("Train Ended")
     sys.stdout.flush()
 

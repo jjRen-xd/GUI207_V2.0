@@ -1,4 +1,4 @@
-import os
+import os,shutil
 import sys
 import argparse
 import numpy as np
@@ -21,6 +21,7 @@ parser.add_argument('--model_name', help='the directory of the training data',de
 parser.add_argument('--batch_size', help='the number of batch size',default=32)
 parser.add_argument('--max_epochs', help='the number of epochs',default=10)
 parser.add_argument('--new_data_dir', help='the feature blending data',default="./db/datasets/tempFeatureDataFromHRRP")
+parser.add_argument('--modeldir', help="model saved path", default="./db/models")
 
 args = parser.parse_args()
 
@@ -51,7 +52,7 @@ def read_mat(read_path):
         if os.path.isdir(folder_path+'/'+file_name[i]):
             folder_name.append(file_name[i])
     folder_name.sort()  # 按文件夹名进行排序
-
+    args.classNum=len(file_name)
     class_data_num = []
     # 读取单个文件夹下的内容
     for i in range(0, len(folder_name)):
@@ -152,7 +153,7 @@ def rcn_model(train_x, train_y, test_x, test_y, epoch, batch_size):
         keras.layers.Dense(len(train_y[0]), activation='softmax')
     ])
     rcn_model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
-    save_model_path = args.work_dir + '/model/' + args.model_name +'_fea_ada_trans.hdf5'
+    save_model_path = args.work_dir + '/model/fea_ada_trans.hdf5'
     learn_rate_reduction = keras.callbacks.ReduceLROnPlateau(monitor='lr', factor=0.99, patience=3,
                                                              verbose=0, min_lr=0.0001)
     checkpoint = keras.callbacks.ModelCheckpoint(save_model_path, monitor='val_accuracy', verbose=0,
@@ -166,7 +167,7 @@ def rcn_model(train_x, train_y, test_x, test_y, epoch, batch_size):
     test_model = keras.models.load_model(save_model_path)
     Y_test = np.argmax(test_y, axis=1)
     Y_pred = test_model.predict_classes(test_x)
-
+    args.valAcc=round(max(h_parameter['val_accuracy'])*100,2)
     return Y_test, Y_pred
 
 
@@ -220,14 +221,62 @@ def inference(train_x, train_y, test_x, test_y, folder_name, class_data_num):
     show_confusion_matrix(args.work_dir, class_label, characteristic_matrix)
     print(classification_report(Y_test, Y_pred, digits=4))
 
+def generator_model_documents(args):
+    from xml.dom.minidom import Document
+    doc = Document()  #创建DOM文档对象
+    root = doc.createElement('ModelInfo') #创建根元素
+    doc.appendChild(root)
+    
+    model_type = doc.createElement('FEA_RELE')
+    #model_type.setAttribute('typeID','1')
+    root.appendChild(model_type)
+
+    model_item = doc.createElement(args.model_name+'.trt')
+    #model_item.setAttribute('nameID','1')
+    model_type.appendChild(model_item)
+
+    model_infos = {
+        'name':str(args.model_name),
+        'type':'FEA_RELE',
+        'algorithm':'ATEC',
+        'framework':'keras',
+        'accuracy':str(args.valAcc),
+        'trainDataset':args.data_dir.split("/")[-1],
+        'trainEpoch':str(args.max_epochs),
+        'trainLR':'0.001',
+        'class':str(args.classNum), 
+        'PATH':os.path.abspath(os.path.join(args.modeldir,args.model_name+'.trt')),
+        'batch':str(args.batch_size),
+        'note':'-'
+    } 
+
+    for key in model_infos.keys():
+        info_item = doc.createElement(key)
+        info_text = doc.createTextNode(model_infos[key]) #元素内容写入
+        info_item.appendChild(info_text)
+        model_item.appendChild(info_item)
+
+    with open(os.path.join(args.modeldir,args.model_name+'.xml'),'w') as f:
+        doc.writexml(f,indent = '\t',newl = '\n', addindent = '\t',encoding='utf-8')
+
+    shutil.copy(args.work_dir+"/"+args.model_name+".trt",os.path.join(args.modeldir,args.model_name+'.trt'))
+    shutil.copy(args.work_dir+"/model/fea_ada_trans.hdf5",os.path.join(args.modeldir,args.model_name+'.hdf5'))
+    shutil.copy(args.work_dir+"/"+"confusion_matrix.jpg",os.path.join(args.modeldir,'confusion_matrix.jpg'))
+    shutil.copy(args.work_dir+"/"+"training_accuracy.jpg",os.path.join(args.modeldir,'training_accuracy.jpg'))
+    shutil.copy(args.work_dir+"/"+"verification_accuracy.jpg",os.path.join(args.modeldir,'verification_accuracy.jpg'))
 
 if __name__ == '__main__':
     datasetName = args.data_dir.split("/")[-1]
-    args.work_dir = args.work_dir+"/"+args.time+'-ATEC-'+datasetName+'-'+args.model_name
+    #datasetName = args.new_data_dir.split("/")[-1]
+    args.work_dir = args.work_dir+"/"+args.time+'-'+datasetName+'-'+args.model_name
     train_x, train_y, test_x, test_y, class_num, folder_name, class_data_num = read_mat(args.data_dir)
     inference(train_x, train_y, test_x, test_y, folder_name, class_data_num)
     print("start model convert")
     sys.stdout.flush()
-    cmd="python ./api/bashs/hdf52trt.py --model_type ATEC --work_dir "+args.work_dir+" --model_name "+args.model_name +'_fea_ada_trans'
+    cmd="python ./api/bashs/hdf52trt.py --model_type ATEC --work_dir "+args.work_dir+" --model_name "+args.model_name
     os.system(cmd)
+    args.modeldir = args.modeldir+'/'+args.model_name
+    if not os.path.exists(args.modeldir):
+        os.makedirs(args.modeldir)
+    generator_model_documents(args)
     print("Train Ended:")

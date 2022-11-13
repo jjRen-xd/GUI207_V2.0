@@ -18,6 +18,7 @@ class MonitorPage : public QObject
 public:
     MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, DatasetInfo *globalDatasetInfo,ModelInfo *globalModelInfo);
     void startListen();
+    void stopSend();
     void simulateSend();
     SocketServer* server;
     InferThread* inferThread=nullptr;
@@ -31,11 +32,15 @@ public:
 
 
 
-public slots:
+public 
+slots:
     void showInferResult(int,QVariant);
     void enableSimulateSignal();
     void showColorMap();
     void showRealClass(int);
+signals:
+    void startOrstop_sig(bool);
+
 private:
     Ui_MainWindow *ui;
     BashTerminal *terminal;

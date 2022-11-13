@@ -105,10 +105,10 @@ def mean_var(data):
 
 
 def run_mechanism(data):
-    mechanism_knowledge = np.zeros((len(data), 5))
+    mechanism_knowledge = np.zeros((len(data), 4))
     mechanism_knowledge[:, 0] = main_lobe(data)
     mechanism_knowledge[:, 1] = threshold_value_method(data, 0.6)
-    mechanism_knowledge[:, 2] = threshold_value_method(data, 0.7)
-    mechanism_knowledge[:, 3], mechanism_knowledge[:, 4] = mean_var(data)
+    # mechanism_knowledge[:, 2] = threshold_value_method(data, 0.7)
+    mechanism_knowledge[:, 2], mechanism_knowledge[:, 3] = mean_var(data)
 
     return mechanism_knowledge

@@ -114,12 +114,27 @@ void ModelDock::importModel(string type){
     }
     if(existXml){
         modelInfo->addItemFromXML(xmlPath.toStdString());
+        map<string,string> attriContents=modelInfo->getAllAttri(type, modelName.toStdString());
+        if(attriContents.find("type")==attriContents.end()){        //xml没有type信息
+            terminal->print("添加模型成功:"+xmlPath);
+            QMessageBox::information(NULL, "添加模型", "添加模型成功,但该模型说明文件没有模型type信息，\
+            请确保该模型为合适的"+QString::fromStdString(type)+"类型");
+        }
+        else if(attriContents["type"]!=type){        //模型类型和欲导入的不匹配
+            this->modelInfo->deleteItem(previewType,previewName);
+            this->reloadTreeView();
+            this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
+            QMessageBox::warning(NULL, "添加模型", "添加模型失败！欲添加模型类型不为"+QString::fromStdString(type));
+            return;
+        }else{                              //成功导入
+            modelInfo->addItemFromXML(xmlPath.toStdString());
+            terminal->print("添加模型成功:"+xmlPath);
+            QMessageBox::information(NULL, "添加模型", "添加模型成功");
+        }
 
-        terminal->print("添加模型成功:"+xmlPath);
-        QMessageBox::information(NULL, "添加模型", "添加模型成功！");
     }
     else{
-        terminal->print("添加模型成功，但该模型没有说明文件.xml！");
+        terminal->print("添加模型成功，但该模型没有说明文件.xml，请确保该模型为合适的"+QString::fromStdString(type)+"模型！");
         QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
     }
 

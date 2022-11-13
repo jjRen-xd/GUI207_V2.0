@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,7 +99,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>576</width>
+             <width>866</width>
              <height>1157</height>
             </rect>
            </property>
@@ -1415,7 +1415,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>725</width>
+             <width>866</width>
              <height>623</height>
             </rect>
            </property>
@@ -2271,8 +2271,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>321</width>
-               <height>303</height>
+               <width>409</width>
+               <height>548</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2911,12 +2911,22 @@
                    </property>
                    <item>
                     <property name="text">
+                     <string>baseline_dnn</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>baseline_cnn</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
                      <string>hrrp_densenet121</string>
                     </property>
                    </item>
                    <item>
                     <property name="text">
-                     <string>hrrp_vgg16</string>
+                     <string>hrrp_resnet50v2</string>
                     </property>
                    </item>
                    <item>
@@ -2946,7 +2956,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>CILmodel</string>
+                     <string>INCREmodel</string>
                     </property>
                    </item>
                   </widget>
@@ -3759,7 +3769,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>停止监听</string>
+                    <string>暂停发送</string>
                    </property>
                   </widget>
                  </item>
@@ -3906,8 +3916,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>137</width>
-                        <height>85</height>
+                        <width>98</width>
+                        <height>28</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">

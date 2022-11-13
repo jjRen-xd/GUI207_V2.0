@@ -1,3 +1,6 @@
+/*
+接收数据，可视化数据，是inferThread线程的生产者
+*/
 #include "socketserver.h"
 
 #pragma comment(lib,"ws2_32.lib")   // 库文件
@@ -87,7 +90,7 @@ void SocketServer::run(){           //Producer
     // 可以和客户端进行通信了
     std::vector<float> dataFrame;//里面放大小为模型输入数据长度个浮点数，用以送进网络。
     std::vector<float> repeatDataFrame;
-    while (true) {
+    while (!isInterruptionRequested()) {
         // recv从指定的socket接受消息
         int getCharNum=recv(s_accept, recv_buf, RECEIVE_BUF_SIZ, 0);
         if ( getCharNum > 0){
@@ -110,7 +113,7 @@ void SocketServer::run(){           //Producer
                 //QMutexLocker x(lock);//智能锁,在栈区使用结束会自动释放
                 sharedQue->push(repeatDataFrame);
                 sem->release(1);
-                qDebug()<<"(SocketServer::run) sem->release()"<<QString::number(num_float);
+                //qDebug()<<"(SocketServer::run) sem->release()"<<QString::number(num_float);
                 //terminal->print("One Sample was received ");
                 //colorMapMatrix更新
                 colorMapMatrix.pop_back();
@@ -139,8 +142,8 @@ void SocketServer::dataVisualization(){
     //数据准备
     float numpyptr[128*ColorMapColumnNUM];
     std::deque<std::vector<float>> colorMapMatrix_copy=colorMapMatrix;
-    qDebug()<<"colorMapMatrix.size()="<<colorMapMatrix.size();
-    qDebug()<<"colorMapMatrix_copy.size()="<<colorMapMatrix_copy.size();
+    //qDebug()<<"colorMapMatrix.size()="<<colorMapMatrix.size();
+    //qDebug()<<"colorMapMatrix_copy.size()="<<colorMapMatrix_copy.size();
     for(int i=0;i<ColorMapColumnNUM;i++){
         std::vector<float> asdf=colorMapMatrix_copy.front();
         for(int j=0;j<128;j++){
@@ -156,16 +159,19 @@ void SocketServer::dataVisualization(){
     //函数调用
     pRet = (PyArrayObject*)PyEval_CallObject(pFunc, args);
     emit sigColorMap();
-    qDebug()<<"emited signal!";
+    //qDebug()<<"(SocketServer::dataVisualization)emited signal!";
     return;
 }
 
 SocketServer::~SocketServer(){
     //释放内存
-    Py_CLEAR(pModule);
-    Py_CLEAR(pFunc);
-    Py_CLEAR(PyArray);
-    Py_CLEAR(args);
-    Py_CLEAR(pRet);
-    Py_Finalize();      // 释放资源
+    // Py_CLEAR(pModule);
+    // Py_CLEAR(pFunc);
+    // Py_CLEAR(PyArray);
+    // Py_CLEAR(args);
+    // Py_CLEAR(pRet);
+    // Py_Finalize();
+    requestInterruption();
+    quit();
+    wait();
 }

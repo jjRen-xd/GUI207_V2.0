@@ -57,7 +57,7 @@ def show_result(ac_score_list, dataset_name):
 
     use_arr = ac_score_list[left_spc:int((len_params - plot_spc[0]) / plot_spc[1])]
     ax = plt.subplot()
-    ax.plot(np.arange(plot_spc[0] + plot_spc[1] * left_spc, len_params, plot_spc[1]), use_arr, '-o', label='AFS')
+    ax.plot(np.arange(plot_spc[0] + plot_spc[1] * left_spc, len_params, plot_spc[1]), use_arr, '-o', label='ABFC')
     plt.title(dataset_name)
     plt.ylabel('Accuracy')
     plt.xlabel('K')

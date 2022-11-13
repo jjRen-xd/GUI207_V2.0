@@ -10,14 +10,15 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
     datasetInfo(globalDatasetInfo),
     modelInfo(globalModelInfo)
 {
-    label2class[0] ="bigball";label2class[1] ="DT"; label2class[2] ="Moxiu";
-    label2class[3] ="sallball"; label2class[4] ="taper"; label2class[5] ="WD";
+    //初始化label2class缓解了acquire在没有release的情况下就成功的问题
+    label2class[0] ="Big_ball";label2class[1] ="Cone"; label2class[2] ="Cone_cylinder";
+    label2class[3] ="DT"; label2class[4] ="Small_ball"; label2class[5] ="Spherical_cone";
     for(auto &item: label2class){
         class2label[item.second] = item.first;
     }
     ui->simulateSignal->setEnabled(false);
     ui->stopListen->setEnabled(false);
-    QSemaphore sem;
+    QSemaphore sem(0);
     QMutex lock;
     inferThread =new InferThread(&sem,&sharedQue,&lock);//推理线程
     inferThread->setInferMode("real_time_infer");
@@ -33,22 +34,39 @@ MonitorPage::MonitorPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal, Da
 
     connect(ui->startListen, &QPushButton::clicked, this, &MonitorPage::startListen);
     connect(ui->simulateSignal, &QPushButton::clicked, this, &MonitorPage::simulateSend);
-    connect(ui->stopListen, &QPushButton::clicked,[this]() { delete server; });
+    connect(ui->stopListen, &QPushButton::clicked,[this]() { 
+        // ui->simulateSignal->setEnabled(false);
+        // ui->stopListen->setEnabled(false);
+        stopSend();
+        // delete client; 
+        // delete server; 
+        //delete inferThread;
+    });
+    //connect(ui->stopListen, &QPushButton::clicked, this, &MonitorPage::stopListen);
+    connect(this, SIGNAL(startOrstop_sig(bool)), client, SLOT(startOrstop_slot(bool)));
 
 }
+
 void MonitorPage::startListen(){
     if(modelInfo->selectedType==""||this->choicedDatasetPATH==""){
         QMessageBox::warning(NULL, "实时监测", "监听失败,请先指定HRRP模型和数据集");
-        qDebug()<<"modelInfo->selectedType=="<<QString::fromStdString(modelInfo->selectedType);
+        //qDebug()<<"modelInfo->selectedType=="<<QString::fromStdString(modelInfo->selectedType);
         return;
     }
     server->start();
     terminal->print("开始监听");
     inferThread->start();
+    emit startOrstop_sig(true);
+}
+
+void MonitorPage::stopSend(){
+    emit startOrstop_sig(false);
+    //client->StopThread();
 }
 
 void MonitorPage::simulateSend(){
     client->start();
+    ui->stopListen->setEnabled(true);
 }
 
 void MonitorPage::refresh(){
@@ -56,16 +74,26 @@ void MonitorPage::refresh(){
     // 网络输出标签对应类别名称初始化
     std::vector<std::string> comboBoxContents = datasetInfo->selectedClassNames;
     if(comboBoxContents.size()>0){
-        for(int i=0;i<comboBoxContents.size();i++)   label2class[i]=comboBoxContents[i];
+        for(int i=0;i<comboBoxContents.size();i++)   {label2class[i]=comboBoxContents[i];
+            qDebug()<<"(MonitorPage::refresh) comboBoxContents[i]="<<QString::fromStdString(comboBoxContents[i]);}
         for(auto &item: label2class)   class2label[item.second] = item.first;
     }
+    std::map<std::string, int>::iterator iter;
+    iter = class2label.begin();
+    while(iter != class2label.end()) {
+        std::cout << iter->first << " : " << iter->second << std::endl;
+        iter++;
+    }
     //如果数据集或模型路径变了
-    if(modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH")!=choicedModelPATH ||
-    choicedDatasetPATH != datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH")){
+    if(
+        modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH") != choicedModelPATH 
+        ||
+        datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH") != choicedDatasetPATH
+    ){
         if(datasetInfo->selectedType=="INCRE") ifDataPreProcess=false;
         choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
         choicedDatasetPATH=datasetInfo->getAttri(datasetInfo->selectedType,datasetInfo->selectedName,"PATH");
-        
+        //TODO 因为使用测试页面，下面嗯切可能带来错误
         inferThread->setClass2LabelMap(class2label);
         //qDebug()<<"(MonitorPage::refresh) class2label.size()=="<<class2label.size();
         inferThread->setParmOfRTI(choicedModelPATH,ifDataPreProcess);//只有小样本是false 既不做预处理
@@ -97,10 +125,12 @@ void MonitorPage::showInferResult(int predIdx,QVariant qv){
     Chart *tempChart = new Chart(ui->label_mE_chartGT,"","");//就调用一下它的方法
     //std::vector<float> degrees={0.1,0.1,0.1,0.1,0.2,0.4};
     std::vector<float> degrees=qv.value<std::vector<float>>();
+    for(int i=0;i<degrees.size();i++){
+        degrees[i]=round(degrees[i] * 100) / 100;
+    }
     QString predClass = QString::fromStdString(label2class[predIdx]);
     //terminal->print("Real-time classification results:"+predClass);//连续调用恐怕会有问题
     QWidget *tempWidget=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
-    //QWidget *tempWidget2=tempChart->drawDisDegreeChart(predClass,degrees,label2class);
     removeLayout2(ui->horizontalLayout_degreeChart2);
     ui->horizontalLayout_degreeChart2->addWidget(tempWidget);
     ui->jcLabel->setText(QString::fromStdString(label2class[predIdx]));
@@ -119,7 +149,7 @@ void MonitorPage::showColorMap(){
     imageLabel->setScaledContents(true);
     //imageLabel->setStyleSheet("border:2px solid red;");
     QImage image;
-    QImageReader reader("D:/colorMap.png");
+    QImageReader reader("./colorMap.png");
     reader.setAutoTransform(true);
     const QImage newImage = reader.read();
     if (newImage.isNull()) {

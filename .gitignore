@@ -3,7 +3,8 @@
 
 /build/*
 !/build/api/
-/build/api/bashs/afs/__pycache__/*
+/build/api/bashs/abfc/__pycache__/*
+/build/api/bashs/atec/__pycache__/*
 /build/api/bashs/incremental/__pycache__/*
 /build/api/bashs/incremental/data/*
 !/build/conf/
