@@ -89,7 +89,7 @@ void ModelDock::treeItemClicked(const QModelIndex &index){
 
 
 void ModelDock::importModel(string type){
-    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "./db/models/");
+    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../db/models/");
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
@@ -146,7 +146,7 @@ void ModelDock::importModel(string type){
 
 void ModelDock::importModelAfterTrain(string type, QString modelName){
 
-    QString modelPath = "./db/models/";
+    QString modelPath = "../db/models/";
 
     // TODO 解决模型重名问题
      QString tempModelName = modelName;

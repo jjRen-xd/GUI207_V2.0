@@ -30,7 +30,7 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     _import_array();
     PyRun_SimpleString("import sys");
     //PyRun_SimpleString("sys.path.append('./')");
-    PyRun_SimpleString("sys.path.append('./lib/guiLogic/tools/')");
+    PyRun_SimpleString("sys.path.append('../lib/guiLogic/tools/')");
     pModule = PyImport_ImportModule("EvalPageConfusionMatrix");
     pFunc = PyObject_GetAttrString(pModule, "draw_confusion_matrix");
 
@@ -247,9 +247,7 @@ void ModelEvalPage::testAllSample(){
         PyTuple_SetItem(args, 0, Py_BuildValue("s", stringparm.c_str()));
         PyTuple_SetItem(args, 1, PyArray);
         //函数调用
-        qDebug()<<"(modelEvalPage::testAllSample) AAAAAAAAAAAAAAAAAAA";
-        //pRet = (PyArrayObject*)PyObject_CallObject(pFunc, args);
-        qDebug()<<"(modelEvalPage::testAllSample) BBBBBBBBBBBBBBBBBBB";
+        pRet = (PyArrayObject*)PyObject_CallObject(pFunc, args);
         delete [ ] numpyptr;
         qDebug()<<"(ModelEvalPage::testAllSample) python done";
         QString imgPath = QString::fromStdString("./confusion_matrix.jpg");

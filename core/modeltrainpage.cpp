@@ -97,21 +97,21 @@ void ModelTrainPage::startTrain(){
             return;
         }
         uiInitial();
-        cmd="activate tf24 && python ./api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
+        cmd="activate tf24 && python ../api/bashs/hrrp_TRImodel/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;
         switch(trainModelType){
-            case 0:cmd ="activate tf24 && python ./api/bashs/baseline/baseline.py --data_dir "+choicedDatasetPATH+ \
+            case 0:cmd ="activate tf24 && python ../api/bashs/baseline/baseline.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net DNN";break;
-            case 1:cmd ="activate tf24 && python ./api/bashs/baseline/baseline.py --data_dir "+choicedDatasetPATH+ \
+            case 1:cmd ="activate tf24 && python ../api/bashs/baseline/baseline.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+" --net CNN";break;
             case 2:cmd +=" --net DenseNet121";      break;
             case 3:cmd +=" --net ResNet50V2";       break;
             case 4:cmd +=" --net MobileNet";        break;
             case 5:cmd +=" --net ResNet101";        break;
             case 6:cmd +=" --net EfficientNetB0";   break;
-            case 7:cmd = "activate tf24 && python ./api/bashs/abfc/train.py --data_dir "+choicedDatasetPATH+ \
+            case 7:cmd = "activate tf24 && python ../api/bashs/abfc/train.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
-            case 8:cmd = "activate tf24 && python ./api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
+            case 8:cmd = "activate tf24 && python ../api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+ \
                         " --new_data_dir "+"./db/datasets/"+"FEATURE_-"+datasetName+"-_36xN_c6";break;break;
         }
@@ -123,7 +123,7 @@ void ModelTrainPage::startTrain(){
         epoch=epoch==""?"2":epoch;
         saveModelName=saveModelName==""?"model":saveModelName;
 
-        cmd="activate PT && python ./api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+ \
+        cmd="activate PT && python ../api/bashs/incremental/main.py --raw_data_path "+choicedDatasetPATH+ \
         " --time "              + time + \
         " --old_class "         + old_class_num + \
         " --reduce_sample "     + reduce_sample + \
@@ -222,11 +222,11 @@ void ModelTrainPage::showTrianResult(){
     ui->trainProgressBar->setMaximum(100);
     ui->trainProgressBar->setValue(100);
     //TODO
-    QDir dir("./db/trainLogs");
+    QDir dir("../db/trainLogs");
     QStringList dirList = dir.entryList(QDir::Dirs);
     foreach (auto dir , dirList){
         if(dir.contains(time)){
-            QString wordir    = "./db/trainLogs/"+dir;
+            QString wordir    = "../db/trainLogs/"+dir;
             if(trainModelType==7){      //abfc
                 ui->val_img->setPixmap(QPixmap(wordir+"/features_Accuracy.jpg"));
                 ui->confusion_mat->setPixmap(QPixmap(wordir+"/confusion_matrix.jpg"));
@@ -253,10 +253,10 @@ void ModelTrainPage::editModelFile(){
     int modelType=ui->modelTypeBox->currentIndex();
     QString modelFilePath;
     switch(modelType){
-        case 5:modelFilePath="./api/bashs/abfc/train.py";break;
-        case 6:modelFilePath="./api/bashs/atec/net_fea.py";break;
-        case 7:modelFilePath="./api/bashs/incremental/model.py";break;
-        default:modelFilePath="./api/bashs/hrrp_TRImodel/train.py";
+        case 5:modelFilePath="../api/bashs/abfc/train.py";break;
+        case 6:modelFilePath="../api/bashs/atec/net_fea.py";break;
+        case 7:modelFilePath="../api/bashs/incremental/model.py";break;
+        default:modelFilePath="../api/bashs/hrrp_TRImodel/train.py";
     }
     QString commd="gvim " + modelFilePath;
     system(commd.toStdString().c_str());

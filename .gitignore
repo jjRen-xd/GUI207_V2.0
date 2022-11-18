@@ -2,20 +2,20 @@
 /.history/
 
 /build/*
-!/build/api/
-/build/api/bashs/abfc/__pycache__/*
-/build/api/bashs/atec/__pycache__/*
-/build/api/bashs/incremental/__pycache__/*
-/build/api/bashs/incremental/data/*
-!/build/conf/
-/build/libtorch.pri
-!/build/db/
-/build/db/datasets/*
-/build/db/trainLogs/*
-/build/db/models/*
-!/build/lib/
-/build/lib/TRANSFER/ToHrrp_mcr/*
-/build/lib/guiLogic/tools/__pycache__/*
+!/api/
+/api/bashs/abfc/__pycache__/*
+/api/bashs/atec/__pycache__/*
+/api/bashs/incremental/__pycache__/*
+/api/bashs/incremental/data/*
+!/conf/
+conf/libtorch.pri
+!/db/
+/db/datasets/*
+/db/trainLogs/*
+/db/models/*
+!/lib/
+/lib/TRANSFER/ToHrrp_mcr/*
+/lib/guiLogic/tools/__pycache__/*
 
 /.qt_for_python/*
 /temp
