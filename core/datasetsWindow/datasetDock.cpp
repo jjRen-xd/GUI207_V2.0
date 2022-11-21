@@ -278,6 +278,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
 //    ui->datadirEdit->setText(QString::fromStdString(rootPath));
     vector<string> subDirNames;
     if(dirTools->getDirs(subDirNames, rootPath)){
+        if(subDirNames.size()==0) return;
         //先确定数据集中数据文件的format
         vector<string> allFileWithTheClass;
         QString dataFileFormat;

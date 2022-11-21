@@ -1,3 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="4">
+<globalModelInfo datasetTypeNum="1">
+    <TRA_DL typeID="1">
+        <HRRP_128_baselineCNN_c6_keras.trt nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-11-10-14-00-23-HRRP_simulate_128xN_c6-HRRP_128_baselineCNN_c6_keras/HRRP_128_baselineCNN_c6_keras.trt</PATH>
+        </HRRP_128_baselineCNN_c6_keras.trt>
+        <HRRP_128_efficientnetB0_c6_keras.trt nameID="2">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-11-10-21-46-14-HRRP_simulate_128xN_c6-HRRP_128_efficientnetB0_c6_keras/HRRP_128_efficientnetB0_c6_keras.trt</PATH>
+        </HRRP_128_efficientnetB0_c6_keras.trt>
+        <HRRP_128_mobilenet_c6_keras.trt nameID="3">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-11-10-21-14-25-HRRP_simulate_128xN_c6-HRRP_128_mobilenet_c6_keras/HRRP_128_mobilenet_c6_keras.trt</PATH>
+        </HRRP_128_mobilenet_c6_keras.trt>
+        <HRRP_128_resnet101_c6_keras.trt nameID="4">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-11-10-21-22-37-HRRP_simulate_128xN_c6-HRRP_128_resnet101_c6_keras/HRRP_128_resnet101_c6_keras.trt</PATH>
+        </HRRP_128_resnet101_c6_keras.trt>
+        <HRRP_128_resnet50V2_c6_keras.trt nameID="5">
+            <PATH>C:/Users/dell/Desktop/db/trainLogs/2022-11-12-21-43-45-HRRP_simulate_128xN_c6-HRRP_128_resnet50V2_c6_keras/HRRP_128_resnet50V2_c6_keras.trt</PATH>
+        </HRRP_128_resnet50V2_c6_keras.trt>
+    </TRA_DL>
 </globalModelInfo>

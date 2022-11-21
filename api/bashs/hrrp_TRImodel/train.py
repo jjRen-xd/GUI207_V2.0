@@ -251,6 +251,28 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir,
     print(classification_report(Y_test, y_pred, digits=4))
     args.valAcc=round(max(h_parameter['val_accuracy'])*100,2)
 
+def evaluate(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir, model_name):
+    #print(x_train.shape,y_train.shape, x_test.shape, y_test.shape)
+    len_train = len(x_train)
+    len_test = len(x_test)
+    train_shuffle = np.arange(len_train)
+    test_shuffle = np.arange(len_test)
+    np.random.shuffle(train_shuffle)
+    np.random.shuffle(test_shuffle)
+
+    x_train = x_train[train_shuffle, :]
+    y_train = y_train[train_shuffle, :]
+
+    x_test = x_test[test_shuffle, :]
+    y_test = y_test[test_shuffle, :]
+
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.applications.mobilenet.MobileNet(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
+    model(tf.ones(shape=(1,x_train.shape[1], x_train.shape[2], 1)))
+    model.load_weights(r"D:\lyh\GUI207_V2.0\db\trainLogs\2022-11-15-17-15-54-HRRP_simulate_128xN_c6-HRRP_128_mobilenet_c6_keras\model\HRRP_128_mobilenet_c6_keras.hdf5")
+    model.evaluate(x_test, y_test, verbose = 1)
+
 def convert_h5to_pb(h5Path,pbPath):
     model = tf.keras.models.load_model(h5Path,compile=False)
     # model.summary()
@@ -357,9 +379,8 @@ if __name__ == '__main__':
     args.modeldir = args.modeldir+'/'+args.model_name
     if not os.path.exists(args.modeldir):
         os.makedirs(args.modeldir)
-
+    #evaluate(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
     run_main(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
-
     convert_hdf5_to_trt('HRRP', args.work_dir, args.model_name)
     generator_model_documents(args)
     # os.system("python ../../api/bashs/hdf52trt.py --model_type HRRP --work_dir "+args.work_dir+" --model_name "+args.model_name)

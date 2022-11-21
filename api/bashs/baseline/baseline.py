@@ -18,8 +18,8 @@ parser.add_argument('--data_dir', help='the directory of the training data')
 parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
 parser.add_argument('--work_dir', help='the directory of the trainingLogs',default="../db/trainLogs")
 parser.add_argument('--model_name', help='the Name of the model',default="model")
-parser.add_argument('--batch_size', help='the number of batch size')
-parser.add_argument('--max_epochs', help='the number of epochs')
+parser.add_argument('--batch_size', help='the number of batch size',default=32)
+parser.add_argument('--max_epochs', help='the number of epochs',default=10)
 parser.add_argument('--net', help="network frame", default="DNN")
 parser.add_argument('--modeldir', help="model saved path", default="../db/models")
 parser.add_argument('--class_number', help="class_number", default="6")
@@ -217,6 +217,49 @@ def CNN(path, train_x, train_y, test_x, test_y, epoch, batch_size):
     args.valAcc=round(max(h_parameter['val_accuracy'])*100,2)
     return y_test, y_pred
 
+def evaluate_DNN(test_x, test_y):
+    model_DNN = keras.models.Sequential([
+        keras.layers.Dense(150, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(50, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(150, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(50, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(150, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(50, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(len(test_y[0]), activation='softmax')
+    ])
+    model_CNN = keras.models.Sequential([
+        keras.layers.Conv1D(32, kernel_size=10, strides=1, padding='valid', activation='relu'),
+        keras.layers.MaxPool1D(pool_size=2),
+        keras.layers.Conv1D(64, kernel_size=10, strides=1, padding='valid', activation='relu'),
+        keras.layers.MaxPool1D(pool_size=2),
+        keras.layers.Conv1D(128, kernel_size=10, strides=1, padding='valid', activation='relu'),
+        keras.layers.GlobalAveragePooling1D(),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(1024, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(1024, activation='relu'),
+        keras.layers.Dropout(0.2),
+        keras.layers.Dense(100, activation='relu'),
+        keras.layers.Dense(len(test_y[0]), activation='softmax')
+    ])
+    # model_CNN.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+    # model_CNN(tf.ones(shape=(12,128,1)))
+    # model_CNN.load_weights(r"D:\lyh\GUI207_V2.0\db\trainLogs\2022-11-15-16-27-49-HRRP_simulate_128xN_c6-HRRP_128_baselineCNN_c6_keras\model\HRRP_128_baselineCNN_c6_keras.hdf5")
+    # model_CNN.evaluate(test_x, test_y, verbose = 1)
+    model_DNN.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+    model_DNN(tf.ones(shape=(1,128)))
+    model_DNN.load_weights(r"D:\lyh\GUI207_V2.0\db\trainLogs\2022-11-21-15-49-41-HRRP_simulate_128xN_c6-DNN_test\model\DNN_test.hdf5")
+    #model_DNN.load_weights(r"D:\lyh\GUI207_V2.0\db\models\HRRP_128_baselineDNN_c6_keras\HRRP_128_baselineDNN_c6_keras.hdf5")
+    #model_DNN.load_weights(r"D:\lyh\GUI207_V2.0\db\trainLogs\2022-11-15-15-36-45-HRRP_simulate_128xN_c6-HRRP_128_baselineDNN_c6_keras\model\HRRP_128_baselineDNN_c6_keras.hdf5")
+    model_DNN.evaluate(test_x, test_y, verbose = 1)
+
+
 def inference_DNN(train_x, train_y, test_x, test_y, folder_name):
     len_train = len(train_x)
     len_test = len(test_x)
@@ -347,19 +390,19 @@ def generator_model_documents(args):
 
 if __name__ == '__main__':
     x_train, y_train, x_test, y_test, folder_name = read_mat(args.data_dir)
-
-    datasetName = args.data_dir.split("/")[-1]
-    args.work_dir = args.work_dir+'/'+args.time+'-'+datasetName+'-'+args.model_name
-    if not os.path.exists(args.work_dir):
-        os.makedirs(args.work_dir)
-        os.makedirs(args.work_dir + '/model')
-    args.modeldir = args.modeldir+'/'+args.model_name
-    if not os.path.exists(args.modeldir):
-        os.makedirs(args.modeldir)
-    if(args.net=='DNN'):
-        inference_DNN(x_train, y_train, x_test, y_test, folder_name)
-    elif(args.net=='CNN'):
-        inference_CNN(x_train, y_train, x_test, y_test, folder_name)
-    convert_hdf5_to_trt('HRRP', args.work_dir, args.model_name)
-    generator_model_documents(args)
+    evaluate_DNN(x_test, y_test)
+    # datasetName = args.data_dir.split("/")[-1]
+    # args.work_dir = args.work_dir+'/'+args.time+'-'+datasetName+'-'+args.model_name
+    # if not os.path.exists(args.work_dir):
+    #     os.makedirs(args.work_dir)
+    #     os.makedirs(args.work_dir + '/model')
+    # args.modeldir = args.modeldir+'/'+args.model_name
+    # if not os.path.exists(args.modeldir):
+    #     os.makedirs(args.modeldir)
+    # if(args.net=='DNN'):
+    #     inference_DNN(x_train, y_train, x_test, y_test, folder_name)
+    # elif(args.net=='CNN'):
+    #     inference_CNN(x_train, y_train, x_test, y_test, folder_name)
+    # convert_hdf5_to_trt('HRRP', args.work_dir, args.model_name)
+    # generator_model_documents(args)
     print("Train Ended:")

@@ -1,4 +1,4 @@
- from scipy import optimize as op
+from scipy import optimize as op
 import numpy as np
 from sklearn import metrics
 from sklearn.manifold import TSNE
