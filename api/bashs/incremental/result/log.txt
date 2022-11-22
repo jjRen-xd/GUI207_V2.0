@@ -1888,3 +1888,66 @@ All_OA:tensor(97.)
     accuracy                           0.97       300
    macro avg       0.97      0.97      0.97       300
 weighted avg       0.97      0.97      0.97       300
+
+2022-11-21 19:29:58
+Namespace(accuracy=88.0, all_class=6, batch_size=32, bound=0.3, classNum=6, data_dimension=128, increment_epoch=2, learning_rate=0.0001, memory_size=2000, model_name='increACCtest', modeldir='../../../db/models', old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/HRRP_simulate_128xN_c6', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-11-21-19-29-04', work_dir='../../../db/trainLogs/2022-11-21-19-29-04-HRRP_simulate_128xN_c6-increACCtest')
+pretrain_consume_time: 17.719186067581177
+increment_consume_time: 19.455845832824707
+Old_OA:tensor(94.)
+New_OA:tensor(58.)
+All_OA:tensor(88.)
+
+              precision    recall  f1-score   support
+
+           0       1.00      0.98      0.99        50
+           1       0.83      0.88      0.85        50
+           2       0.74      0.96      0.83        50
+           3       0.88      0.88      0.88        50
+           4       0.98      1.00      0.99        50
+           5       0.91      0.58      0.71        50
+
+    accuracy                           0.88       300
+   macro avg       0.89      0.88      0.88       300
+weighted avg       0.89      0.88      0.88       300
+
+2022-11-21 19:42:25
+Namespace(accuracy=89.67, all_class=6, batch_size=32, bound=0.3, classNum=6, data_dimension=128, increment_epoch=3, learning_rate=0.0001, memory_size=2000, model_name='increACCtest2', modeldir='../../../db/models', old_class=5, pretrain_epoch=2, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/HRRP_simulate_128xN_c6', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-11-21-19-41-22', work_dir='../../../db/trainLogs/2022-11-21-19-41-22-HRRP_simulate_128xN_c6-increACCtest2')
+pretrain_consume_time: 17.3882839679718
+increment_consume_time: 28.08185577392578
+Old_OA:tensor(93.6000)
+New_OA:tensor(70.)
+All_OA:tensor(89.6667)
+
+              precision    recall  f1-score   support
+
+           0       1.00      0.94      0.97        50
+           1       0.91      0.84      0.87        50
+           2       0.77      1.00      0.87        50
+           3       0.90      0.90      0.90        50
+           4       0.94      1.00      0.97        50
+           5       0.90      0.70      0.79        50
+
+    accuracy                           0.90       300
+   macro avg       0.90      0.90      0.90       300
+weighted avg       0.90      0.90      0.90       300
+
+2022-11-22 15:26:59
+Namespace(accuracy=93.0, all_class=6, batch_size=32, bound=0.3, classNum=6, data_dimension=128, increment_epoch=10, learning_rate=0.0001, memory_size=2000, model_name='CILmultiCLASStest2', modeldir='../../../db/models', old_class=4, pretrain_epoch=1, random_seed=2022, raw_data_path='D:/lyh/GUI207_V2.0/db/datasets/HRRP_simulate_128xN_c6', reduce_sample=1.0, snr=2, task_size=1, test_ratio=0.5, time='2022-11-22-15-22-55', work_dir='../../../db/trainLogs/2022-11-22-15-22-55-HRRP_simulate_128xN_c6-CILmultiCLASStest2')
+pretrain_consume_time: 31.554343938827515
+increment_consume_time: 175.57347106933594
+Old_OA:tensor(91.)
+New_OA:tensor(97.)
+All_OA:tensor(93.)
+
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        50
+           1       0.88      0.88      0.88        50
+           2       0.98      0.90      0.94        50
+           3       0.90      0.86      0.88        50
+           4       1.00      0.96      0.98        50
+           5       0.88      0.98      0.92        50
+
+    accuracy                           0.93       300
+   macro avg       0.93      0.93      0.93       300
+weighted avg       0.93      0.93      0.93       300

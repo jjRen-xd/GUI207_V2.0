@@ -390,19 +390,19 @@ def generator_model_documents(args):
 
 if __name__ == '__main__':
     x_train, y_train, x_test, y_test, folder_name = read_mat(args.data_dir)
-    evaluate_DNN(x_test, y_test)
-    # datasetName = args.data_dir.split("/")[-1]
-    # args.work_dir = args.work_dir+'/'+args.time+'-'+datasetName+'-'+args.model_name
-    # if not os.path.exists(args.work_dir):
-    #     os.makedirs(args.work_dir)
-    #     os.makedirs(args.work_dir + '/model')
-    # args.modeldir = args.modeldir+'/'+args.model_name
-    # if not os.path.exists(args.modeldir):
-    #     os.makedirs(args.modeldir)
-    # if(args.net=='DNN'):
-    #     inference_DNN(x_train, y_train, x_test, y_test, folder_name)
-    # elif(args.net=='CNN'):
-    #     inference_CNN(x_train, y_train, x_test, y_test, folder_name)
-    # convert_hdf5_to_trt('HRRP', args.work_dir, args.model_name)
-    # generator_model_documents(args)
+    #evaluate_DNN(x_test, y_test)
+    datasetName = args.data_dir.split("/")[-1]
+    args.work_dir = args.work_dir+'/'+args.time+'-'+datasetName+'-'+args.model_name
+    if not os.path.exists(args.work_dir):
+        os.makedirs(args.work_dir)
+        os.makedirs(args.work_dir + '/model')
+    args.modeldir = args.modeldir+'/'+args.model_name
+    if not os.path.exists(args.modeldir):
+        os.makedirs(args.modeldir)
+    if(args.net=='DNN'):
+        inference_DNN(x_train, y_train, x_test, y_test, folder_name)
+    elif(args.net=='CNN'):
+        inference_CNN(x_train, y_train, x_test, y_test, folder_name)
+    convert_hdf5_to_trt('HRRP', args.work_dir, args.model_name)
+    generator_model_documents(args)
     print("Train Ended:")

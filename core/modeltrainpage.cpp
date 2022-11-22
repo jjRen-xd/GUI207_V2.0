@@ -113,7 +113,7 @@ void ModelTrainPage::startTrain(){
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
             case 8:cmd = "activate tf24 && python ../api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+ \
-                        " --new_data_dir "+"./db/datasets/"+"FEATURE_-"+datasetName+"-_36xN_c6";break;break;
+                        " --new_data_dir "+"../db/datasets/"+"FEATURE_-"+datasetName+"-_36xN_c6";break;break;
         }
     }
     else if(trainModelType==9){     //小样本增量模型训练
