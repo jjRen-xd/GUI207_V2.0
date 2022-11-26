@@ -93,9 +93,16 @@ void ModelDock::importModel(string type){
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
-    }else if(modelPath.split('.').last()!="trt"){
-        QMessageBox::warning(NULL, "提示", "文件格式不为trt!");
-        return;
+    }else if(type!="FEA_OPTI"){
+        if(modelPath.split('.').last()!="trt"){
+            QMessageBox::warning(NULL, "提示", "文件格式不为trt!");
+            return;
+        }
+    }else if(type=="FEA_OPTI"){
+        if(modelPath.split('.').last()!="pth"){
+            QMessageBox::warning(NULL, "提示", "文件格式不为pth!");
+            return;
+        }
     }
     QString modelName = modelPath.split('/').last();
     string savePath = modelPath.toStdString();
@@ -105,7 +112,7 @@ void ModelDock::importModel(string type){
     vector<string> allXmlNames;
     bool existXml = false;
     dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
-    // 寻找与.pt文件相同的.xml文件
+    // 寻找与模型文件命名相同的.xml文件
     for(auto &xmlName: allXmlNames){
         if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
             existXml = true;

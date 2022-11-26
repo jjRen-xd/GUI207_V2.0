@@ -16,6 +16,12 @@ conf/libtorch.pri
 !/lib/
 /lib/TRANSFER/ToHrrp_mcr/*
 /lib/guiLogic/tools/__pycache__/*
+/lib/algorithm/optimizeInfer/checkpoints/*
+/lib/algorithm/optimizeInfer/__pycache__/*
+/lib/algorithm/optimizeInfer/utils/__pycache__/*
+/lib/algorithm/optimizeInfer/HRRP/__pycache__/*
+/lib/algorithm/optimizeInfer/networks/__pycache__/*
+/lib/algorithm/optimizeInfer/dataset/__pycache__/*
 
 /.qt_for_python/*
 /temp

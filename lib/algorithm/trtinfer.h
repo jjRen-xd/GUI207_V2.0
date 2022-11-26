@@ -31,6 +31,26 @@ public:
     void setParmsOfABFC(int modelIdx, std::vector<int> dataOrder);
     MatDataProcess *matDataPrcs;
 
+    void oneNormalization_(std::vector<float> &list){
+        //特征归一化
+        float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
+        //std::cout<<"maxdata"<<dMaxValue<<'\n';
+        float dMinValue = *min_element(list.begin(),list.end());  //求最小值
+        //std::cout<<"mindata"<<dMinValue<<'\n';
+        for (int f = 0; f < list.size(); ++f) {
+            list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
+        }
+    }
+
+    void softmax(std::vector<float> &input){
+        float maxn = 0.0;
+        float sum= 0.0;
+        maxn = *max_element(input.begin(), input.end());
+        std::for_each(input.begin(), input.end(), [maxn,&sum](float& d) {d=exp(d-maxn);sum+=d;}); //cmath c11
+        std::for_each(input.begin(), input.end(), [sum](float& d) { d=d/sum;});
+        return ;
+    }
+
 public slots:
 
     QString testOneSample(std::string targetPath, int emIndex, std::string modelPath, bool dataProcess, int *predIdx,std::vector<float> &degrees,std::string flag);

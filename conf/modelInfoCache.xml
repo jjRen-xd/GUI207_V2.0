@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <globalModelInfo datasetTypeNum="2">
-    <FEA_RELE typeID="1">
-        <abfcAcctest_feature_39.trt nameID="1">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-11-21-21-16-52-FEATURE_simualtepure_39xN_c6-abfcAcctest/abfcAcctest_feature_39.trt</PATH>
-        </abfcAcctest_feature_39.trt>
-        <atecAcctest.trt nameID="2">
-            <PATH>D:/lyh/GUI207_V2.0/db/models/atecAcctest/atecAcctest.trt</PATH>
-            <accuracy>61.33</accuracy>
-            <algorithm>ATEC</algorithm>
-            <batch>32</batch>
-            <class>13</class>
+    <FEA_OPTI typeID="1">
+        <MsmcNet_hrrp_-15db_after.pth nameID="1">
+            <PATH>D:/lyh/OPTIMIZEcode/Signal_master/checkpoints/MsmcNet_hrrp_-15db_after.pth</PATH>
+        </MsmcNet_hrrp_-15db_after.pth>
+    </FEA_OPTI>
+    <TRA_DL typeID="2">
+        <CNNacctest.trt nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/CNNacctest/CNNacctest.trt</PATH>
+            <accuracy>94.33</accuracy>
+            <algorithm>CNN</algorithm>
+            <batch>16</batch>
+            <class>6</class>
             <framework>keras</framework>
-            <name>atecAcctest</name>
+            <name>CNNacctest</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>2000</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>TRA_DL</type>
+        </CNNacctest.trt>
+        <dnn_lowcmp.trt nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/dnn_lowcmp/dnn_lowcmp.trt</PATH>
+            <accuracy>31.33</accuracy>
+            <algorithm>DNN</algorithm>
+            <batch>64</batch>
+            <class>6</class>
+            <framework>keras</framework>
+            <name>dnn_lowcmp</name>
             <note>-</note>
             <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
             <trainEpoch>50</trainEpoch>
             <trainLR>0.001</trainLR>
-            <type>FEA_RELE</type>
-        </atecAcctest.trt>
-    </FEA_RELE>
-    <TRA_DL typeID="2">
-        <HRRP_128_densenet121_c6_keras.trt nameID="3">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-11-15-16-34-09-HRRP_simulate_128xN_c6-HRRP_128_densenet121_c6_keras/HRRP_128_densenet121_c6_keras.trt</PATH>
-        </HRRP_128_densenet121_c6_keras.trt>
-        <HRRP_128_efficientnetB0_c6_keras.trt nameID="4">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-11-15-18-36-06-HRRP_simulate_128xN_c6-HRRP_128_efficientnetB0_c6_keras/HRRP_128_efficientnetB0_c6_keras.trt</PATH>
-        </HRRP_128_efficientnetB0_c6_keras.trt>
-        <HRRP_128_mobilenet_c6_keras.trt nameID="5">
-            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-11-15-17-15-54-HRRP_simulate_128xN_c6-HRRP_128_mobilenet_c6_keras/HRRP_128_mobilenet_c6_keras.trt</PATH>
-        </HRRP_128_mobilenet_c6_keras.trt>
-        <densenetAcctest2.trt nameID="6">
-            <PATH>D:/lyh/GUI207_V2.0/db/models/densenetAcctest2/densenetAcctest2.trt</PATH>
-            <accuracy>90.33</accuracy>
-            <algorithm>DenseNet121</algorithm>
-            <batch>32</batch>
-            <class>6</class>
-            <framework>keras</framework>
-            <name>densenetAcctest2</name>
-            <note>-</note>
-            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
-            <trainEpoch>100</trainEpoch>
-            <trainLR>0.001</trainLR>
             <type>TRA_DL</type>
-        </densenetAcctest2.trt>
+        </dnn_lowcmp.trt>
     </TRA_DL>
 </globalModelInfo>

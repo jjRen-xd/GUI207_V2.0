@@ -167,8 +167,8 @@ def DNN(path, train_x, train_y, test_x, test_y, epoch, batch_size):
         keras.layers.Dropout(0.2),
         keras.layers.Dense(150, activation='relu'),
         keras.layers.Dropout(0.2),
-        keras.layers.Dense(50, activation='relu'),
-        keras.layers.Dropout(0.2),
+        # keras.layers.Dense(50, activation='relu'),
+        # keras.layers.Dropout(0.2),
         keras.layers.Dense(len(train_y[0]), activation='softmax')
     ])
     model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
@@ -197,8 +197,8 @@ def CNN(path, train_x, train_y, test_x, test_y, epoch, batch_size):
         keras.layers.Dropout(0.2),
         keras.layers.Dense(1024, activation='relu'),
         keras.layers.Dropout(0.2),
-        keras.layers.Dense(1024, activation='relu'),
-        keras.layers.Dropout(0.2),
+        # keras.layers.Dense(1024, activation='relu'),
+        # keras.layers.Dropout(0.2),
         keras.layers.Dense(100, activation='relu'),
         keras.layers.Dense(len(train_y[0]), activation='softmax')
     ])
