@@ -65,9 +65,14 @@ void ModelEvalPage::refreshGlobalInfo(){
         ui->comboBox_sampleType->addItem(QString::fromStdString(item));
     }
     ui->comboBox_inferBatchsize->clear();
-    for(int i=512;i>3;i/=2){
-        ui->comboBox_inferBatchsize->addItem(QString::number(i));
-    }
+    // for(int i=512;i>3;i/=2){
+    //     ui->comboBox_inferBatchsize->addItem(QString::number(i));
+    // }
+    ui->comboBox_inferBatchsize->addItem(QString::number(1));
+    ui->comboBox_inferBatchsize->addItem(QString::number(16));
+    ui->comboBox_inferBatchsize->addItem(QString::number(32));
+    ui->comboBox_inferBatchsize->addItem(QString::number(64));
+    ui->comboBox_inferBatchsize->addItem(QString::number(100));
     // 网络输出标签对应类别名称初始化
     if(comboBoxContents.size()>0){
         for(int i=0;i<comboBoxContents.size();i++)   label2class[i]=comboBoxContents[i];
@@ -163,6 +168,10 @@ void  ModelEvalPage::testOneSample(){
         std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;//HRRP
         std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;//TRA_DL
         bool dataProcess=true;std::string flag="";
+        if(datasetInfo->selectedType=="RCS") {
+            dataProcess=false;
+            flag="RCS_";
+        }
         if(modelInfo->selectedType=="FEA_OPTI"){   
             // 激活conda python环境
             QString activateEnv = "conda activate "+this->condaEnvName+"&&";
@@ -177,7 +186,6 @@ void  ModelEvalPage::testOneSample(){
             this->execuCmdProcess(processSampleInfer,command);
             return;
         }
-
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         if(modelInfo->selectedType=="FEA_RELE"){
             std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
@@ -229,11 +237,12 @@ void ModelEvalPage::testAllSample(){
         float acc = 0.6;
         int classNum=label2class.size();
         std::vector<std::vector<int>> confusion_matrix(classNum, std::vector<int>(classNum, 0));
-        //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-
         bool dataProcess=true;
         std::string flag="";
+        if(datasetInfo->selectedType=="RCS") {
+            dataProcess=false;
+            flag="RCS_";
+        }
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是不做预处理的
         if(modelInfo->selectedType=="FEA_RELE"){
             std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";

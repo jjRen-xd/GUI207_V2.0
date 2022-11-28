@@ -34,6 +34,7 @@ HEADERS += \
     lib/dataprocess/matdataprocess.h \
     lib/dataprocess/customdataset.h \
     lib/dataprocess/matdataprocess_abfc.h \
+    lib/dataprocess/matdataprocess_rcs.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/customWidget/imagewidget.h \
     lib/guiLogic/datasetInfo.h \
@@ -68,6 +69,7 @@ SOURCES += \
     core/sensePage.cpp \
     lib/dataprocess/matdataprocess.cpp \
     lib/dataprocess/matdataprocess_abfc.cpp \
+    lib/dataprocess/matdataprocess_rcs.cpp \
     lib/algorithm/trtinfer.cpp \
     lib/guiLogic/tools/guithreadrun.cpp \
     lib/guiLogic/bashTerminal.cpp \

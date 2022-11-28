@@ -192,9 +192,9 @@ void SenseSetPage::nextBatchChart(){
             std::string matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
 
             QString chartTitle="Temporary Title";
-            if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}// matVariable="hrrp128";
-            else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title";}// matVariable="radio101";}
-
+            if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}
+            else if (datasetInfo->selectedType=="RADIO") {chartTitle="RADIO Temporary Title";}
+            else if (datasetInfo->selectedType=="RCS") {chartTitle="RCS Temporary Title";}
             pMxArray = matGetVariable(pMatFile,matVariable.c_str());
             if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到！！！！！！";return;}
             int N = mxGetN(pMxArray);  //N 列数

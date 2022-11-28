@@ -112,6 +112,10 @@ QString TrtInfer::testOneSample(
         test_dataset_for_abfc.getDataSpecifically(theClass,emIndex,indata);
 
     }
+    else if(flag=="RCS_"){
+        MatDataProcess_rcs matDataPrcs;
+        matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);     
+    }
     else{
         MatDataProcess matDataPrcs;
         matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);
@@ -169,7 +173,7 @@ bool TrtInfer::testAllSample(
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return 0;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=1;//这里是写死了，应该传过来
+    INFERENCE_BATCH=inferBatch;//这里是写死了，应该传过来
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){
@@ -190,7 +194,7 @@ bool TrtInfer::testAllSample(
     // LOAD DataSet
     clock_t start,end;
     start = clock();
-    CustomDataset test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
+    CustomDataset test_dataset = CustomDataset(dataset_path, dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
 
     qDebug()<<"(TrtInfer::testAllSample) test_dataset.data.size()==="<<test_dataset.data.size();
     //qDebug()<<"(TrtInfer::testAllSample) test_dataset.label.size()==="<<test_dataset.labels.size();

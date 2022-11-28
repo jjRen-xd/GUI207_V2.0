@@ -59,7 +59,7 @@ void ModelTrainPage::changeTrainType(){
         ui->tabWidget->addTab(ui->tab_2,"验证集准确率");
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
     }
-    else if(modelType==9){      //cil
+    else if(modelType==10){      //cil
         ui->fewShotWidget->setVisible(true);
         ui->tabWidget->addTab(ui->tab_2,"验证集准确率");
         ui->tabWidget->addTab(ui->tab_3,"混淆矩阵");
@@ -91,7 +91,7 @@ void ModelTrainPage::startTrain(){
     pretrain_epoch = ui->preTrainEpochEdit->text(); 
     cil_data_dimension = ui->cil_data_dimension_box->currentText();
     
-    if(trainModelType<9){
+    if(trainModelType<10){
         if(batchSize=="" || epoch=="" || saveModelName==""){
             QMessageBox::warning(NULL,"错误","请检查各项文本框中训练参数是否正确配置!");
             return;
@@ -113,10 +113,12 @@ void ModelTrainPage::startTrain(){
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;
             case 8:cmd = "activate tf24 && python ../api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+ \
-                        " --new_data_dir "+"../db/datasets/"+"FEATURE_-"+datasetName+"-_36xN_c6";break;break;
+                        " --new_data_dir "+"../db/datasets/"+"FEATURE_-"+datasetName+"-_36xN_c6";break;
+            case 9:cmd ="activate tf24 && python ../api/bashs/rcs/rcs_densenet.py --data_dir "+choicedDatasetPATH+ \
+                        " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName;break;break;
         }
     }
-    else if(trainModelType==9){     //小样本增量模型训练
+    else if(trainModelType==10){     //小样本增量模型训练
         reduce_sample=reduce_sample==""?"1.0":reduce_sample;
         old_class_num=old_class_num==""?"5":old_class_num;
         pretrain_epoch=pretrain_epoch==""?"1":pretrain_epoch;
@@ -253,9 +255,10 @@ void ModelTrainPage::editModelFile(){
     int modelType=ui->modelTypeBox->currentIndex();
     QString modelFilePath;
     switch(modelType){
-        case 5:modelFilePath="../api/bashs/abfc/train.py";break;
-        case 6:modelFilePath="../api/bashs/atec/net_fea.py";break;
-        case 7:modelFilePath="../api/bashs/incremental/model.py";break;
+        case 7:modelFilePath="../api/bashs/abfc/train.py";break;
+        case 8:modelFilePath="../api/bashs/atec/net_fea.py";break;
+        case 9:modelFilePath="../api/bashs/incremental/model.py";break;
+        case 10:modelFilePath="../api/bashs/rcs/rcs_densenet.py";break;
         default:modelFilePath="../api/bashs/hrrp_TRImodel/train.py";
     }
     QString commd="gvim " + modelFilePath;

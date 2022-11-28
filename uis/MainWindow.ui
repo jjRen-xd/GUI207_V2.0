@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2956,6 +2956,11 @@
                    </item>
                    <item>
                     <property name="text">
+                     <string>RCS_128_dense121_c6_keras</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
                      <string>INCREmodel</string>
                     </property>
                    </item>
@@ -3916,8 +3921,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>98</width>
-                        <height>28</height>
+                        <width>137</width>
+                        <height>85</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">

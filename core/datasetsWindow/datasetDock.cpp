@@ -314,13 +314,13 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                 vector<string> allMatFile;
                 if(dirTools->getFiles(allMatFile, ".mat", classPath)){
                     int randomIdx = (rand())%5000;
-                    std::cout<<"(DatasetDock::treeItemClicked)randomIdx:"<<randomIdx;
                     //绘图
                     QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
                     QString chartTitle="Temporary Title";
                     if(clickedType=="HRRP") chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";
                     else if (clickedType=="RADIO") chartTitle="RADIO Temporary Title";
                     else if (clickedType=="FEATURE") chartTitle="Feture Temporary Title";
+                    else if (clickedType=="RCS") chartTitle="RCS Temporary Title";
                     Chart *previewChart = new Chart(chartGroup[i],chartTitle,matFilePath);
                     previewChart->drawImage(chartGroup[i],clickedType,randomIdx);
                     //chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));

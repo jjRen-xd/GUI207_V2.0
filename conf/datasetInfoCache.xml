@@ -58,5 +58,9 @@
     </HRRP>
     <IMAGE typeID="4" />
     <RADIO typeID="5" />
-    <RCS typeID="6" />
+    <RCS typeID="6">
+        <RCS_random_x_c6 nameID="5">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/RCS_random_x_c6</PATH>
+        </RCS_random_x_c6>
+    </RCS>
 </globalDatasetInfo>

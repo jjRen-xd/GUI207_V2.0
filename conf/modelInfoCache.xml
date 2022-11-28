@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalModelInfo datasetTypeNum="2">
+<globalModelInfo datasetTypeNum="4">
     <FEA_OPTI typeID="1">
         <MsmcNet_hrrp_-15db_after.pth nameID="1">
             <PATH>D:/lyh/OPTIMIZEcode/Signal_master/checkpoints/MsmcNet_hrrp_-15db_after.pth</PATH>
         </MsmcNet_hrrp_-15db_after.pth>
     </FEA_OPTI>
-    <TRA_DL typeID="2">
-        <CNNacctest.trt nameID="2">
-            <PATH>D:/lyh/GUI207_V2.0/db/models/CNNacctest/CNNacctest.trt</PATH>
-            <accuracy>94.33</accuracy>
-            <algorithm>CNN</algorithm>
-            <batch>16</batch>
+    <FEA_RELE typeID="2" />
+    <INCRE typeID="3" />
+    <TRA_DL typeID="4">
+        <RCS.trt nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/RCS/RCS.trt</PATH>
+            <accuracy>84.15</accuracy>
+            <algorithm>DenseNet121</algorithm>
+            <batch>100</batch>
             <class>6</class>
             <framework>keras</framework>
-            <name>CNNacctest</name>
+            <name>RCS</name>
             <note>-</note>
-            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
-            <trainEpoch>2000</trainEpoch>
+            <trainDataset>RCS_random_x_c6</trainDataset>
+            <trainEpoch>5</trainEpoch>
             <trainLR>0.001</trainLR>
             <type>TRA_DL</type>
-        </CNNacctest.trt>
-        <dnn_lowcmp.trt nameID="3">
-            <PATH>D:/lyh/GUI207_V2.0/db/models/dnn_lowcmp/dnn_lowcmp.trt</PATH>
-            <accuracy>31.33</accuracy>
+        </RCS.trt>
+        <dnnACCtest.trt nameID="3">
+            <PATH>D:/lyh/GUI207_V2.0/db/models/dnnACCtest/dnnACCtest.trt</PATH>
+            <accuracy>99.67</accuracy>
             <algorithm>DNN</algorithm>
-            <batch>64</batch>
+            <batch>32</batch>
             <class>6</class>
             <framework>keras</framework>
-            <name>dnn_lowcmp</name>
+            <name>dnnACCtest</name>
             <note>-</note>
             <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
-            <trainEpoch>50</trainEpoch>
+            <trainEpoch>1000</trainEpoch>
             <trainLR>0.001</trainLR>
             <type>TRA_DL</type>
-        </dnn_lowcmp.trt>
+        </dnnACCtest.trt>
+        <rcsTEST.trt nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/trainLogs/2022-11-26-21-53-55-RCS_random_x_c6-rcsTEST/rcsTEST.trt</PATH>
+        </rcsTEST.trt>
     </TRA_DL>
 </globalModelInfo>

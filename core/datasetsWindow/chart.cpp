@@ -66,8 +66,11 @@ void Chart::drawImage(QLabel* chartLabel, std::string dataSetType, int examIdx){
     }else if(dataFileFormat==QString::fromStdString("mat")&&dataSetType=="FEATURE"){
         readFeaturemat(examIdx);
         setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
-
+    }else if(dataFileFormat==QString::fromStdString("mat")&&dataSetType=="RCS"){
+        readRCSmat(examIdx);
+        setAxis("Time/mm",xmin,xmax,10, "dB(V/m)",ymin,ymax,10);
     }
+
 
     buildChart(points);
     showChart(chartLabel);
@@ -180,6 +183,42 @@ void Chart::readFeaturemat(int emIdx){
 
 }
 
+void Chart::readRCSmat(int emIdx){
+    int windowLen=128;  //窗口长度传过来太麻烦了 默认128
+    points.clear();
+    float y_min = 200000,y_max = -200000;
+    MATFile* pMatFile = NULL;
+    mxArray* pMxArray = NULL;
+
+    int* matdata;
+    pMatFile = matOpen(filefullpath.toStdString().c_str(), "r");
+    if(!pMatFile){
+        qDebug()<<"(Chart::readHRRPmat)文件指针空！！！！！！";
+        return;
+    }
+    std::string matVariable=filefullpath.split("/").last().split(".")[0].toStdString().c_str();//假设数据变量名同文件名
+    pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+    if(!pMxArray){
+        qDebug()<<"(Chart::readHRRPmat)pMxArray变量没找到！！！！！！";
+        return;
+    }
+    matdata = (int*)mxGetData(pMxArray);
+    int M = mxGetM(pMxArray);  //M=128 行数
+    int N = mxGetN(pMxArray);  //N=1000 列数
+    if(emIdx>N-windowLen) emIdx=N-1;  
+    for(int i=0;i<windowLen;i++){
+        float y=matdata[emIdx+i];
+        y_min = fmin(y_min,y);
+        y_max = fmax(y_max,y);
+        points.append(QPointF(2*i,y));
+    }
+    //qDebug()<<"(Chart::readHRRPmat)M:"<<M<<"      N:"<<N;
+    xmin = 0; xmax = windowLen*2+4;
+    ymin = y_min-3; ymax = y_max+3;
+    //qDebug()<<"(Chart::readHRRPmat)ymin:"<<ymin<<"      ymax:"<<ymax;
+//    mxFree(pMxArray);
+//    matClose(pMatFile);//不注释这两个善后代码就会crashed，可能是冲突了
+}
 
 void Chart::readHRRPtxt(){
     float x_min = 200,x_max = -200,y_min = 200,y_max = -200;
