@@ -25,14 +25,14 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
 
-    Py_SetPythonHome(L"D:/win_anaconda");
+    Py_SetPythonHome(L"H:/DL_ENV/Anaconda3");
     Py_Initialize();
     _import_array();
     PyRun_SimpleString("import sys");
     //PyRun_SimpleString("sys.path.append('./')");
     PyRun_SimpleString("sys.path.append('../../lib/guiLogic/tools/')");
     pModule = PyImport_ImportModule("EvalPageConfusionMatrix");
-    pFunc = PyObject_GetAttrString(pModule, "draw_confusion_matrix");
+    // pFunc = PyObject_GetAttrString(pModule, "draw_confusion_matrix");
 
 }
 

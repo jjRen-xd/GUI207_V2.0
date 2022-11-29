@@ -89,12 +89,12 @@ void ModelDock::treeItemClicked(const QModelIndex &index){
 
 
 void ModelDock::importModel(string type){
-    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../../db/models/");
+    QString modelPath = QFileDialog::getOpenFileName(NULL, "打开网络模型文件", "../../db/models/", tr("model (*.trt *.pth *.hdf5)"));
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
-    }else if(modelPath.split('.').last()!="trt"){
-        QMessageBox::warning(NULL, "提示", "文件格式不为trt!");
+    }else if(modelPath.split('.').last()!="trt" && modelPath.split('.').last()!="pth" && modelPath.split('.').last()!="hdf5"){
+        QMessageBox::warning(NULL, "提示", "(.trt,.pth,.hdf5)不支持的模型格式!");
         return;
     }
     QString modelName = modelPath.split('/').last();

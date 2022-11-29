@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="page_senseSet">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -99,8 +99,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>576</width>
-             <height>1157</height>
+             <width>494</width>
+             <height>1097</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1415,8 +1415,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>725</width>
-             <height>623</height>
+             <width>598</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2271,8 +2271,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>321</width>
-               <height>303</height>
+               <width>271</width>
+               <height>257</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2436,8 +2436,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>459</width>
-               <height>620</height>
+               <width>402</width>
+               <height>591</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2756,8 +2756,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>885</width>
-             <height>587</height>
+             <width>764</width>
+             <height>355</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_51">
@@ -3699,8 +3699,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>341</width>
-             <height>307</height>
+             <width>296</width>
+             <height>266</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_57">
@@ -3906,8 +3906,8 @@
                        <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>137</width>
-                        <height>85</height>
+                        <width>117</width>
+                        <height>68</height>
                        </rect>
                       </property>
                       <layout class="QHBoxLayout" name="horizontalLayout_78">
@@ -4043,8 +4043,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>714</width>
-             <height>1095</height>
+             <width>883</width>
+             <height>1072</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4082,7 +4082,7 @@
              </layout>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_90">
+             <layout class="QHBoxLayout" name="horizontalLayout_77">
               <item>
                <widget class="QLabel" name="label_mV_visLayer">
                 <property name="text">
@@ -4106,7 +4106,7 @@
              </layout>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_77">
+             <layout class="QHBoxLayout" name="horizontalLayout_81">
               <item>
                <widget class="QGraphicsView" name="graphicsView_mV_modelImg">
                 <property name="minimumSize">
@@ -4215,10 +4215,17 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_mV_importImg">
-                <property name="text">
-                 <string>导入图像</string>
-                </property>
+               <widget class="QComboBox" name="comboBox_mV_actOrGrad">
+                <item>
+                 <property name="text">
+                  <string>神经元激活</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>神经元梯度</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item>
@@ -4450,8 +4457,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>714</width>
-             <height>943</height>
+             <width>592</width>
+             <height>923</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_77">
@@ -4658,6 +4665,13 @@
                   </widget>
                  </item>
                  <item>
+                  <widget class="QLabel" name="label_134">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QLabel" name="label_226">
                    <property name="text">
                     <string/>
@@ -4668,13 +4682,6 @@
                   <widget class="QPushButton" name="pushButton_CAM_randomImg">
                    <property name="text">
                     <string>数据集取样</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pushButton_CAM_importImg">
-                   <property name="text">
-                    <string>导入图像</string>
                    </property>
                   </widget>
                  </item>
@@ -5455,7 +5462,7 @@
      <x>0</x>
      <y>0</y>
      <width>1520</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="minimumSize">

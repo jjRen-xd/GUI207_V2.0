@@ -74,10 +74,11 @@ private:
     // 选择的数据集、模型、样本信息
     std::string choicedDatasetPATH;
     std::string choicedModelPATH;
-    QString choicedModelName;
-    QString choicedModelType;
-    QString choicedSamplePATH;
+    QString choicedModelSuffix;
     QString choicedCamMethod;
+
+    QString choicedSamplePATH;
+    int choicedMatIdx;
 
     // 选择模型结构的xml文件、预览图像路径 // FIXME 后期需要结合系统
     std::string modelStructXmlPath;

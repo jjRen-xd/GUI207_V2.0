@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <mat.h>
 
 using namespace std;
 #define NUM_FEA 6
@@ -21,10 +22,8 @@ ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
 {   
     // 刷新模型、数据集信息
 //    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "207_base";
+    this->condaEnvName = "torch";
     this->pythonApiPath = "../../api/HRRP_vis/vis_fea.py";
-    this->choicedDatasetPATH = "../../api/HRRP_vis/dataset/HRRP_20220508";
-    this->choicedModelPATH = "../../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
     refreshGlobalInfo();
 
     // 下拉框信号槽绑定
@@ -37,14 +36,12 @@ ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
     // 按钮信号槽绑定
     connect(ui->pushButton_mV_clear, &QPushButton::clicked, this, &ModelVisPage::clearComboBox);
     connect(ui->pushButton_mV_randomImg, &QPushButton::clicked, this, &ModelVisPage::randomImage);
-    connect(ui->pushButton_mV_importImg, &QPushButton::clicked, this, &ModelVisPage::importImage);
     connect(ui->pushButton_mV_confirmVis, &QPushButton::clicked, this, &ModelVisPage::confirmVis);
     connect(ui->pushButton_mV_nextPage, &QPushButton::clicked, this, &ModelVisPage::nextFeaImgsPage);
     // 多线程的信号槽绑定
     processVis = new QProcess();
     connect(processVis, &QProcess::readyReadStandardOutput, this, &ModelVisPage::processVisFinished);
 
-    ui->pushButton_mV_importImg->setEnabled(false);
 }
 
 ModelVisPage::~ModelVisPage(){
@@ -53,26 +50,53 @@ ModelVisPage::~ModelVisPage(){
 
 
 void ModelVisPage::confirmVis(){
+    // 各种参数的校验
     if(this->choicedSamplePATH.isEmpty()){
         QMessageBox::warning(NULL,"错误","未选择输入图像!");
         return;
     }
     if(this->modelCheckpointPath.isEmpty()){
-        QMessageBox::warning(NULL,"错误","未选择要可视化模型!");
+        QMessageBox::warning(NULL,"错误","未选中模型或不支持该类型模型!");
         return;
     }
     if(this->targetVisLayer.isEmpty()){
-        QMessageBox::warning(NULL,"错误","未选择可视化位置!");
+        QMessageBox::warning(NULL,"错误","未选择可视化隐层!");
         return;
     }
+    if(ui->comboBox_mV_actOrGrad->currentText()=="神经元激活"){
+        this->actOrGrad = 0;
+    }
+    else if(ui->comboBox_mV_actOrGrad->currentText()=="神经元梯度"){
+        this->actOrGrad = 1;
+    }
+    else{
+        QMessageBox::warning(NULL,"错误","需选择神经元激活/梯度!");
+        return;
+    }
+
     // 激活conda python环境
+    if (this->choicedModelSuffix == ".pth"){        // pytorch模型
+        this->condaEnvName = "torch";
+        this->pythonApiPath = "../../api/HRRP_vis/hrrp_vis_torch.py";
+    }
+    else if(this->choicedModelSuffix == ".hdf5"){   // keras模型
+        this->condaEnvName = "keras";
+        this->pythonApiPath = "../../api/HRRP_vis_keras/hrrp_vis_keras.py";
+    }
+    else{
+        QMessageBox::warning(NULL,"错误","不支持该类型模型!");
+        return;
+    }
+
+    // 执行python脚本
     QString activateEnv = "conda activate "+this->condaEnvName+"&&";
     QString command = activateEnv + "python " + this->pythonApiPath+ \
         " --checkpoint="        +this->modelCheckpointPath+ \
         " --visualize_layer="   +this->targetVisLayer+ \
-        " --signal_path="       +this->choicedSamplePATH+ \
+        " --mat_path="          +this->choicedSamplePATH+ \
+        " --mat_idx="           +QString::number(this->choicedMatIdx)+ \
+        " --act_or_grad="       +QString::number(this->actOrGrad)+ \
         " --save_path="         +this->feaImgsSavePath;
-    // 执行python脚本
     this->terminal->print(command);
     this->execuCmdProcess(command);
 }
@@ -125,61 +149,99 @@ void ModelVisPage::processVisFinished(){
 
 
 void ModelVisPage::nextFeaImgsPage(){
+    if(this->feaNum==0){
+        QMessageBox::warning(NULL,"错误","未进行可视化!");
+        return;
+    }
     // 当前页码更新
     this->currFeaPage = (this->currFeaPage%this->allFeaPage)+1;
     ui->label_mV_pageCurr->setText(QString::number(this->currFeaPage));
-    // 当前页所要展示的特征图索引
-    int beginIdx = NUM_FEA*(this->currFeaPage-1)+1;
-    int endIdx = NUM_FEA*this->currFeaPage;
-    if(endIdx>this->feaNum){
-        endIdx = this->feaNum;
+    
+    if(this->feaNum==1){    // 全连接层及其他一维可视化
+        if(this->actOrGrad == 0){
+            recvShowPicSignal(QPixmap(this->feaImgsSavePath+"/"+"FC_vis.png"), ui->graphicsView_mV_fea1);
+            ui->label_mV_fea1->setText("神经元激活分布");
+        }
+        else{
+            recvShowPicSignal(QPixmap(this->feaImgsSavePath+"/"+"FC_vis.png"), ui->graphicsView_mV_fea2);
+            ui->label_mV_fea2->setText("神经元梯度分布");
+        }
     }
-    vector<int> showFeaIndex(endIdx-beginIdx+1);
-    std::iota(showFeaIndex.begin(), showFeaIndex.end(), beginIdx);
+    else{                   // 卷积层及其他二维可视化    
+        // 当前页所要展示的特征图索引
+        int beginIdx = NUM_FEA*(this->currFeaPage-1)+1;
+        int endIdx = NUM_FEA*this->currFeaPage;
+        if(endIdx>this->feaNum){
+            endIdx = this->feaNum;
+        }
+        vector<int> showFeaIndex(endIdx-beginIdx+1);
+        std::iota(showFeaIndex.begin(), showFeaIndex.end(), beginIdx);
 
-    // 加载特征图和标签,并显示
-    for(size_t i = 0; i<showFeaIndex.size(); i++){
-        QGraphicsView *feaGraphic = ui->groupBox_mV_feaShow->findChild<QGraphicsView *>("graphicsView_mV_fea"+QString::number(i+1));
-        QLabel *fealabel = ui->groupBox_mV_feaShow->findChild<QLabel *>("label_mV_fea"+QString::number(i+1));
-        recvShowPicSignal(QPixmap(this->feaImgsSavePath+"/"+QString::number(showFeaIndex[i])+".png"), feaGraphic);
-        fealabel->setText("CH-"+QString::number(showFeaIndex[i]));
+        // 加载特征图和标签,并显示
+        for(size_t i = 0; i<showFeaIndex.size(); i++){
+            QGraphicsView *feaGraphic = ui->groupBox_mV_feaShow->findChild<QGraphicsView *>("graphicsView_mV_fea"+QString::number(i+1));
+            QLabel *fealabel = ui->groupBox_mV_feaShow->findChild<QLabel *>("label_mV_fea"+QString::number(i+1));
+            recvShowPicSignal(QPixmap(this->feaImgsSavePath+"/"+QString::number(showFeaIndex[i])+".png"), feaGraphic);
+            fealabel->setText("CH-"+QString::number(showFeaIndex[i]));
+        }
     }
 }
 
 
 void ModelVisPage::refreshGlobalInfo(){
-    // 基本信息更新
-    // if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
-    //     ui->label_mV_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
-    //     this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
-    // }
-    // else{
-    //     this->choicedDatasetPATH = "";
-    //     ui->label_mV_dataset->setText("空");
-    // }
-    // if(!modelInfo->selectedName.empty() && modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "PATH")){
-    //     // python可解释接口所需要的路径更新
-    //     ui->label_mV_model->setText(QString::fromStdString(modelInfo->selectedName));
-    //     QString choicedModelPath = QString::fromStdString(modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "PATH"));
-    ui->label_mV_dataset->setText("HRRP512_Simulation");
-    ui->label_mV_model->setText("HRRP512_vis");
-    QString modelBasePath = QString::fromStdString(this->choicedModelPATH).split(".pth").first();
+    // 数据集信息更新
+    if(datasetInfo->checkMap(datasetInfo->selectedType, datasetInfo->selectedName, "PATH")){
+        ui->label_mV_dataset->setText(QString::fromStdString(datasetInfo->selectedName));
+        this->choicedDatasetPATH = datasetInfo->getAttri(datasetInfo->selectedType, datasetInfo->selectedName, "PATH");
+    }
+    else{
+        this->choicedDatasetPATH = "";
+        ui->label_mV_dataset->setText("空");
+    }
+    // 模型信息更新
+    if(!modelInfo->selectedName.empty() && modelInfo->checkMap(modelInfo->selectedType, modelInfo->selectedName, "PATH")){
+        ui->label_mV_model->setText(QString::fromStdString(modelInfo->selectedName));
+        this->choicedModelPATH = modelInfo->getAttri(modelInfo->selectedType, modelInfo->selectedName, "PATH");
+    }
+    else{
+        this->choicedModelPATH = "";
+        ui->label_mV_model->setText(QString::fromStdString("空"));
+    }
+
+    // 模型类型，目前可视化仅支持.hdf5和.pth
+    this->choicedModelSuffix = "." + QString::fromStdString(this->choicedModelPATH).split(".").last();
+    QString modelBasePath = "";
+    if(this->choicedModelSuffix==".pth" || this->choicedModelSuffix==".hdf5"){
+        modelBasePath = QString::fromStdString(this->choicedModelPATH).split(choicedModelSuffix).first();
+    }
+    else{        // 不支持的模型类型
+        this->choicedModelPATH = "";
+    }
+
     this->modelCheckpointPath   = QString::fromStdString(this->choicedModelPATH);
     this->modelStructXmlPath    = modelBasePath.toStdString() + "_struct.xml";
     this->modelStructImgPath    = modelBasePath + "_structImage";
     this->feaImgsSavePath       = modelBasePath + "_modelVisOutput";
 
-
     clearComboBox();
-    // }
-    // else{
-    //     ui->label_mV_model->setText(QString::fromStdString("空"));
-    // }
 }
 
 
 void ModelVisPage::clearComboBox(){
-    // if(!modelInfo->selectedName.empty()){
+    // 判断是否存在模型结构文件*_struct.xml，如果没有则返回
+    if (!dirTools->exist(this->modelStructXmlPath)){
+        ui->comboBox_mV_L1->clear();
+        ui->comboBox_mV_L2->clear();
+        ui->comboBox_mV_L3->clear();
+        ui->comboBox_mV_L4->clear();
+        ui->comboBox_mV_L5->clear();
+        return;
+    } 
+    // 判断是否存在可视化输出文件夹，如果没有则创建
+    QDir dir(this->feaImgsSavePath);
+    if(!dir.exists()){
+        dir.mkpath(this->feaImgsSavePath);
+    }
     // 初始化第一个下拉框
     QStringList L1Layers;
     loadModelStruct_L1(L1Layers);
@@ -204,26 +266,42 @@ void ModelVisPage::clearComboBox(){
 void ModelVisPage::refreshVisInfo(){
     // 提取目标层信息的特定格式
     QString targetVisLayer = "";
-    // vector<string> tmpList = {"L1", "L2", "L3", "L4", "L5"};
-    vector<string> tmpList = {"L2", "L3"};
-    for(auto &layer : tmpList){
-        if(this->choicedLayer[layer] == "NULL"){
-            continue;
-        }
-        // if(layer == "L1"){
-        if(layer == "L2"){
-            targetVisLayer += QString::fromStdString(this->choicedLayer[layer]);
-        }
-        else{
-            if(this->choicedLayer[layer][0] == '_'){
-                targetVisLayer += QString::fromStdString("["+this->choicedLayer[layer].substr(1)+"]");
+    if(this->choicedModelSuffix==".pth"){
+        vector<string> tmpList = {"L2", "L3"};
+        for(auto &layer : tmpList){
+            if(this->choicedLayer[layer] == "NULL"){
+                continue;
+            }
+            if(layer == "L2"){
+                targetVisLayer += QString::fromStdString(this->choicedLayer[layer]);
             }
             else{
-                targetVisLayer += QString::fromStdString("."+this->choicedLayer[layer]);
+                if(this->choicedLayer[layer][0] == '_'){
+                    targetVisLayer += QString::fromStdString("["+this->choicedLayer[layer].substr(1)+"]");
+                }
+                else{
+                    targetVisLayer += QString::fromStdString("."+this->choicedLayer[layer]);
+                }
             }
         }
+        this->targetVisLayer = targetVisLayer.replace("._", ".");
     }
-    this->targetVisLayer = targetVisLayer.replace("._", ".");
+    else if(this->choicedModelSuffix==".hdf5"){
+        vector<string> tmpList = {"L2", "L3", "L4", "L5"};
+        for(auto &layer : tmpList){
+            if(this->choicedLayer[layer] == "NULL"){
+                continue;
+            }
+            if(layer == "L2"){
+                targetVisLayer += QString::fromStdString(this->choicedLayer[layer]);
+            }
+            else{
+                targetVisLayer += QString::fromStdString("_"+this->choicedLayer[layer]);
+            }
+        }
+        this->targetVisLayer = targetVisLayer.replace("__", "_");
+    }
+
     ui->label_mV_visLayer->setText(this->targetVisLayer);
 
     // 加载相应的预览图像
@@ -241,31 +319,74 @@ void ModelVisPage::refreshVisInfo(){
 
 
 int ModelVisPage::randomImage(){
-    if(this->choicedDatasetPATH.empty()){
-        QMessageBox::warning(NULL,"错误","未选择数据集!");
+    if(this->choicedDatasetPATH.empty() || this->choicedModelPATH.empty()){
+        QMessageBox::warning(NULL,"错误","未选择数据集/模型!");
+        return -1;
+    }
+    // 目前仅支持HRRP模型
+    if(datasetInfo->selectedType!="HRRP"){
+        QMessageBox::warning(NULL,"错误","目前仅支持HRRP数据集!");
         return -1;
     }
     // 获取所有子文件夹
     vector<string> allSubDirs;
     dirTools->getDirs(allSubDirs, choicedDatasetPATH);
     string choicedSubDir = allSubDirs[(rand())%allSubDirs.size()];
-    // 获取图片文件夹下的所有图片文件名
-    vector<string> txtFileNames;
-    dirTools->getFiles(txtFileNames, ".txt", choicedDatasetPATH+"/"+choicedSubDir);
-    // 随机选取一个信号作为预览
-    srand((unsigned)time(NULL));
-    string choicedTxtFile = txtFileNames[(rand())%txtFileNames.size()];
-    string choicedTxtPath = choicedDatasetPATH+"/"+choicedSubDir+"/"+choicedTxtFile;
-    this->choicedSamplePATH = QString::fromStdString(choicedTxtPath);
+    string classPath = choicedDatasetPATH + "/" + choicedSubDir;
 
-    // 绘制样本
-    // qDebug()<<choicedSamplePATH;
-    Chart *previewChart = new Chart(ui->label_mV_choicedImg,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",choicedSamplePATH);
-    previewChart->drawHRRPimage(ui->label_mV_choicedImg);
+    // if(this->choicedModelSuffix == ".pth"){
+        // vector<string> txtFileNames;
+        // if(dirTools->getFiles(txtFileNames, ".txt", classPath)){
+        //     // 随机选取一个信号作为预览
+        //     srand((unsigned)time(NULL));
+        //     string choicedTxtFile = txtFileNames[(rand())%txtFileNames.size()];
+        //     string choicedTxtPath = classPath+"/"+choicedTxtFile;
+        //     this->choicedSamplePATH = QString::fromStdString(choicedTxtPath);
 
-    ui->label_mV_choicedImgName->setText(QString::fromStdString(choicedSubDir)+"/"+choicedSamplePATH.split("/").last());
+        //     // 绘制样本
+        //     // qDebug()<<choicedSamplePATH;
+        //     Chart *previewChart = new Chart(ui->label_mV_choicedImg,"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",choicedSamplePATH);
+        //     previewChart->drawHRRPimage(ui->label_mV_choicedImg);
+        //     ui->label_mV_choicedImgName->setText(QString::fromStdString(choicedSubDir)+"/"+choicedSamplePATH.split("/").last());
+        //     return 1;
+        // }
+        // return -1;
+    // }
+    if (this->choicedModelSuffix == ".hdf5" || this->choicedModelSuffix == ".pth"){
+        vector<string> allMatFile;
+        if(dirTools->getFiles(allMatFile, ".mat", classPath)){
+            QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
+            //下面这部分代码都是为了让randomIdx在合理的范围内
+            MATFile* pMatFile = NULL;
+            mxArray* pMxArray = NULL;
+            pMatFile = matOpen(matFilePath.toStdString().c_str(), "r");
+            if(!pMatFile){qDebug()<<"(ModelEvalPage::randSample)文件指针空!";return -1;}
+            std::string matVariable=allMatFile[0].substr(0,allMatFile[0].find_last_of('.')).c_str();//假设数据变量名同文件名的话
 
-    return 1;
+            pMxArray = matGetVariable(pMatFile,matVariable.c_str());
+            if(!pMxArray){qDebug()<<"(ModelEvalPage::randSample)pMxArray变量没找到!";return -1;}
+            int N = mxGetN(pMxArray);  //N 列数
+            int randomIdx = N-(rand())%N;
+
+            // 保存随机选取的样本路径
+            this->choicedSamplePATH = matFilePath;
+            this->choicedMatIdx = randomIdx;
+
+            //绘图
+            QString chartTitle="Temporary Title";
+            if(datasetInfo->selectedType=="HRRP") {chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";}
+            Chart *previewChart = new Chart(ui->label_mV_choicedImg,chartTitle,matFilePath);
+            previewChart->drawImage(ui->label_mV_choicedImg,datasetInfo->selectedType,randomIdx);
+            ui->label_mV_choicedImgName->setText(QString::fromStdString(allMatFile[0])+"/"+QString::number(randomIdx));
+
+            return 1;
+        }
+        return -1;
+    }
+    else{
+        return -1;
+    }
+
 }
 
 

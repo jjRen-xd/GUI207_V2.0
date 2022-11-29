@@ -113,7 +113,6 @@ void ModelTrainPage::startTrain(){
             case 6:cmd = "activate tf24 && python ../../api/bashs/atec/main.py --data_dir "+choicedDatasetPATH+ \
                         " --time "+time+" --batch_size "+batchSize+" --max_epochs "+epoch+" --model_name "+saveModelName+ \
                         " --new_data_dir "+"../../db/datasets/"+datasetName+"_FEATURE";break;break;
-                        
         }
     }
     else if(trainModelType==7){     //小样本增量模型训练
