@@ -1,15 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<globalDatasetInfo datasetTypeNum="5">
+<globalDatasetInfo datasetTypeNum="6">
     <FEATURE typeID="1">
-        <fea_shuffle nameID="1">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/fea_shuffle</PATH>
-        </fea_shuffle>
-    </FEATURE>
-    <HRRP typeID="2">
-        <falseHRRPmat_1x128_6s nameID="2">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/falseHRRPmat_1x128_6s</PATH>
+        <FEATURE_-HRRP_simulate_128xN_c6-_36xN_c6 nameID="1">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/FEATURE_-HRRP_simulate_128xN_c6-_36xN_c6</PATH>
+            <azimuthAngle>未定义</azimuthAngle>
+            <claNum>6</claNum>
+            <datasetName>未定义</datasetName>
+            <freq>未定义</freq>
+            <incidentMode>未定义</incidentMode>
+            <note>未定义</note>
+            <pitchAngle>0</pitchAngle>
+            <samplingNum>未定义</samplingNum>
+            <targetNumEachCla>未定义001</targetNumEachCla>
+        </FEATURE_-HRRP_simulate_128xN_c6-_36xN_c6>
+        <FEATURE_simualtepure_39xN_c6 nameID="2">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/FEATURE_simualtepure_39xN_c6</PATH>
             <azimuthAngle>[0, 90, 1]</azimuthAngle>
-            <claNum>5</claNum>
+            <claNum>6</claNum>
+            <datasetName>FEATURE_simualtepure_39xN_c6</datasetName>
+            <freq>10GHz</freq>
+            <incidentMode>水平入射</incidentMode>
+            <note>未定义</note>
+            <pitchAngle>0</pitchAngle>
+            <samplingNum>512</samplingNum>
+            <targetNumEachCla>未定义001</targetNumEachCla>
+        </FEATURE_simualtepure_39xN_c6>
+    </FEATURE>
+    <FEA_RELE typeID="2">
+        <FEATURE_36_ATEC_c6_keras.trt nameID="3">
+            <PATH>D:\lyh\GUI207_V2.0\build\db\models\FEATURE_36_ATEC_c6_keras\FEATURE_36_ATEC_c6_keras.trt</PATH>
+            <accuracy>0.93</accuracy>
+            <algorithm>ATEC</algorithm>
+            <batch>16</batch>
+            <class>13</class>
+            <framework>keras</framework>
+            <name>FEATURE_36_ATEC_c6_keras</name>
+            <note>-</note>
+            <trainDataset>HRRP_simulate_128xN_c6</trainDataset>
+            <trainEpoch>500</trainEpoch>
+            <trainLR>0.001</trainLR>
+            <type>FEA_RELE</type>
+        </FEATURE_36_ATEC_c6_keras.trt>
+    </FEA_RELE>
+    <HRRP typeID="3">
+        <HRRP_simulate_128xN_c6 nameID="4">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/HRRP_simulate_128xN_c6</PATH>
+            <azimuthAngle>[0, 90, 1]</azimuthAngle>
+            <claNum>6</claNum>
             <datasetName>未定义</datasetName>
             <freq>10GHz</freq>
             <incidentMode>水平入射</incidentMode>
@@ -17,22 +54,13 @@
             <pitchAngle>0</pitchAngle>
             <samplingNum>512</samplingNum>
             <targetNumEachCla>未定义001</targetNumEachCla>
-        </falseHRRPmat_1x128_6s>
-        <hrrp_1x128 nameID="3">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/hrrp_1x128</PATH>
-        </hrrp_1x128>
-        <hrrp_1x128_100 nameID="4">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/hrrp_1x128_100</PATH>
-        </hrrp_1x128_100>
-        <theta128 nameID="5">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/theta128</PATH>
-        </theta128>
+        </HRRP_simulate_128xN_c6>
     </HRRP>
-    <IMAGE typeID="3" />
-    <RADIO typeID="4">
-        <radiomat_1x101 nameID="6">
-            <PATH>D:/lyh/GUI207_V2.0/db/datasets/radiomat_1x101</PATH>
-        </radiomat_1x101>
-    </RADIO>
-    <RCS typeID="5" />
+    <IMAGE typeID="4" />
+    <RADIO typeID="5" />
+    <RCS typeID="6">
+        <RCS_random_x_c6 nameID="5">
+            <PATH>D:/lyh/GUI207_V2.0/db/datasets/RCS_random_x_c6</PATH>
+        </RCS_random_x_c6>
+    </RCS>
 </globalDatasetInfo>

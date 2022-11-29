@@ -10,28 +10,7 @@ TrtInfer::TrtInfer(std::map<std::string, int> class2label):class2label(class2lab
 
 }
 
-void oneNormalization_(std::vector<float> &list){
-    //特征归一化
-    float dMaxValue = *max_element(list.begin(),list.end());  //求最大值
-    //std::cout<<"maxdata"<<dMaxValue<<'\n';
-    float dMinValue = *min_element(list.begin(),list.end());  //求最小值
-    //std::cout<<"mindata"<<dMinValue<<'\n';
-    for (int f = 0; f < list.size(); ++f) {
-        list[f] = (1-0)*(list[f]-dMinValue)/(dMaxValue-dMinValue+1e-8)+0;//极小值限制
-    }
-}
 
-void softmax(std::vector<float> &input){
-    float maxn = 0.0;
-    float sum= 0.0;
-    maxn = *max_element(input.begin(), input.end());
-
-    std::for_each(input.begin(), input.end(), [maxn,&sum](float& d) {d=exp(d-maxn);sum+=d;}); //cmath c11
-
-    std::for_each(input.begin(), input.end(), [sum](float& d) { d=d/sum;});
-
-    return ;
-}
 
 bool readTrtFile(const std::string& engineFile, IHostMemory*& trtModelStream, ICudaEngine*& engine){
     std::fstream file;
@@ -80,7 +59,7 @@ void TrtInfer::doInference(IExecutionContext&context, float* input, float* outpu
     //qDebug()<< "Inference Done." ;
 }
 
-void TrtInfer::testOneSample(
+QString TrtInfer::testOneSample(
         std::string targetPath, int emIndex, std::string modelPath, bool dataProcess,
         int *predIdx,std::vector<float> &degrees,std::string flag)
 {
@@ -104,7 +83,7 @@ void TrtInfer::testOneSample(
     }
     if(inputdims[0]==outputdims[0]&&inputdims[0]==-1) isDynamic=true;
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
-    else {qDebug()<<"模型输入输出批数不一致！";return;}
+    else {qDebug()<<"模型输入输出批数不一致！";return QString::fromStdString("error");}
 
     /*qDebug()<<"================打印当前trt模型的输入输出维度================";//默认是按两个dims写了，只有一个输入一个输出。
     qDebug()<<"inputdims:(";
@@ -124,14 +103,18 @@ void TrtInfer::testOneSample(
     //ready to send data to context
     float *indata=new float[inputLen]; std::fill_n(indata,inputLen,0);
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,0);
-    if(flag=="FEA_RELE"){
+    if(flag=="FEA_RELE_abfc"){
         std::string theClassPath=targetPath.substr(0,targetPath.rfind("/"));
         std::string theClass=theClassPath.substr(theClassPath.rfind("/")+1,theClassPath.size());
         std::string dataset_path=theClassPath.substr(0,theClassPath.rfind("/"));
 
-        CustomDataset test_dataset_for_afs = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
-        test_dataset_for_afs.getDataSpecifically(theClass,emIndex,indata);
+        CustomDataset test_dataset_for_abfc = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
+        test_dataset_for_abfc.getDataSpecifically(theClass,emIndex,indata);
 
+    }
+    else if(flag=="RCS_"){
+        MatDataProcess_rcs matDataPrcs;
+        matDataPrcs.getDataFromMat(targetPath,emIndex,dataProcess,indata,inputLen);     
     }
     else{
         MatDataProcess matDataPrcs;
@@ -141,7 +124,11 @@ void TrtInfer::testOneSample(
     //for(int i=0;i<128;i++) std::cout<<indata[i]<<" ";std::cout<<std::endl;
 
     qDebug()<<"(TrtInfer::testOneSample)indata[]_len=="<<QString::number(inputLen)<<"   outdata[]_len=="<<QString::number(outputLen);
+    clock_t start,end;
+    start = clock();
     doInference(*context, indata, outdata, 1);
+    end = clock();
+    QString inferTime=QString::number((double)(end-start)/CLOCKS_PER_SEC);//s
     std::vector<float> output_vec;
     std::cout << "(TrtInfer::testOneSample)outdata:  ";
     float outdatasum=0.0;
@@ -158,6 +145,7 @@ void TrtInfer::testOneSample(
     qDebug()<< "(TrtInfer::testOneSample)predicted label:"<<QString::number(pred);
     degrees=output_vec;
     *predIdx=pred;
+    return inferTime;
 }
 
 bool TrtInfer::testAllSample(
@@ -174,7 +162,7 @@ bool TrtInfer::testAllSample(
     for (int i = 0; i < indims.nbDims; i++){
         if(i!=0) inputLen*=indims.d[i];
         inputdims.push_back(indims.d[i]);
-        qDebug()<<"indims[]"<<indims.d[i];
+        //qDebug()<<"indims[]"<<indims.d[i];
     }
     nvinfer1::Dims oudims = engine->getBindingDimensions(1);
     for (int i = 0; i < oudims.nbDims; i++){
@@ -185,7 +173,7 @@ bool TrtInfer::testAllSample(
     else if(inputdims[0]==outputdims[0]) INFERENCE_BATCH=inputdims[0];
     else {qDebug()<<"模型输入输出批数不一致！";return 0;}
     ///如果isDynamic=TRUE, 应使提供设置batch的选项可选，同时把maxBatch传过去
-    INFERENCE_BATCH=1;//这里是写死了，应该传过来
+    INFERENCE_BATCH=inferBatch;//这里是写死了，应该传过来
     INFERENCE_BATCH=INFERENCE_BATCH==-1?1:INFERENCE_BATCH;//so you should specific Batch before this line
 
     if(isDynamic){
@@ -201,18 +189,18 @@ bool TrtInfer::testAllSample(
         }
     }
     //qDebug()<<"(TrtInfer::testAllSample) INFERENCE_BATCH==="<<INFERENCE_BATCH;
-    qDebug()<<"(TrtInfer::testAllSample) inputLen==="<<inputLen;
+    qDebug()<<"(TrtInfer::testAllSample) modelInputLen==="<<inputLen;
 
     // LOAD DataSet
     clock_t start,end;
     start = clock();
-    CustomDataset test_dataset = CustomDataset(dataset_path,dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
+    CustomDataset test_dataset = CustomDataset(dataset_path, dataProcess, ".mat", class2label, inputLen ,flag, modelIdx, dataOrder);
 
     qDebug()<<"(TrtInfer::testAllSample) test_dataset.data.size()==="<<test_dataset.data.size();
-    qDebug()<<"(TrtInfer::testAllSample) test_dataset.label.size()==="<<test_dataset.labels.size();
+    //qDebug()<<"(TrtInfer::testAllSample) test_dataset.label.size()==="<<test_dataset.labels.size();
     end = clock();
     int correct=0;
-    qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
+    //qDebug()<<"(TrtInfer::testAllSample) DataLoader Check.";
     int test_dataset_size=test_dataset.labels.size();
     //qDebug()<<"(TrtInfer::testAllSample) DataSetsize: "<<test_dataset.data.size()<<"LabelSize: "<<test_dataset.labels.size();
     qDebug()<<"(TrtInfer::testAllSample) 数据加载用时: "<<(double)(end-start)/CLOCKS_PER_SEC;
@@ -286,12 +274,12 @@ void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, 
     //ready to send data to context
     if(dataProcess) oneNormalization_(data_vec);//对收到的数据做归一
     float *outdata=new float[outputLen]; std::fill_n(outdata,outputLen,9);
-    qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
+    //qDebug()<<"(TrtInfer::realTimeInfer) i get one! now to infer";
     float *indata = new float[data_vec.size()];
     if (!data_vec.empty()){
         memcpy(indata, &data_vec[0], data_vec.size()*sizeof(float));
     }
-    qDebug()<<"(TrtInfer::realTimeInfer)  indata[0]==="<<indata[0];
+    //qDebug()<<"(TrtInfer::realTimeInfer)  indata[0]==="<<indata[0];
     doInference(*context, indata, outdata, 1);
     std::vector<float> output_vec;
     //std::cout << "(TrtInfer::testOneSample)outdata:  ";
@@ -306,7 +294,7 @@ void TrtInfer::realTimeInfer(std::vector<float> data_vec,std::string modelPath, 
     if(abs(outdatasum-1.0)>1e-8) softmax(output_vec);
 
     int pred = std::distance(output_vec.begin(),std::max_element(output_vec.begin(),output_vec.end()));
-    qDebug()<< "(TrtInfer::realTimeInfer)predicted label:"<<QString::number(pred);
+    //qDebug()<< "(TrtInfer::realTimeInfer)predicted label:"<<QString::number(pred);
     degrees=output_vec;
     *predIdx=pred;
 
@@ -347,7 +335,7 @@ void TrtInfer::setBatchSize(int batchSize){
     INFERENCE_BATCH=batchSize;
 }
 
-void TrtInfer::setParmsOfAFS(int modelIdxp, std::vector<int> dataOrderp){
+void TrtInfer::setParmsOfABFC(int modelIdxp, std::vector<int> dataOrderp){
     modelIdx=modelIdxp;
     dataOrder=dataOrderp;
 }

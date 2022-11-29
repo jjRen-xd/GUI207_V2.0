@@ -364,8 +364,9 @@ class IncrementTrain:
                     best_acc = test_accuracy
                     state = {'model': self.model.state_dict()}
                     # best_model = '{}_{}_model.pt'.format(i + 1, '%.3f' % best_acc)
+                    # torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
                     torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
-                    torch.save(state, self.work_dir + "/model/"+"increment_" + str(num_class) + ".pt")
+                    torch.save(state, self.work_dir + "/model/"+"incrementModel.pt")
 
                     onnx_save_path = self.work_dir + "/model/"+"incrementModel.onnx"
                     example_tensor = torch.randn(1, 1, self.dataDimension, 1).to(device)
@@ -383,7 +384,6 @@ class IncrementTrain:
                     print('epoch: {} is finished. accuracy is: {}'.format(i + 1, test_accuracy))
                     sys.stdout.flush()
                 acc_list.append(test_accuracy)
-
             # torch.save(state, model_path + "increment_" + str(num_class) + ".pt")
             show_accplot(len(acc_list),acc_list,self.work_dir)
             # res = torch.load(model_path + "/pretrain_" + str(oldClassNumber) + ".pt")

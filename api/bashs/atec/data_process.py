@@ -62,7 +62,7 @@ def show_confusion_matrix(work_dir, classes, confusion_matrix):
     # plt.title('confusion_matrix')
     plt.colorbar()
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, fontsize=12)
+    plt.xticks(tick_marks, classes, fontsize=12, rotation=20)
     plt.yticks(tick_marks, classes, fontsize=12)
 
     thresh = confusion_matrix.max() / 2.

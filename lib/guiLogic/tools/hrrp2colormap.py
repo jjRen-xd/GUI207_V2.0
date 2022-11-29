@@ -18,7 +18,7 @@ def ff(data):
     plt.xticks(my_x_ticks)#x轴刻度
     plt.yticks(alpha=0)#隐藏刻度数字
     plt.tick_params(axis='y', width=0)#隐藏刻度线
-    plt.savefig('D:/colorMap.png', dpi=300)
+    plt.savefig('./colorMap.png', dpi=300)
     plt.close()
 #x = np.full((128,50),99999, dtype = int)
 #data = np.empty([128,64], dtype = int)

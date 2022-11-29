@@ -70,7 +70,10 @@ void DatasetDock::importDataset(string type){
         return;
     }
     QString datasetName = rootPath.split('/').last();
-
+    if((datasetName[0]<='9'&&datasetName[0]>='0')||datasetName[0]=='-'){
+        QMessageBox::warning(NULL,"提示","数据集名称不能以数字或'-'开头!");
+        return;
+    }
     vector<string> allXmlNames;
     dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
     if (allXmlNames.empty()){
@@ -174,15 +177,15 @@ void DatasetDock::onTreeViewMenuRequestedRadio(const QPoint &pos){
 }
 
 void DatasetDock::onActionExtractFea(){
-    //system("python D:\\lyh\\GUI207_V2.0\\db\\datasets\\feature_extraction.py --data_path D:\\lyh\\GUI207_V2.0\\db\\datasets\\falseHRRPmat_1x128 --save_path D:\\lyh\\GUI207_V2.0\\db\\datasets\\fea_falseHRRPmat_1x128");
     QModelIndex curIndex = datasetTreeViewGroup["HRRP"]->currentIndex();
     QStandardItem *currItem = static_cast<QStandardItemModel*>(datasetTreeViewGroup["HRRP"]->model())->itemFromIndex(curIndex);
     string clickedName = currItem->data(0).toString().toStdString();
     std::string sourceDataSetPath = datasetInfo->getAttri("HRRP", clickedName, "PATH");
     std::string destDataSetPath=sourceDataSetPath+"_FEATURE";
-    std::string commd="python ../../lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
-    qDebug()<<QString::fromStdString(commd);
-    qDebug()<<system(commd.c_str());
+    std::string commd="python ../lib/feature_extraction.py --data_path "+sourceDataSetPath+" --save_path "+destDataSetPath;
+    // qDebug()<<QString::fromStdString(commd);
+    // qDebug()<<system(commd.c_str());
+    WinExec(commd.c_str(), SW_HIDE);
 //    Py_Initialize();
 //    PyObject* pModule = NULL;
 //    PyObject* pFunc = NULL;
@@ -276,6 +279,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
 //    ui->datadirEdit->setText(QString::fromStdString(rootPath));
     vector<string> subDirNames;
     if(dirTools->getDirs(subDirNames, rootPath)){
+        if(subDirNames.size()==0) return;
         //先确定数据集中数据文件的format
         vector<string> allFileWithTheClass;
         QString dataFileFormat;
@@ -293,7 +297,7 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
             string choicedClass = subDirNames[(rand()+i)%subDirNames.size()];
             string classPath = rootPath +"/"+ choicedClass;
             // 随机选取数据
-            if(dataFileFormat==QString::fromStdString("txt")){//可以被淘汰的
+            if(dataFileFormat==QString::fromStdString("txt")){
                 vector<string> allTxtFile;
                 if(dirTools->getFiles(allTxtFile, ".txt", classPath)){
                     string choicedFile = allTxtFile[(rand())%allTxtFile.size()];
@@ -303,22 +307,25 @@ void DatasetDock::treeItemClicked(const QModelIndex &index){
                     Chart *previewChart = new Chart(chartGroup[i],"HRRP(Ephi),Polarization HP(1)[Magnitude in dB]",txtFilePath);
                     previewChart->drawImage(chartGroup[i],"HRRP",0);
                     chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+choicedFile));
+                    //chartInfoGroup[i]->setText(QString::fromStdString(allMatFile[0]+":"+std::to_string(randomIdx)));
                 }
             }
             else if(dataFileFormat==QString::fromStdString("mat")){
                 vector<string> allMatFile;
                 if(dirTools->getFiles(allMatFile, ".mat", classPath)){
                     int randomIdx = (rand())%5000;
-                    std::cout<<"(DatasetDock::treeItemClicked)randomIdx:"<<randomIdx;
                     //绘图
                     QString matFilePath = QString::fromStdString(classPath + "/" + allMatFile[0]);
                     QString chartTitle="Temporary Title";
                     if(clickedType=="HRRP") chartTitle="HRRP(Ephi),Polarization HP(1)[Magnitude in dB]";
                     else if (clickedType=="RADIO") chartTitle="RADIO Temporary Title";
                     else if (clickedType=="FEATURE") chartTitle="Feture Temporary Title";
+                    else if (clickedType=="RCS") chartTitle="RCS Temporary Title";
                     Chart *previewChart = new Chart(chartGroup[i],chartTitle,matFilePath);
                     previewChart->drawImage(chartGroup[i],clickedType,randomIdx);
-                    chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));
+                    //chartInfoGroup[i]->setText(QString::fromStdString(choicedClass+":"+matFilePath.split(".").first().toStdString()));
+                    chartInfoGroup[i]->setText(QString::fromStdString(allMatFile[0]+":"+std::to_string(randomIdx)));
+                    
                 }
             }
             else{

@@ -93,6 +93,16 @@ void ModelDock::importModel(string type){
     if(modelPath == ""){
         QMessageBox::warning(NULL, "提示", "文件打开失败!");
         return;
+    }else if(type!="FEA_OPTI"){
+        if(modelPath.split('.').last()!="trt"){
+            QMessageBox::warning(NULL, "提示", "文件格式不为trt!");
+            return;
+        }
+    }else if(type=="FEA_OPTI"){
+        if(modelPath.split('.').last()!="pth"){
+            QMessageBox::warning(NULL, "提示", "文件格式不为pth!");
+            return;
+        }
     }else if(modelPath.split('.').last()!="trt" && modelPath.split('.').last()!="pth" && modelPath.split('.').last()!="hdf5"){
         QMessageBox::warning(NULL, "提示", "(.trt,.pth,.hdf5)不支持的模型格式!");
         return;
@@ -105,7 +115,7 @@ void ModelDock::importModel(string type){
     vector<string> allXmlNames;
     bool existXml = false;
     dirTools->getFiles(allXmlNames, ".xml",rootPath.toStdString());
-    // 寻找与.pt文件相同的.xml文件
+    // 寻找与模型文件命名相同的.xml文件
     for(auto &xmlName: allXmlNames){
         if(QString::fromStdString(xmlName).split(".").first() == modelName.split(".").first()){
             existXml = true;
@@ -114,12 +124,27 @@ void ModelDock::importModel(string type){
     }
     if(existXml){
         modelInfo->addItemFromXML(xmlPath.toStdString());
+        map<string,string> attriContents=modelInfo->getAllAttri(type, modelName.toStdString());
+        if(attriContents.find("type")==attriContents.end()){        //xml没有type信息
+            terminal->print("添加模型成功:"+xmlPath);
+            QMessageBox::information(NULL, "添加模型", "添加模型成功,但该模型说明文件没有模型type信息，\
+            请确保该模型为合适的"+QString::fromStdString(type)+"类型");
+        }
+        else if(attriContents["type"]!=type){        //模型类型和欲导入的不匹配
+            this->modelInfo->deleteItem(previewType,previewName);
+            this->reloadTreeView();
+            this->modelInfo->writeToXML(modelInfo->defaultXmlPath);
+            QMessageBox::warning(NULL, "添加模型", "添加模型失败！欲添加模型类型不为"+QString::fromStdString(type));
+            return;
+        }else{                              //成功导入
+            modelInfo->addItemFromXML(xmlPath.toStdString());
+            terminal->print("添加模型成功:"+xmlPath);
+            QMessageBox::information(NULL, "添加模型", "添加模型成功");
+        }
 
-        terminal->print("添加模型成功:"+xmlPath);
-        QMessageBox::information(NULL, "添加模型", "添加模型成功！");
     }
     else{
-        terminal->print("添加模型成功，但该模型没有说明文件.xml！");
+        terminal->print("添加模型成功，但该模型没有说明文件.xml，请确保该模型为合适的"+QString::fromStdString(type)+"模型！");
         QMessageBox::warning(NULL, "添加模型", "添加模型成功，但该模型没有说明文件.xml！");
     }
 
@@ -131,7 +156,7 @@ void ModelDock::importModel(string type){
 
 void ModelDock::importModelAfterTrain(string type, QString modelName){
 
-    QString modelPath = "../../db/models/";
+    QString modelPath = "../db/models/";
 
     // TODO 解决模型重名问题
      QString tempModelName = modelName;

@@ -28,14 +28,13 @@ HEADERS += \
     core/modelsWindow/modelDock.h \
     core/monitorPage.h \
     core/sensePage.h \
-    #lib/algorithm/libtorchTest.h \
-    #lib/algorithm/onnxinfer.h \
     lib/algorithm/inferthread.h \
     lib/algorithm/logging.h \
     lib/algorithm/trtinfer.h \
     lib/dataprocess/matdataprocess.h \
     lib/dataprocess/customdataset.h \
-    lib/dataprocess/matdataprocess_afs.h \
+    lib/dataprocess/matdataprocess_abfc.h \
+    lib/dataprocess/matdataprocess_rcs.h \
     lib/guiLogic/bashTerminal.h \
     lib/guiLogic/customWidget/imagewidget.h \
     lib/guiLogic/datasetInfo.h \
@@ -69,9 +68,8 @@ SOURCES += \
     core/modelsWindow/modelDock.cpp \
     core/sensePage.cpp \
     lib/dataprocess/matdataprocess.cpp \
-    lib/dataprocess/matdataprocess_afs.cpp \
-    #lib/algorithm/libtorchTest.cpp \
-    #lib/algorithm/onnxinfer.cpp \
+    lib/dataprocess/matdataprocess_abfc.cpp \
+    lib/dataprocess/matdataprocess_rcs.cpp \
     lib/algorithm/trtinfer.cpp \
     lib/guiLogic/tools/guithreadrun.cpp \
     lib/guiLogic/bashTerminal.cpp \

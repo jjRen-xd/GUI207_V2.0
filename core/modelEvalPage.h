@@ -45,25 +45,28 @@ public slots:
 
     // 针对全部样本
     void testAllSample();
+    void execuCmdProcess(QProcess *processInfer, QString cmd);
+    void processSampleInferFinished();   // 可视化脚本执行结束事件 
+    void processDatasetInferFinished();
     // 针对单样本
     void randSample();
     void testOneSample();
+
 
 signals:
     void stating(std::string choicedsamplePATH,std::string choicedmodelPATH,std::vector<float> &degrees);
 
 private:
-//    Ui_MainWindow *ui;
-//    BashTerminal *terminal;
     DatasetInfo *datasetInfo;
     ModelInfo *modelInfo;
-
 
     std::string choicedDatasetPATH="";
     std::string choicedModelPATH="";
     std::string choicedSamplePATH;
+
     // 不同平台下文件夹搜索工具
     SearchFolder *dirTools = new SearchFolder();
+
     // 缩放图像组件
     std::map<QGraphicsView*, ImageWidget*> all_Images;     // 防止内存泄露
     void recvShowPicSignal(QPixmap image, QGraphicsView* graphicsView);
@@ -72,10 +75,26 @@ private:
     //推理算法
     TrtInfer *trtInfer;
     QThread *qthread1;
+    //优化模型的推理进程
+    QProcess *processDatasetInfer;
+    QProcess *processSampleInfer;
 
     //eval页面调用python画混淆矩阵
-    PyObject *pModule,*pFunc,*PyArray,*args;
-    PyArrayObject* pRet;
+    PyObject *pModule_drawConfusionMatrix,*pModule_optimizeInfer;
+    PyObject *pFunc_drawConfusionMatrix,*pFunc_optimizeInfer;
+    PyObject *PyArray,*args_draw,*args_opti;
+    PyArrayObject* pRet_draw;
+    PyObject * pRet_opti;
+    
+    // 选择模型结构的xml文件、预览图像路径 // FIXME 后期需要结合系统
+    std::string modelStructXmlPath;
+    QString modelStructImgPath;
+    QString modelCheckpointPath;
+
+    QString camImgsSavePath;
+    QString condaPath;
+    QString condaEnvName;
+    QString pythonApiPath;
 
 };
 

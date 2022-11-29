@@ -7,6 +7,7 @@ import scipy.io as sio
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import argparse
+import shutil
 # import keras as K
 # from tensorflow import keras as K
 import re
@@ -21,19 +22,19 @@ sys.path.append("..")
 sys.path.extend([os.path.join(root, name) for root, dirs, _ in os.walk("../") for name in dirs])
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--data_dir', help='the directory of the training data',default="../../db/datasets/falseHRRPmat_1x128_6s")
-    parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
-    parser.add_argument('--work_dir', help='the directory of the training data',default="../../db/trainLogs")
-    parser.add_argument('--model_name', help='the directory of the training data',default="model")
-    parser.add_argument('--batch_size', help='the number of batch size',default=32)
-    parser.add_argument('--max_epochs', help='the number of epochs',default=4)
-    parser.add_argument('--net', help="network frame", default="DenseNet121")
 
+parser = argparse.ArgumentParser(description='Train a detector')
+parser.add_argument('--data_dir', help='the directory of the training data',default="../db/datasets/falseHRRPmat_1x128_6s")
+parser.add_argument('--time', help='the directory of the training data',default="2022-09-21-21-52-17")
+parser.add_argument('--work_dir', help='the directory of the trainingLogs',default="../db/trainLogs")
+parser.add_argument('--model_name', help='the Name of the model',default="model")
+parser.add_argument('--batch_size', help='the number of batch size',default=32)
+parser.add_argument('--max_epochs', help='the number of epochs',default=4)
+parser.add_argument('--net', help="network frame", default="DenseNet121")
+parser.add_argument('--modeldir', help="model saved path", default="../db/models")
+parser.add_argument('--class_number', help="class_number", default="6")
+args = parser.parse_args()
 
-    args = parser.parse_args()
-    return args
 
 
 # 数据归一化
@@ -62,7 +63,7 @@ def read_mat(read_path):
         if os.path.isdir(folder_path+'/'+file_name[i]):
             folder_name.append(file_name[i])
     folder_name.sort()  # 按文件夹名进行排序
-
+    args.classNum=len(folder_name)
     # 读取单个文件夹下的内容
     for i in range(0, len(folder_name)):
         class_mat_name = os.listdir(folder_path + '/' + folder_name[i])  # 获取类别文件夹下的.mat文件名称
@@ -80,6 +81,7 @@ def read_mat(read_path):
         for j in range(0, len(class_data_normalization)):
             class_data_one = class_data_normalization[j]
             empty = np.zeros((len(class_data_one), 64))
+            #empty = np.zeros((64, len(class_data_one)))
             for k in range(0, len(class_data_one)):
                 empty[k, :] = class_data_one[k]
             class_data_picture.append(empty)
@@ -150,7 +152,7 @@ def show_confusion_matrix(classes, confusion_matrix, work_dir):
     plt.imshow(proportion, interpolation='nearest', cmap=plt.cm.Blues) 
     plt.colorbar()
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, fontsize=12)
+    plt.xticks(tick_marks, classes, fontsize=12, rotation=20)
     plt.yticks(tick_marks, classes, fontsize=12)
 
     thresh = confusion_matrix.max() / 2.
@@ -195,7 +197,7 @@ def val_acc(v_acc, work_dir):
     plt.grid()
     plt.title('Verification accuracy', fontsize=16)
     plt.ylabel('Accuracy', fontsize=16)
-    plt.xlabel('Times', fontsize=16)
+    plt.xlabel('Epoch', fontsize=16)
     plt.tight_layout()
     plt.savefig(work_dir+'/verification_accuracy.jpg', dpi=300)
 
@@ -221,8 +223,8 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir,
         model.add(tf.keras.applications.densenet.DenseNet121(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
     elif (args.net == "EfficientNetB0"):
         model.add(tf.keras.applications.efficientnet.EfficientNetB0(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
-    elif (args.net == "VGG16"):
-        model.add(tf.keras.applications.vgg16.VGG16(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    elif (args.net == "ResNet50V2"):
+        model.add(tf.keras.applications.resnet_v2.ResNet50V2(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
     elif (args.net == "ResNet101"):
         model.add(tf.keras.applications.resnet.ResNet101(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
     elif (args.net == "MobileNet"):
@@ -247,6 +249,29 @@ def run_main(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir,
     characteristic_matrix, accuracy_every_class = storage_characteristic_matrix(y_pred, Y_test, class_num)
     show_confusion_matrix(labels, characteristic_matrix, work_dir)
     print(classification_report(Y_test, y_pred, digits=4))
+    args.valAcc=round(max(h_parameter['val_accuracy'])*100,2)
+
+def evaluate(x_train, y_train, x_test, y_test, class_num, folder_name, work_dir, model_name):
+    #print(x_train.shape,y_train.shape, x_test.shape, y_test.shape)
+    len_train = len(x_train)
+    len_test = len(x_test)
+    train_shuffle = np.arange(len_train)
+    test_shuffle = np.arange(len_test)
+    np.random.shuffle(train_shuffle)
+    np.random.shuffle(test_shuffle)
+
+    x_train = x_train[train_shuffle, :]
+    y_train = y_train[train_shuffle, :]
+
+    x_test = x_test[test_shuffle, :]
+    y_test = y_test[test_shuffle, :]
+
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.applications.mobilenet.MobileNet(include_top=True, weights=None, input_tensor=None,input_shape=(x_train.shape[1], x_train.shape[2], 1),pooling=None, classes=class_num))
+    model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['accuracy'])
+    model(tf.ones(shape=(1,x_train.shape[1], x_train.shape[2], 1)))
+    model.load_weights(r"D:\lyh\GUI207_V2.0\db\trainLogs\2022-11-15-17-15-54-HRRP_simulate_128xN_c6-HRRP_128_mobilenet_c6_keras\model\HRRP_128_mobilenet_c6_keras.hdf5")
+    model.evaluate(x_test, y_test, verbose = 1)
 
 def convert_h5to_pb(h5Path,pbPath):
     model = tf.keras.models.load_model(h5Path,compile=False)
@@ -260,33 +285,18 @@ def convert_h5to_pb(h5Path,pbPath):
     frozen_func.graph.as_graph_def()
 
     layers = [op.name for op in frozen_func.graph.get_operations()]
-    # print("-" * 50)
-    # print("Frozen model layers: ")
-    # for layer in layers:
-    #     print(layer)
-
-    # print("-" * 50)
-    # print("Frozen model inputs: ")
-    # print(frozen_func.inputs)
-    # print("Frozen model outputs: ")
-    # print(frozen_func.outputs)
-
-    # Save frozen graph from frozen ConcreteFunction to hard drive
     tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
                       logdir=pbPath[:pbPath.rfind(r"/")],
                       name=pbPath[pbPath.rfind(r"/")+1:],
                       as_text=False)
     ipsN,opsN=str(frozen_func.inputs[0]),str(frozen_func.outputs[0])
-    # print(ipsN)
-    # print(opsN)
+
     inputNodeName=ipsN[ipsN.find("\"")+1:ipsN.find(":")]
     outputNodeName=opsN[opsN.find("\"")+1:opsN.find(":")]
-    # print(inputNodeName)
-    # print(outputNodeName)
+
     inputShapeK=ipsN[ipsN.find("=(")+2:ipsN.find("),")] 
     inputShapeF=re.findall(r"\d+\.?\d*",inputShapeK)
     inputShape=reduce(lambda x, y: x + 'x' + y, inputShapeF)
-    # print(inputShape)
 
     return inputNodeName,outputNodeName,inputShape
 
@@ -313,21 +323,66 @@ def convert_hdf5_to_trt(model_type, work_dir, model_name, afsmode_Idx='1', works
     except Exception as e:
         print(e)
 
+def generator_model_documents(args):
+    from xml.dom.minidom import Document
+    doc = Document()  #创建DOM文档对象
+    root = doc.createElement('ModelInfo') #创建根元素
+    doc.appendChild(root)
+    
+    model_type = doc.createElement('TRA_DL')
+    #model_type.setAttribute('typeID','1')
+    root.appendChild(model_type)
+
+    model_item = doc.createElement(args.model_name+'.trt')
+    #model_item.setAttribute('nameID','1')
+    model_type.appendChild(model_item)
+
+    model_infos = {
+        'name':str(args.model_name),
+        'type':'TRA_DL',
+        'algorithm':str(args.net),
+        'framework':'keras',
+        'accuracy':str(args.valAcc),
+        'trainDataset':args.data_dir.split("/")[-1],
+        'trainEpoch':str(args.max_epochs),
+        'trainLR':'0.001',
+        'class':str(args.classNum), 
+        'PATH':os.path.abspath(os.path.join(args.modeldir,args.model_name+'.trt')),
+        'batch':str(args.batch_size),
+        'note':'-'
+    } 
+
+    for key in model_infos.keys():
+        info_item = doc.createElement(key)
+        info_text = doc.createTextNode(model_infos[key]) #元素内容写入
+        info_item.appendChild(info_text)
+        model_item.appendChild(info_item)
+
+    with open(os.path.join(args.modeldir,args.model_name+'.xml'),'w') as f:
+        doc.writexml(f,indent = '\t',newl = '\n', addindent = '\t',encoding='utf-8')
+
+    shutil.copy(args.work_dir+"/"+args.model_name+".trt",os.path.join(args.modeldir,args.model_name+'.trt'))
+    shutil.copy(args.work_dir+"/model/"+args.model_name+".hdf5",os.path.join(args.modeldir,args.model_name+'.hdf5'))
+    shutil.copy(args.work_dir+"/"+"confusion_matrix.jpg",os.path.join(args.modeldir,'confusion_matrix.jpg'))
+    shutil.copy(args.work_dir+"/"+"training_accuracy.jpg",os.path.join(args.modeldir,'training_accuracy.jpg'))
+    shutil.copy(args.work_dir+"/"+"verification_accuracy.jpg",os.path.join(args.modeldir,'verification_accuracy.jpg'))
+
 if __name__ == '__main__':
     # try:
-    args = parse_args()
     x_train, y_train, x_test, y_test, class_num, folder_name = read_mat(args.data_dir)
-    #datasetName = args.data_dir.split("/")[-1].split("_")[0]
     datasetName = args.data_dir.split("/")[-1]
     
-    args.work_dir = args.work_dir+'/'+args.time+'-HRRP-'+datasetName+'-'+args.model_name
+    args.work_dir = args.work_dir+'/'+args.time+'-'+datasetName+'-'+args.model_name
     if not os.path.exists(args.work_dir):
         os.makedirs(args.work_dir)
         os.makedirs(args.work_dir + '/model')
-
+    args.modeldir = args.modeldir+'/'+args.model_name
+    if not os.path.exists(args.modeldir):
+        os.makedirs(args.modeldir)
+    #evaluate(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
     run_main(x_train, y_train, x_test, y_test, class_num, folder_name, args.work_dir, args.model_name)
-
     convert_hdf5_to_trt('HRRP', args.work_dir, args.model_name)
+    generator_model_documents(args)
     # os.system("python ../../api/bashs/hdf52trt.py --model_type HRRP --work_dir "+args.work_dir+" --model_name "+args.model_name)
     print("Train Ended:")
     # except Exception as re:

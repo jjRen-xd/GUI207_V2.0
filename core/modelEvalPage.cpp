@@ -25,14 +25,29 @@ ModelEvalPage::ModelEvalPage(Ui_MainWindow *main_ui, BashTerminal *bash_terminal
     connect(ui->pushButton_testOneSample, &QPushButton::clicked, this, &ModelEvalPage::testOneSample);
     connect(ui->pushButton_testAllSample, &QPushButton::clicked, this, &ModelEvalPage::testAllSample);
 
-    Py_SetPythonHome(L"H:/DL_ENV/Anaconda3");
+    // 多线程的信号槽绑定
+    processDatasetInfer = new QProcess();
+    connect(processDatasetInfer, &QProcess::readyReadStandardOutput, this, &ModelEvalPage::processDatasetInferFinished);
+    processSampleInfer = new QProcess();
+    connect(processSampleInfer, &QProcess::readyReadStandardOutput, this, &ModelEvalPage::processSampleInferFinished);
+    //cmd调用python做优化模型的推理
+    this->condaEnvName = "PT";
+    this->pythonApiPath = "../lib/algorithm/optimizeInfer/optimizeInfer.py";
+
+    //混淆矩阵模块的py嵌入
+    Py_SetPythonHome(L"D:/win_anaconda/envs/PT_c");
     Py_Initialize();
     _import_array();
     PyRun_SimpleString("import sys");
-    //PyRun_SimpleString("sys.path.append('./')");
-    PyRun_SimpleString("sys.path.append('../../lib/guiLogic/tools/')");
-    pModule = PyImport_ImportModule("EvalPageConfusionMatrix");
-    // pFunc = PyObject_GetAttrString(pModule, "draw_confusion_matrix");
+    PyRun_SimpleString("sys.path.append('../lib/guiLogic/tools/')");
+    pModule_drawConfusionMatrix = PyImport_ImportModule("EvalPageConfusionMatrix");
+    pFunc_drawConfusionMatrix = PyObject_GetAttrString(pModule_drawConfusionMatrix, "draw_confusion_matrix");
+
+    // PyRun_SimpleString("sys.path.append('../lib/algorithm/optimizeInfer/')");
+    // pModule_optimizeInfer = PyImport_ImportModule("optimizeInfer");
+    // pFunc_optimizeInfer = PyObject_GetAttrString(pModule_optimizeInfer, "inferMain");
+    // if(pModule_optimizeInfer==NULL) qDebug()<<"pModule_optimizeInfer NULL";
+    // if(pFunc_optimizeInfer==NULL) qDebug()<<"pFunc_optimizeInfer NULL";
 
 }
 
@@ -50,9 +65,14 @@ void ModelEvalPage::refreshGlobalInfo(){
         ui->comboBox_sampleType->addItem(QString::fromStdString(item));
     }
     ui->comboBox_inferBatchsize->clear();
-    for(int i=512;i>3;i/=2){
-        ui->comboBox_inferBatchsize->addItem(QString::number(i));
-    }
+    // for(int i=512;i>3;i/=2){
+    //     ui->comboBox_inferBatchsize->addItem(QString::number(i));
+    // }
+    ui->comboBox_inferBatchsize->addItem(QString::number(1));
+    ui->comboBox_inferBatchsize->addItem(QString::number(16));
+    ui->comboBox_inferBatchsize->addItem(QString::number(32));
+    ui->comboBox_inferBatchsize->addItem(QString::number(64));
+    ui->comboBox_inferBatchsize->addItem(QString::number(100));
     // 网络输出标签对应类别名称初始化
     if(comboBoxContents.size()>0){
         for(int i=0;i<comboBoxContents.size();i++)   label2class[i]=comboBoxContents[i];
@@ -69,7 +89,6 @@ void ModelEvalPage::refreshGlobalInfo(){
         choicedModelPATH=modelInfo->getAttri(modelInfo->selectedType,modelInfo->selectedName,"PATH");
     }
 }
-
 
 void ModelEvalPage::randSample(){
     // 获取下拉框类别内容
@@ -119,7 +138,6 @@ void ModelEvalPage::randSample(){
 
 }
 
-
 // 移除布局子控件
 void removeLayout(QLayout *layout){
     QLayoutItem *child;
@@ -140,7 +158,6 @@ void removeLayout(QLayout *layout){
     }
 }
 
-
 void  ModelEvalPage::testOneSample(){
     struct stat buffer; 
     int modelfileExist=(stat (choicedModelPATH.c_str(), &buffer) == 0);
@@ -148,9 +165,27 @@ void  ModelEvalPage::testOneSample(){
         std::cout<<"(ModelEvalPage::testOneSample)choicedSamplePATH"<<choicedSamplePATH<<endl;
         std::vector<float> degrees; int predIdx;
         //classnum==(datasetInfo->selectedClassNames.size())
-        std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;
-        std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;
+        std::cout<<"(ModelEvalPage::testOneSample)datasetInfo->selectedType="<<datasetInfo->selectedType<<endl;//HRRP
+        std::cout<<"(ModelEvalPage::testOneSample)modelInfo->selectedType="<<modelInfo->selectedType<<endl;//TRA_DL
         bool dataProcess=true;std::string flag="";
+        if(datasetInfo->selectedType=="RCS") {
+            dataProcess=false;
+            flag="RCS_";
+        }
+        if(modelInfo->selectedType=="FEA_OPTI"){   
+            // 激活conda python环境
+            QString activateEnv = "conda activate "+this->condaEnvName+"&&";
+            QString command = activateEnv + "python " + this->pythonApiPath+ \
+                " --choicedModelPATH="          + QString::fromStdString(choicedModelPATH)+ \
+                " --choicedMatPATH="            + QString::fromStdString(choicedSamplePATH)+ \
+                " --choicedSampleIndex="        + QString::number(this->emIndex)+ \
+                " --inferMode=sample";
+
+            // 执行python脚本
+            this->terminal->print(command);
+            this->execuCmdProcess(processSampleInfer,command);
+            return;
+        }
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前的增量模型接受的数据是没做预处理的
         if(modelInfo->selectedType=="FEA_RELE"){
             std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
@@ -161,7 +196,7 @@ void  ModelEvalPage::testOneSample(){
                     if(++tempi==40){modelIdx=std::stoi(line);break;}
                     dataOrder.push_back(std::stoi(line));
                 }infile.close();
-                trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+                trtInfer->setParmsOfABFC(modelIdx, dataOrder);
                 flag="FEA_RELE_abfc";
             }
             else{
@@ -169,24 +204,21 @@ void  ModelEvalPage::testOneSample(){
                 dataProcess=false;
             }
         }
-        trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees, flag);
-
+        QString inferTime=trtInfer->testOneSample(choicedSamplePATH, this->emIndex, choicedModelPATH, dataProcess , &predIdx, degrees, flag);
+        ui->label_predTime->setText(inferTime);
         /*************************把下面都当做对UI的操作***************************/
-        std::cout<<"(ModelEvalPage::testOneSample)degrees:";
-        for(int i=0;i<degrees.size();i++){
-            std::cout<<degrees[i]<<" ";
-        } 
         QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
-        terminal->print("识别结果： " + predClass);
-        terminal->print(QString("隶属度：%1").arg(degrees[predIdx]));
 
         // 可视化结果
         ui->label_predClass->setText(predClass);
         ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
-//        ui->label_predTime->setText(QString("%1").arg(predTime));
         QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
         ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
-
+        std::cout<<"(ModelEvalPage::testOneSample)degrees:";
+        for(int i=0;i<degrees.size();i++){
+            std::cout<<degrees[i]<<" ";
+            degrees[i]=round(degrees[i] * 100) / 100;
+        }
         // 绘制隶属度柱状图
         disDegreeChart(predClass, degrees, label2class);
 
@@ -196,8 +228,6 @@ void  ModelEvalPage::testOneSample(){
     }
 }
 
-
-// TODO 待优化
 void ModelEvalPage::testAllSample(){
     // 获取批处理量
     int inferBatch = ui->comboBox_inferBatchsize->currentText().toInt();
@@ -207,13 +237,13 @@ void ModelEvalPage::testAllSample(){
         float acc = 0.6;
         int classNum=label2class.size();
         std::vector<std::vector<int>> confusion_matrix(classNum, std::vector<int>(classNum, 0));
-        //libtorchTest->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-        //onnxInfer->testAllSample(choicedDatasetPATH, choicedModelPATH, acc, confusion_matrix);
-
         bool dataProcess=true;
         std::string flag="";
+        if(datasetInfo->selectedType=="RCS") {
+            dataProcess=false;
+            flag="RCS_";
+        }
         if(modelInfo->selectedType=="INCRE") dataProcess=false; //目前增量模型接受的数据是不做预处理的
-
         if(modelInfo->selectedType=="FEA_RELE"){
             std::string feaWeightTxtPath=choicedModelPATH.substr(0, choicedModelPATH.rfind("/"))+"/model/attention.txt";
             if(this->dirTools->exist(feaWeightTxtPath)){//判断是abfc还是atec,依据就是有没有attention文件
@@ -224,7 +254,7 @@ void ModelEvalPage::testAllSample(){
                     dataOrder.push_back(std::stoi(line));
                     //cout<<std::stoi(line)<<endl;
                 }infile.close();
-                trtInfer->setParmsOfAFS(modelIdx, dataOrder);
+                trtInfer->setParmsOfABFC(modelIdx, dataOrder);
                 flag="FEA_RELE_abfc";
             }
             else{
@@ -232,34 +262,60 @@ void ModelEvalPage::testAllSample(){
                 dataProcess=false;
             }
         }
-
+        if(modelInfo->selectedType=="FEA_OPTI"){
+            /*//Failed embedding attempt
+            args_opti = PyTuple_New(2);
+            PyTuple_SetItem(args_opti, 0, Py_BuildValue("s", choicedDatasetPATH.c_str()));
+            PyTuple_SetItem(args_opti, 1, Py_BuildValue("s", choicedModelPATH.c_str()));
+            pRet_opti = PyEval_CallObject(pFunc_optimizeInfer, args_opti);
+            qDebug()<<"(ModelEvalPage::testAllSample) python For OptimizeInfer done";
+            float valAcc_optim=90.0;
+            PyArg_Parse(pRet_opti, "f",&valAcc_optim);
+            ui->label_testAllAcc->setText(QString("%1").arg(valAcc_optim));
+            QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
+            return;
+            */
+        
+            // 激活conda python环境
+            QString activateEnv = "conda activate "+this->condaEnvName+"&&";
+            QString command = activateEnv + "python " + this->pythonApiPath+ \
+                " --choicedDatasetPATH="        + QString::fromStdString(choicedDatasetPATH)+ \
+                " --choicedModelPATH="          + QString::fromStdString(choicedModelPATH)+ \
+                " --inferMode=dataset";
+            // 执行python脚本
+            this->terminal->print(command);
+            this->execuCmdProcess(processDatasetInfer, command);
+            return;
+        }
         if(!trtInfer->testAllSample(choicedDatasetPATH,choicedModelPATH,inferBatch,dataProcess,acc,confusion_matrix,flag)){
+            qDebug()<<"(modelEvalPage::testAllSample) trtInfer-testAll failed~";
             return ;
         }
-
         
-
-        /*************************Draw******************************/
+        /*************************Use Python Draw Confusion Matrix******************************/
         int* numpyptr= new int[classNum*classNum];
         for(int i=0;i<classNum;i++){
             for(int j=0;j<classNum;j++){
                 numpyptr[i*classNum+j]=confusion_matrix[i][j];
             }
         }
+
         npy_intp dims[2] = {classNum,classNum};//矩阵维度
         PyArray = PyArray_SimpleNewFromData(2, dims, NPY_INT, numpyptr);//将数据变为numpy
         //用tuple装起来传入python
-        args = PyTuple_New(2);
+        args_draw = PyTuple_New(2);
         std::string stringparm="";
         for(int i=0;i<classNum;i++) stringparm=stringparm+label2class[i]+"#";
-        PyTuple_SetItem(args, 0, Py_BuildValue("s", stringparm.c_str()));
-        PyTuple_SetItem(args, 1, PyArray);
+        PyTuple_SetItem(args_draw, 0, Py_BuildValue("s", stringparm.c_str()));
+        PyTuple_SetItem(args_draw, 1, PyArray);
         //函数调用
-        pRet = (PyArrayObject*)PyObject_CallObject(pFunc, args);
+        pRet_draw = (PyArrayObject*)PyObject_CallObject(pFunc_drawConfusionMatrix, args_draw);
         delete [ ] numpyptr;
         qDebug()<<"(ModelEvalPage::testAllSample) python done";
-        QString imgPath = QString::fromStdString("D:/confusion_matrix.jpg");
+        /*************************Draw Done******************************/
 
+        //显示混淆矩阵到前端
+        QString imgPath = QString::fromStdString("./confusion_matrix.jpg");
         if(all_Images[ui->graphicsView_3_evalpageMatrix]){ //delete 原来的图
             qgraphicsScene->removeItem(all_Images[ui->graphicsView_3_evalpageMatrix]);
             delete all_Images[ui->graphicsView_3_evalpageMatrix]; //空悬指针
@@ -270,9 +326,8 @@ void ModelEvalPage::testAllSample(){
         }
         //ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(QSize(576,432), Qt::KeepAspectRatio));
         //ui->label_evalpageMatrix->setPixmap(QPixmap(imgPath).scaled(ui->label_evalpageMatrix->size(), Qt::KeepAspectRatio));
-        /*************************Draw******************************/
-        QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
         ui->label_testAllAcc->setText(QString("%1").arg(acc*100));
+        QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
     }
     else{
         QMessageBox::warning(NULL, "所有样本测试", "数据集或模型未指定！");
@@ -280,7 +335,7 @@ void ModelEvalPage::testAllSample(){
 }
 
 void ModelEvalPage::disDegreeChart(QString &classGT, std::vector<float> &degrees, std::map<int, std::string> &classNames){
-    
+
     QChart *chart = new QChart;
     //qDebug() << "(ModelEvalPage::disDegreeChart)子线程id：" << QThread::currentThreadId();
     std::map<QString, vector<float>> mapnum;
@@ -330,4 +385,104 @@ void ModelEvalPage::recvShowPicSignal(QPixmap image, QGraphicsView *graphicsView
     graphicsView->setSceneRect(QRectF(-(nwith/2), -(nheight/2),nwith,nheight));//使视窗的大小固定在原始大小，不会随图片的放大而放大（默认状态下图片放大的时候视窗两边会自动出现滚动条，并且视窗内的视野会变大），防止图片放大后重新缩小的时候视窗太大而不方便观察图片
     graphicsView->setScene(qgraphicsScene); //Sets the current scene to scene. If scene is already being viewed, this function does nothing.
     graphicsView->setFocus();               //将界面的焦点设置到当前Graphics View控件
+}
+
+void ModelEvalPage::execuCmdProcess(QProcess *processInfer, QString cmd){
+    if(processInfer->state()==QProcess::Running){
+        processInfer->close();
+        processInfer->kill();
+    }
+    processInfer->setProcessChannelMode(QProcess::MergedChannels);
+    processInfer->start("cmd.exe");
+    processInfer->write(cmd.toLocal8Bit() + '\n');
+}
+
+void ModelEvalPage::processDatasetInferFinished(){
+    float valAcc_optim = 66.6;
+    QByteArray cmdOut = processDatasetInfer->readAllStandardOutput();
+    if(!cmdOut.isEmpty()){
+        QString logs=QString::fromLocal8Bit(cmdOut);
+        if(logs.contains("finished")){
+            if(processDatasetInfer->state()==QProcess::Running){
+                processDatasetInfer->close();
+                processDatasetInfer->kill();
+            }
+            QStringList loglist = logs.split("$");
+            if(loglist.length()!=0)
+                ui->label_testAllAcc->setText(loglist[1]);
+            QMessageBox::information(NULL, "所有样本测试", "识别成果，结果已输出！");
+
+            // 加载图像
+            QString cMatrixPath = QString::fromStdString(choicedModelPATH);
+            cMatrixPath = cMatrixPath.left(cMatrixPath.lastIndexOf('/'));
+            QString imgPath = cMatrixPath + QString::fromStdString("./confusion_matrix_temp.jpg");
+            if(all_Images[ui->graphicsView_3_evalpageMatrix]){ //delete 原来的图
+                qgraphicsScene->removeItem(all_Images[ui->graphicsView_3_evalpageMatrix]);
+                delete all_Images[ui->graphicsView_3_evalpageMatrix]; //空悬指针
+                all_Images[ui->graphicsView_3_evalpageMatrix]=NULL;
+            }
+            if(this->dirTools->exist(imgPath.toStdString())){
+                recvShowPicSignal(QPixmap(imgPath), ui->graphicsView_3_evalpageMatrix);
+            }
+
+            qDebug()<<"(ModelEvalPage::processDatasetInferFinished) Logs:"<<logs;
+        }
+        if(logs.contains("Error") || logs.contains("Errno")){
+            qDebug()<<"(ModelEvalPage::processDatasetInferFinished) 优化模型推理失败";
+            terminal->print("优化模型推理失败");
+            QMessageBox::warning(NULL,"错误","something wrong!");
+            qDebug()<<"(ModelEvalPage::processDatasetInferFinished) Logs:"<<logs;
+        }
+    }
+}
+
+void ModelEvalPage::processSampleInferFinished(){
+    std::vector<float> degrees; int predIdx;
+    QByteArray cmdOut = processSampleInfer->readAllStandardOutput();
+    if(!cmdOut.isEmpty()){
+        QString logs=QString::fromLocal8Bit(cmdOut);
+        if(logs.contains("finished")){
+            if(processSampleInfer->state()==QProcess::Running){
+                processSampleInfer->close();
+                processSampleInfer->kill();
+            }
+            //提取log里的degrees和predIdx信息
+            QStringList loglist;
+            loglist = logs.split("$");
+            if(loglist.length() == 0){
+                QMessageBox::warning(NULL,"错误","模型脚本无输出!");
+                return;
+            }
+            for(int i=0;i<loglist.length()-3;i++){   //[-1:predIdx\inferCost\dump]
+                degrees.push_back(loglist[i].toFloat());
+            }
+            predIdx=loglist[loglist.length()-3].toInt();
+            ui->label_predTime->setText(loglist[loglist.length()-2]);
+
+            trtInfer->softmax(degrees);
+
+            /*************************把下面都当做对UI的操作***************************/
+            QString predClass = QString::fromStdString(label2class[predIdx]);   // 预测类别
+
+            // 可视化结果
+            ui->label_predClass->setText(predClass);
+            ui->label_predDegree->setText(QString("%1").arg(degrees[predIdx]*100));
+            QString imgPath = QString::fromStdString(choicedDatasetPATH) +"/"+ predClass +".png";
+            ui->label_predImg->setPixmap(QPixmap(imgPath).scaled(QSize(200,200), Qt::KeepAspectRatio));
+            std::cout<<"(ModelEvalPage::testOneSample)degrees:";
+            for(int i=0;i<degrees.size();i++){
+                std::cout<<degrees[i]<<" ";
+                degrees[i]=round(degrees[i] * 100) / 100;
+            }
+            // 绘制隶属度柱状图
+            disDegreeChart(predClass, degrees, label2class);
+            qDebug()<<"(ModelEvalPage::processSampleInferFinished) Logs:"<<logs;
+        }
+        if(logs.contains("Error") || logs.contains("Errno")){
+            qDebug()<<"(ModelEvalPage::processSampleInferFinished) 优化模型推理失败";
+            terminal->print("优化模型推理失败");
+            QMessageBox::warning(NULL,"错误","something wrong!");
+            qDebug()<<"(ModelEvalPage::processSampleInferFinished) Logs:"<<logs;
+        } 
+    }
 }
