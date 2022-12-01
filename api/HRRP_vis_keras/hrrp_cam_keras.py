@@ -135,7 +135,7 @@ def capActAndGrad(signal, label, checkpoint_path, targetLayerName='conv5_block16
 
     # Load model
     model = tf.keras.models.load_model(checkpoint_path)
-    prediction = model.predict(signal[None, ...])
+    prediction = model.predict(signal[None, ..., None])
     prediction_idx = np.argmax(prediction)
 
     # Target hidden layer
@@ -193,7 +193,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--checkpoint', 
         # default="../../db/models/HRRP_128_densenet121_c6_keras/HRRP_128_densenet121_c6_keras.hdf5",
-        default="H:\WIN_11_DESKTOP\onWorking/207GUI\GUI207_V2.0\db\models\HRRP_128_baselineCNN_c6_keras\HRRP_128_baselineCNN_c6_keras.hdf5",
+        default="D:/lyh/GUI207_V2.0/models/HRRP_128_baselineCNN_c6_keras/HRRP_128_baselineCNN_c6_keras.hdf5",
         type=str,
         help='checkpoint file'
     )
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--mat_path',
         # default="../../db/datasets/HRRP_simulate_128xN_c6/Big_ball/Big_ball.mat",
-        default="H:\WIN_11_DESKTOP\onWorking/207GUI\GUI207_V2.0\db\datasets\HRRP_simulate_128xN_c6\Big_ball\Big_ball.mat",
+        default="D:/lyh/GUI207_V2.0/db/datasets/HRRP_simulate_128xN_c6/Cone/Cone.mat",
         type=str,
         help='The .mat path of signal to visualize'
     )

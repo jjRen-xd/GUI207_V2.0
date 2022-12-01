@@ -166,10 +166,11 @@ def generator_model_documents(args):
         doc.writexml(f,indent = '\t',newl = '\n', addindent = '\t',encoding='utf-8')
 
     shutil.copy(args.work_dir+"/"+args.model_name+"_feature_"+str(theone)+".trt",os.path.join(args.modeldir,args.model_name+'.trt'))
-    shutil.copy(args.work_dir+"/model/attention.txt",os.path.join(args.modeldir,'/model/attention.txt'))
     shutil.copy(args.work_dir+"/model/"+args.model_name+"_feature_"+str(theone)+".hdf5",os.path.join(args.modeldir,args.model_name+'.hdf5'))
     shutil.copy(args.work_dir+"/"+"confusion_matrix.jpg",os.path.join(args.modeldir,'confusion_matrix.jpg'))
     shutil.copy(args.work_dir+"/"+"features_Accuracy.jpg",os.path.join(args.modeldir,'features_Accuracy.jpg'))
+    shutil.copy(args.work_dir+"/model/attention.txt",os.path.join(args.modeldir,'/model/attention.txt'))
+
 
 if __name__ == '__main__':
     # try:

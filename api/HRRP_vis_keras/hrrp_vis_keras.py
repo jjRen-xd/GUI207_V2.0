@@ -137,7 +137,7 @@ def capActAndGrad(signal, label, checkpoint_path, targetLayerName='conv5_block16
 
     # Load model
     model = tf.keras.models.load_model(checkpoint_path)
-    prediction = model.predict(signal[None, ...])
+    prediction = model.predict(signal[None, ..., None])
     prediction_idx = np.argmax(prediction)
 
     # Target hidden layer

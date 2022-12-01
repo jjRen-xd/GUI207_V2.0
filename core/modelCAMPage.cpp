@@ -22,10 +22,10 @@ ModelCAMPage::ModelCAMPage(Ui_MainWindow *main_ui,
 {   
     // 刷新模型、数据集信息
 //    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "torch";
-    this->pythonApiPath = "../../api/HRRP_vis/vis_cam.py";
-    this->choicedDatasetPATH = "../../api/HRRP_vis/dataset/HRRP_20220508";
-    this->choicedModelPATH = "../../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
+    this->condaEnvName = "PT";
+    this->pythonApiPath = "../api/HRRP_vis/vis_cam.py";
+    this->choicedDatasetPATH = "../api/HRRP_vis/dataset/HRRP_20220508";
+    this->choicedModelPATH = "../api/HRRP_vis/checkpoints/CNN_HRRP512.pth";
     refreshGlobalInfo();
 
     // 下拉框信号槽绑定
@@ -77,12 +77,12 @@ void ModelCAMPage::confirmVis(){
 
     // 激活conda python环境
     if (this->choicedModelSuffix == ".pth"){        // pytorch模型
-        this->condaEnvName = "torch";
-        this->pythonApiPath = "../../api/HRRP_vis/hrrp_cam_torch.py";
+        this->condaEnvName = "PT";
+        this->pythonApiPath = "../api/HRRP_vis/hrrp_cam_torch.py";
     }
     else if(this->choicedModelSuffix == ".hdf5"){   // keras模型
-        this->condaEnvName = "keras";
-        this->pythonApiPath = "../../api/HRRP_vis_keras/hrrp_cam_keras.py";
+        this->condaEnvName = "tf24";
+        this->pythonApiPath = "../api/HRRP_vis_keras/hrrp_cam_keras.py";
     }
     else{
         QMessageBox::warning(NULL,"错误","不支持该类型模型!");

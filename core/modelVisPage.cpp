@@ -22,8 +22,8 @@ ModelVisPage::ModelVisPage(Ui_MainWindow *main_ui,
 {   
     // 刷新模型、数据集信息
 //    this->condaPath = "/home/z840/anaconda3/bin/activate";
-    this->condaEnvName = "torch";
-    this->pythonApiPath = "../../api/HRRP_vis/vis_fea.py";
+    this->condaEnvName = "PT";
+    this->pythonApiPath = "../api/HRRP_vis/vis_fea.py";
     refreshGlobalInfo();
 
     // 下拉框信号槽绑定
@@ -76,12 +76,12 @@ void ModelVisPage::confirmVis(){
 
     // 激活conda python环境
     if (this->choicedModelSuffix == ".pth"){        // pytorch模型
-        this->condaEnvName = "torch";
-        this->pythonApiPath = "../../api/HRRP_vis/hrrp_vis_torch.py";
+        this->condaEnvName = "PT";
+        this->pythonApiPath = "../api/HRRP_vis/hrrp_vis_torch.py";
     }
     else if(this->choicedModelSuffix == ".hdf5"){   // keras模型
-        this->condaEnvName = "keras";
-        this->pythonApiPath = "../../api/HRRP_vis_keras/hrrp_vis_keras.py";
+        this->condaEnvName = "tf24";
+        this->pythonApiPath = "../api/HRRP_vis_keras/hrrp_vis_keras.py";
     }
     else{
         QMessageBox::warning(NULL,"错误","不支持该类型模型!");
