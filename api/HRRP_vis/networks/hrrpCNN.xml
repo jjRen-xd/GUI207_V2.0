@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<HRRP512>
+    <CNN_HRRP512 type="CNN">
+      <Block_1>
+        <_0>
+          <conv1>Conv2d</conv1>
+        </_0>
+        <_1>
+          <bn1>BatchNorm2d</bn1>
+        </_1>
+        <_2>
+          <relu1>ReLU</relu1>
+        </_2>
+        <_3>
+          <maxpool1>MaxPool2d</maxpool1>
+        </_3>
+      </Block_1>
+      <Block_2>
+        <_0>
+          <conv2>Conv2d</conv2>
+        </_0>
+        <_1>
+          <bn2>BatchNorm2d</bn2>
+        </_1>
+        <_2>
+          <relu2>ReLU</relu2>
+        </_2>
+        <_3>
+          <maxpool2>MaxPool2d</maxpool2>
+        </_3>
+      </Block_2>
+      <Block_3>
+        <_0>
+          <conv3>Conv2d</conv3>
+        </_0>
+        <_1>
+          <bn3>BatchNorm2d</bn3>
+        </_1>
+        <_2>
+          <relu3>ReLU</relu3>
+        </_2>
+        <_3>
+          <maxpool3>MaxPool2d</maxpool3>
+        </_3>
+      </Block_3>
+      <Block_4>
+        <_0>
+          <conv4>Conv2d</conv4>
+        </_0>
+        <_1>
+          <bn4>BatchNorm2d</bn4>
+        </_1>
+        <_2>
+          <relu4>ReLU</relu4>
+        </_2>
+        <_3>
+          <maxpool4>MaxPool2d</maxpool4>
+        </_3>
+      </Block_4>
+      <fc1>Linear</fc1>
+      <relu5>ReLU</relu5>
+      <dropout>Dropout</dropout>
+      <fc2>Linear</fc2>
+    </CNN_HRRP512 type="CNN">
+</HRRP512>

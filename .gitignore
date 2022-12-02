@@ -27,9 +27,15 @@ conf/libtorch.pri
 /temp
 
 
-/api/HRRP_vis
-api/HRRP_vis
+/api/HRRP_vis/data/*
+/api/HRRP_vis/dataset/__pycache__/*
+/api/HRRP_vis/networks/__pycache__/*
+/api/HRRP_vis/figs/*
+/api/HRRP_vis/log/*
+/api/HRRP_vis/checkpoints/*
 
 GUI_V2.0.pro.user.1ae1144
 /GUI_V2.0.pro.user
 GUI_V2.0.pro.user
+
+
